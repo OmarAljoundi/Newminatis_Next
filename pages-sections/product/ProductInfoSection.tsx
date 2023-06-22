@@ -1,0 +1,299 @@
+"use client";
+import React from "react";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
+import Chip from "@mui/material/Chip";
+import { ContentWrapper } from "@/components/product-card/StyledComponents";
+import { FlexBetween, FlexBox } from "@/components/flex-box";
+import { H4, H5, H6 } from "@/components/Typography";
+import { calculateDiscount, calculateDiscountAsNumber, currency } from "@/lib";
+import { TooltipError, TooltipStock } from "@/components/Tooltips";
+import { Add, Remove } from "@mui/icons-material";
+import { useState, useEffect } from "react";
+import { ValueVsQuantity } from "@/types/TProductInventory";
+import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
+import { CartItem } from "@/store/Model/CartItem";
+import { GetSKU, getDatesBetween, isHTMLString } from "@/helpers/Extensions";
+import { AddItem, RemoveItem, UpdateItem } from "@/store/CartItem/Cart-action";
+import { Skeleton } from "@mui/lab";
+import { Button, Container, IconButton, Zoom } from "@mui/material";
+import { MdOutlineWatchLater } from "react-icons/md";
+import { Disclosure } from "@headlessui/react";
+import { ChevronUpIcon } from "@heroicons/react/24/outline";
+import { FiPackage } from "react-icons/fi";
+import { ShippingInfo } from "@/components/Policies/ShippingInfo";
+import ProductSizeSection from "./ProductSizeSection";
+
+export default function ProductInfoSection({ response }) {
+  const { product, closeDay, hours, minEdd, maxEdd, currentDate } = response;
+
+  const {
+    name,
+    friendlyName,
+    shortDescription,
+    price,
+    salePrice,
+    subSku,
+    id,
+    color,
+    mainImage,
+    description,
+  } = product;
+
+  const [size, setSize] = useState<string>("");
+  const [addToCart, setAddToCart] = useState(false);
+  const toggleAddToCart = () => setAddToCart(!addToCart);
+  const [valueVsQuantity, setValueVsQuantity] = useState<ValueVsQuantity[]>([]);
+  const [stock, setStock] = useState<number | null>(null);
+  const [qty, setQty] = useState<number | null>(null);
+  const Content = useAppSelector((x) => x.Store.ContentReducer?.Content);
+
+  const cartItem = useAppSelector((x) => x.Store.CartReducer?.CartItems);
+  const dispatch = useAppDispatch();
+  const _setting = useAppSelector((x) => x.Store.SettingReducer.setting);
+  const [openTool, setOpenTool] = useState(false);
+  const handleToolClose = () => {
+    setOpenTool(false);
+  };
+  const handleToolOpen = () => {
+    setOpenTool(true);
+  };
+
+  const [openToolInfo, setOpenToolInfo] = useState(false);
+
+  const handleToolCloseInfo = () => {
+    setOpenToolInfo(false);
+  };
+
+  return (
+    <Grid
+      item
+      md={6}
+      xs={12}
+      alignItems="center"
+      sx={{
+        paddingTop: {
+          xs: "0!important",
+          sm: "0!important",
+          md: "24px",
+        },
+      }}
+    >
+      <ContentWrapper
+        sx={{
+          padding: "4px 0px 4px 2px!important",
+          background: "transparent",
+        }}
+      >
+        <div className="mb-6  grid grid-cols-1 gap-x-6 gap-y-2  lg:grid-cols-2 xl:gap-x-8 ">
+          <div className="product-details">
+            <H4
+              title={name}
+              color={"#1c1d26"}
+              sx={{
+                whiteSpace: "nowrap",
+                display: "block!important",
+                fontSize: "15px",
+              }}
+              className="title"
+            >
+              {friendlyName ?? name}
+            </H4>
+            <H6
+              mb={0}
+              title={shortDescription.toUpperCase()}
+              className="title"
+              color={"#1c1d26"}
+              sx={{ fontSize: "12px" }}
+            >
+              {shortDescription.toUpperCase().toUpperCase()}
+            </H6>
+            <FlexBetween>
+              <FlexBox alignItems="center" gap={1}>
+                <Box color="primary.main">
+                  <H5 color="black" fontWeight={100} mt={1}>
+                    {calculateDiscount(price, salePrice, _setting)}
+                  </H5>
+                </Box>
+
+                {!!salePrice && (
+                  <Box color="grey.600">
+                    <del>{currency(price, _setting)}</del>
+                  </Box>
+                )}
+              </FlexBox>
+            </FlexBetween>
+          </div>
+
+          <ProductSizeSection product={product} />
+        </div>
+
+        <Box sx={{ width: "100%" }}>
+          <Box sx={{ width: "100%" }}>
+            {closeDay != "" ? (
+              <Box
+                py={1}
+                sx={{
+                  borderRadius: "4px",
+                  background: "white",
+                }}
+              >
+                <FlexBetween
+                  alignItems={"center"}
+                  justifyContent={"flex-start"}
+                >
+                  <MdOutlineWatchLater
+                    color="black"
+                    size={25}
+                    style={{ margin: "0px 0px 0px 14px" }}
+                  />
+                  <H6
+                    textAlign={"left"}
+                    display={"inline-block"}
+                    color="black"
+                    sx={{ textTransform: "uppercase" }}
+                    px={1}
+                  >
+                    Receive you order <strong>{closeDay} </strong> if you order
+                    within <strong>{hours} hours </strong>
+                  </H6>
+                </FlexBetween>
+              </Box>
+            ) : (
+              <Box
+                py={1}
+                sx={{
+                  borderRadius: "4px",
+                  background: "white",
+                }}
+              >
+                <FlexBetween
+                  alignItems={"flex-start"}
+                  justifyContent={"flex-start"}
+                >
+                  <MdOutlineWatchLater
+                    color="black"
+                    size={40}
+                    style={{ margin: "0px 0px 0px 14px" }}
+                  />
+                  <H6
+                    textAlign={"left"}
+                    display={"inline-block"}
+                    color="black"
+                    px={1}
+                    sx={{ textTransform: "uppercase" }}
+                  >
+                    Receive you order{" "}
+                    <span
+                      dangerouslySetInnerHTML={{
+                        __html: getDatesBetween(minEdd, maxEdd, currentDate),
+                      }}
+                    ></span>{" "}
+                    if you order within <strong>{hours} hours </strong>
+                  </H6>
+                </FlexBetween>
+              </Box>
+            )}
+          </Box>
+          <Box
+            py={1}
+            sx={{
+              borderRadius: "4px",
+              background: "white",
+            }}
+          >
+            <FlexBetween alignItems={"center"} justifyContent={"flex-start"}>
+              <FiPackage
+                color="black"
+                size={25}
+                style={{ margin: "0px 0px 0px 14px" }}
+              />
+              <H6
+                textAlign={"left"}
+                display={"inline-block"}
+                fontFamily={"GlacialIndifference-Bold"}
+                color="black"
+                className="text-14"
+                px={1}
+              >
+                FREE WORLDWIDE EXPRESS SHIPPING
+              </H6>
+            </FlexBetween>
+          </Box>
+        </Box>
+        <div className="w-full pt-4">
+          <div className="mx-auto w-full bg-white p-2">
+            <Disclosure defaultOpen>
+              {({ open }) => (
+                <>
+                  <Disclosure.Button className="flex w-full justify-between bg-slate-950 px-4 py-2 text-left text-sm font-medium text-white hover:bg-slate-500 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75">
+                    <span className="white">DESCRIPTION</span>
+                    <ChevronUpIcon
+                      className={`${
+                        open ? "rotate-180 transform" : ""
+                      } h-5 w-5 text-white`}
+                    />
+                  </Disclosure.Button>
+
+                  {isHTMLString(description) ? (
+                    <Disclosure.Panel
+                      dangerouslySetInnerHTML={{
+                        __html: description,
+                      }}
+                      className="px-4 pt-4 pb-2 text-sm text-gray-500"
+                    ></Disclosure.Panel>
+                  ) : (
+                    <Disclosure.Panel
+                      className="px-4 pt-4 pb-2 text-sm text-gray-500"
+                      style={{ whiteSpace: "break-spaces" }}
+                    >
+                      {description}
+                    </Disclosure.Panel>
+                  )}
+                </>
+              )}
+            </Disclosure>
+            <Disclosure as="div" className="mt-2" defaultOpen>
+              {({ open }) => (
+                <>
+                  <Disclosure.Button className="flex w-full justify-between  bg-slate-950 px-4 py-2 text-left text-sm font-medium text-white hover:bg-slate-500 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75">
+                    <span className="white">SHIPPING INFO</span>
+                    <ChevronUpIcon
+                      className={`${
+                        open ? "rotate-180 transform" : ""
+                      } h-5 w-5 text-white`}
+                    />
+                  </Disclosure.Button>
+                  <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-500">
+                    <ShippingInfo />
+                  </Disclosure.Panel>
+                </>
+              )}
+            </Disclosure>
+            <Disclosure as="div" className="mt-2" defaultOpen>
+              {({ open }) => (
+                <>
+                  <Disclosure.Button className="flex w-full justify-between  bg-slate-950 px-4 py-2 text-left text-sm font-medium text-white hover:bg-slate-500 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75">
+                    <span className="white">RETURN POLICY</span>
+                    <ChevronUpIcon
+                      className={`${
+                        open ? "rotate-180 transform" : ""
+                      } h-5 w-5 text-white`}
+                    />
+                  </Disclosure.Button>
+                  <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-500">
+                    {
+                      Content?.returnPolicy.find(
+                        (x) => x.title.toLowerCase() == "returns"
+                      )?.description
+                    }
+                  </Disclosure.Panel>
+                </>
+              )}
+            </Disclosure>
+          </div>
+        </div>
+      </ContentWrapper>
+    </Grid>
+  );
+}
