@@ -23,7 +23,7 @@ export default function ProductImagesSection({ product }) {
                 title={product.friendlyName}
                 aspect={true}
                 loading="eager"
-                q={100}
+                q={70}
                 priority="high"
               />
             </SwiperSlide>

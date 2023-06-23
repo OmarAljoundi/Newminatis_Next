@@ -286,10 +286,10 @@ const ShopCard: FC<ProductCardProps> = ({ product, discount }) => {
                 {product.productImages?.slice(0, 4).map((slide, i) => (
                   <SwiperSlide key={i}>
                     <BlurImage
-                      image={slide.imageUrl}
+                      image={slide.reducedImage}
                       title={product.friendlyName}
-                      loading={i == 0 ? "eager" : "lazy"}
-                      priority={i == 0 ? "high" : "low"}
+                      loading={"eager"}
+                      priority={"high"}
                       aspect={true}
                       q={80}
                     />
