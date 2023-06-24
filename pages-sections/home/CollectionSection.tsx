@@ -63,6 +63,7 @@ const CollectionSection = () => {
                 <div className="absolute bg-gray-800 opacity-70 w-full h-full">
                   <H2
                     color={"white"}
+                    className="text-2xl"
                     sx={{
                       display: "flex",
                       alignItems: "center",

@@ -37,7 +37,8 @@ export default function ContributionSection() {
             </H1>
             <Paragraph
               color={"white"}
-              lineHeight={1}
+              lineHeight={1.2}
+              className="text-xl md:text-2xl"
               data-aos="fade-up"
               data-aos-anchor-placement="top-bottom"
             >

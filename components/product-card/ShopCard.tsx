@@ -29,7 +29,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
 import ProductService from "@/service/ProductService";
 import { CartItem } from "@/store/Model/CartItem";
 import { calculateDiscount, calculateDiscountAsNumber, currency } from "@/lib";
-import { GetSKU } from "@/helpers/Extensions";
+import { GetSKU, classNames, getSizeFromSKU } from "@/helpers/Extensions";
 import { AddItem, RemoveItem, UpdateItem } from "@/store/CartItem/Cart-action";
 import { AddItemWish } from "@/store/Wishlist/Wishlist-action";
 import { TooltipError, TooltipInfo } from "../Tooltips";
@@ -39,6 +39,8 @@ import { BlurImage } from "../BlurImage";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
+import { VscHeart, VscHeartFilled } from "react-icons/vsc";
+import { RadioGroup } from "@headlessui/react";
 // ========================================================
 type ProductCardProps = {
   discount: number;
@@ -248,6 +250,10 @@ const ShopCard: FC<ProductCardProps> = ({ product, discount }) => {
     }
   }, [size]);
 
+  const isDisable = (value) => {
+    return valueVsQuantity?.find((x) => x.variable == value)?.quantity == 0;
+  };
+
   return (
     <>
       <ProductCardWrapper
@@ -299,42 +305,29 @@ const ShopCard: FC<ProductCardProps> = ({ product, discount }) => {
             </Swiper>
           </Link>
 
-          <Box position={"absolute"} sx={{ bottom: 15, right: 5, zIndex: 9 }}>
+          <Box
+            position={"absolute"}
+            sx={{ top: 15, right: 5, zIndex: 9, cursor: "pointer" }}
+          >
             <Box display={"grid"} rowGap={1}>
-              <TooltipInfo
+              <Tooltip
                 title={wishList ? "Remove From Wishlist" : "Add To Wishlist"}
                 placement="top"
               >
-                <IconButton
-                  onClick={() => handleAddToWishlist()}
-                  sx={{
-                    background: wishList ? "#D3C4AB" : "white",
-                    border: wishList ? "2px solid white" : "2px solid white",
-                    ":hover": {
-                      background:
-                        downSm && wishList
-                          ? "#D3C4AB"
-                          : downSm && !wishList
-                          ? "white"
-                          : "#D3C4AB",
-                      border: "2px solid white",
-                    },
-
-                    width: "30px",
-                    height: "30px",
-                    padding: "10px",
-                  }}
-                >
-                  {/* <img
-                    src={
-                      wishList
-                        ? require("../../images/wishlist.png")
-                        : require("../../images/wishlist-black.png")
-                    }
-                    style={{ width: "inherit" }}
-                  /> */}
-                </IconButton>
-              </TooltipInfo>
+                {!wishList ? (
+                  <VscHeart
+                    color={"#000000bf"}
+                    size={"20px"}
+                    onClick={() => handleAddToWishlist()}
+                  />
+                ) : (
+                  <VscHeartFilled
+                    color={"#d23f57"}
+                    size={"20px"}
+                    onClick={() => handleAddToWishlist()}
+                  />
+                )}
+              </Tooltip>
             </Box>
           </Box>
         </ImageWrapper>
@@ -357,7 +350,7 @@ const ShopCard: FC<ProductCardProps> = ({ product, discount }) => {
                     whiteSpace: "nowrap",
                     display: "block!important",
                   }}
-                  className="title text-18"
+                  className=" text-18"
                 >
                   {product.friendlyName ?? product.name}
                 </H4>
@@ -411,16 +404,7 @@ const ShopCard: FC<ProductCardProps> = ({ product, discount }) => {
                       0 && (
                       <>
                         {qty == null ? (
-                          <Button
-                            className="shadow"
-                            color="secondary"
-                            startIcon={
-                              <AddShoppingCartIcon
-                                sx={{
-                                  margin: 0,
-                                }}
-                              />
-                            }
+                          <button
                             onClick={() => {
                               if (size == "") {
                                 handleToolOpen();
@@ -428,19 +412,13 @@ const ShopCard: FC<ProductCardProps> = ({ product, discount }) => {
                                 handleCartAmountChange(1);
                               }
                             }}
-                            sx={{
-                              border: "none",
-                              margin: "auto",
-                              "&:hover": {
-                                background: "transparent",
-                                border: "none",
-                                color: "black",
-                              },
-                              span: {
-                                margin: 0,
-                              },
-                            }}
-                          ></Button>
+                            className="title rounded-none 
+                            text-xs uppercase flex 
+                            items-center justify-center rounded-md border border-transparent
+                             bg-black px-2 py-1 text-base  text-white shadow-sm hover:bg-slate-700"
+                          >
+                            ADD TO CART
+                          </button>
                         ) : (
                           <FlexBox
                             alignItems="center"
@@ -494,87 +472,81 @@ const ShopCard: FC<ProductCardProps> = ({ product, discount }) => {
                   </Box>
                 </TooltipError>
               </FlexBetween>
-
-              {product.subSku && (
-                <Box
-                  className="mt-2"
-                  color="grey.600"
-                  mb={1}
-                  display="block"
-                  position={"relative"}
-                  pb={"20px"}
+              <RadioGroup
+                value={size}
+                onChange={(e) => setSize(e.split("-")[3])}
+                className="mt-2"
+              >
+                <div
+                  className={`grid grid-cols-${
+                    product.subSku?.split(",").length + 2
+                  } gap-4`}
                 >
-                  {product.subSku.split(",")?.map((value) => (
+                  {product.subSku?.split(",")?.map((size) => (
                     <>
-                      {valueVsQuantity.find((x) => x.variable == value) !=
+                      {valueVsQuantity.find((x) => x.variable == size) !=
                       null ? (
-                        <Chip
-                          className="shadow"
-                          color="primary"
-                          key={value}
-                          label={
-                            value.split("-")[3] == "F"
-                              ? "FREE SIZE"
-                              : value.split("-")[3]
+                        <RadioGroup.Option
+                          key={size}
+                          value={size}
+                          disabled={isDisable(size)}
+                          className={({ active }) =>
+                            classNames(
+                              !isDisable(size)
+                                ? "cursor-pointer bg-white text-gray-900 shadow-sm"
+                                : "cursor-not-allowed bg-gray-50 text-gray-200",
+                              active ? "ring-2 ring-zinc-500" : "",
+                              "group relative flex items-center justify-center rounded-md border py-2 px-2 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1"
+                            )
                           }
-                          onClick={() => setSize(value.split("-")[3])}
-                          disabled={disableChip(value)}
-                          sx={{
-                            height: {
-                              xs: "22px",
-                              md: "40px",
-                            },
-                            width: value.split("-")[3] == "F" ? "80px" : "40px",
-                            ":hover": {
-                              color: "white",
-                            },
-
-                            "&.MuiButtonBase-root.Mui-disabled::after ": {
-                              borderBottom: "0.20em solid black",
-                              content: '""',
-                              left: 0,
-
-                              position: "absolute",
-                              right: 0,
-                              top: "50%",
-                              width: "40%",
-                              margin: "auto",
-                            },
-
-                            borderRadius: "8px",
-                            marginLeft: "2px",
-                            marginRight: "2px",
-                            background:
-                              value.split("-")[3] == size ? "#D3C4AB" : "white",
-
-                            color:
-                              value.split("-")[3] == size ? "white" : "black",
-                          }}
-                        />
+                        >
+                          {({ active, checked }) => (
+                            <>
+                              <RadioGroup.Label as="span">
+                                {getSizeFromSKU(size)}
+                              </RadioGroup.Label>
+                              {!isDisable(size) ? (
+                                <span
+                                  className={classNames(
+                                    active ? "border" : "border-2",
+                                    checked
+                                      ? "border-zinc-500"
+                                      : "border-transparent",
+                                    "pointer-events-none absolute -inset-px rounded-md"
+                                  )}
+                                  aria-hidden="true"
+                                />
+                              ) : (
+                                <span
+                                  aria-hidden="true"
+                                  className="pointer-events-none absolute -inset-px rounded-md border-2 border-gray-200"
+                                >
+                                  <svg
+                                    className="absolute inset-0 h-full w-full stroke-2 text-gray-200"
+                                    viewBox="0 0 100 100"
+                                    preserveAspectRatio="none"
+                                    stroke="currentColor"
+                                  >
+                                    <line
+                                      x1={0}
+                                      y1={100}
+                                      x2={100}
+                                      y2={0}
+                                      vectorEffect="non-scaling-stroke"
+                                    />
+                                  </svg>
+                                </span>
+                              )}
+                            </>
+                          )}
+                        </RadioGroup.Option>
                       ) : (
-                        <Skeleton
-                          variant="circular"
-                          sx={{
-                            background: "gray",
-                            display: "inline-block",
-                            height: {
-                              xs: "22px",
-                              md: "40px",
-                            },
-                            width: {
-                              xs: "22px",
-                              md: "40px",
-                            },
-                            borderRadius: "4px",
-                            marginLeft: "2px",
-                            marginRight: "2px",
-                          }}
-                        />
+                        <Skeleton className="group relative flex items-center justify-center rounded-md border py-3 px-4 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1" />
                       )}
                     </>
                   ))}
-                </Box>
-              )}
+                </div>
+              </RadioGroup>
             </Box>
           </FlexBox>
         </ContentWrapper>

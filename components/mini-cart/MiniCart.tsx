@@ -22,7 +22,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
 import { updateCart } from "@/store/CartItem/ThunkAPI";
 import { AddItem, RemoveItem, UpdateItem } from "@/store/CartItem/Cart-action";
 import { StyledChip } from "../product-card/StyledComponents";
-
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 // =========================================================
 type MiniCartProps = { toggleSidenav: () => void; open: boolean };
 // =========================================================
@@ -284,7 +284,7 @@ const MiniCart: FC<MiniCartProps> = ({ toggleSidenav, open }) => {
                                   )}
                                   sx={{ marginLeft: 2.5 }}
                                 >
-                                  <Close fontSize="small" />
+                                  <DeleteOutlineIcon fontSize="medium" />
                                 </IconButton>
                               </FlexBox>
                             ))}
@@ -298,23 +298,20 @@ const MiniCart: FC<MiniCartProps> = ({ toggleSidenav, open }) => {
                         <p>Subtotal</p>
                         <p>({currency(getTotalPrice() || 0, _setting)})</p>
                       </div>
-                      <p className="mt-0.5 text-sm text-gray-500">
-                        Shipping and taxes calculated at checkout.
-                      </p>
                       <div className="mt-6">
                         <Link
                           onClick={toggleSidenav}
                           href="/checkout"
-                          className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
+                          className="title uppercase flex items-center justify-center rounded-md border border-transparent bg-black px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-slate-700"
                         >
                           Checkout
                         </Link>
                       </div>
-                      <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
+                      <div className="mt-2 flex justify-center text-center text-sm text-gray-500">
                         <p>
                           <button
                             type="button"
-                            className="font-medium text-indigo-600 hover:text-indigo-500"
+                            className="text-sm text-stone-900 hover:text-stone-600"
                             onClick={toggleSidenav}
                           >
                             Continue Shopping

@@ -68,12 +68,12 @@ const AboutSection: FC = () => {
             >
               <div data-aos="fade-right">
                 <H2
-                  className="title-sub-font"
+                  className="title-sub-font text-2xl"
                   sx={{ whiteSpace: "break-spaces" }}
                 >
                   RADICAL SELF-EXPRESSION
                 </H2>
-                <H5 color={"black"}>
+                <H5 color={"black"} className="text-base md:text-lg">
                   The idea of expressing oneself authentically and creatively,
                   without fear of judgment or criticism from others. It
                   encourages you to push past your comfort zone and explore your
@@ -85,12 +85,12 @@ const AboutSection: FC = () => {
               <br />
               <div data-aos="fade-right">
                 <H2
-                  className="title-sub-font"
+                  className="title-sub-font text-2xl"
                   sx={{ whiteSpace: "break-spaces" }}
                 >
                   DECONSTRUCTED FASHION
                 </H2>
-                <H5 color={"black"}>
+                <H5 color={"black"} className="text-base md:text-lg">
                   A style of fashion where the traditional structure and
                   construction of clothing is intentionally altered or undone.
                   This style of fashion aims to challenge traditional notions of
@@ -102,12 +102,12 @@ const AboutSection: FC = () => {
               <br />
               <div data-aos="fade-right">
                 <H2
-                  className="title-sub-font"
+                  className="title-sub-font text-2xl"
                   sx={{ whiteSpace: "break-spaces" }}
                 >
                   AVANT-GARDE COMMUNITY
                 </H2>
-                <H5 color={"black"}>
+                <H5 color={"black"} className="text-base md:text-lg">
                   As an avant-garde community, Newminatis defies conventional
                   norms and pushes the limits of fashion by embracing
                   creativity, innovation, and individuality. Through

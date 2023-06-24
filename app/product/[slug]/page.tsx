@@ -3,9 +3,9 @@ import ProductService from "@/service/ProductService";
 import { SearchQuery, eFilterOperator } from "@/types/TSearchQuery";
 import { AxiosResponse } from "axios";
 import React from "react";
-import { Breadcrumbs } from "@/components/Breadcrumb";
 import ProductImagesSection from "@/pages-sections/product/ProductImagesSection";
 import ProductInfoSection from "@/pages-sections/product/ProductInfoSection";
+import Breadcrumb from "@/pages-sections/shop/Breadcrumb";
 
 type Params = {
   params: {
@@ -44,7 +44,12 @@ export default async function SingleProductPage({ params: { slug } }: Params) {
       {/* <ReviewModel product={_response.product} /> */}
 
       <div>
-        <Breadcrumbs product={_response?.data?.product} />
+        <Breadcrumb
+          link={`${_response?.data?.product?.name.toLowerCase()}-${
+            _response?.data?.product?.color
+          }`}
+          title={_response?.data?.product?.friendlyName}
+        />
       </div>
       <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-2  lg:grid-cols-2 xl:gap-x-8">
         <ProductImagesSection product={_response?.data?.product} />

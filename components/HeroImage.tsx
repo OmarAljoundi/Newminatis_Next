@@ -29,7 +29,7 @@ export const HeroImage: FC<{
       <div className="absolute bg-gray-800 opacity-70 w-full h-full">
         <H2
           color={"white"}
-          className="w-2/4 mx-auto"
+          className="w-2/4 mx-auto text-2xl "
           sx={{
             display: "flex",
             alignItems: "center",
@@ -41,7 +41,7 @@ export const HeroImage: FC<{
           }}
         >
           {content}
-          <Link href={"/shop"}>
+          <Link href={"/shop"} className=" mt-4">
             <Button color="secondary" className="w-28">
               Shop now
             </Button>

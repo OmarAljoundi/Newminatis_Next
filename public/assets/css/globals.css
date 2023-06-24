@@ -531,10 +531,10 @@ input[type="number"] {
   white-space: break-spaces;
 }
 .title {
-  font-family: "Alata-Regular";
+  font-family: var(--Alata-Regular);
 }
 .title-sub-font {
-  font-family: "GlacialIndifference-Regular";
+  font-family: var(--GlacialIndifference-Regular);
 }
 /* Pull image behind dashed border */
 .container-zzz .image {
@@ -829,4 +829,17 @@ button {
   font-size: 1rem;
   line-height: 30px;
   line-height: 1.875rem;
+}
+
+.grid-cols-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.grid-cols-5 {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+.grid-cols-6 {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+.grid-cols-7 {
+  grid-template-columns: repeat(7, minmax(0, 1fr));
 }

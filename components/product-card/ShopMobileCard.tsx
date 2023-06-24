@@ -164,14 +164,14 @@ const ShopMobileCard: FC<ProductCardProps> = ({
                     whiteSpace: "nowrap",
                     display: "block!important",
                   }}
-                  className="title text-10"
+                  className="title text-sm"
                 >
                   {product.friendlyName ?? product.name}
                 </H4>
                 <H6
                   mb={0}
                   title={product.shortDescription}
-                  className="title text-10"
+                  className="title text-xs"
                   color={"#1c1d26"}
                 >
                   {product.shortDescription.toUpperCase()}
@@ -195,32 +195,15 @@ const ShopMobileCard: FC<ProductCardProps> = ({
                   )}
                 </FlexBox>
                 <Box>
-                  <Button
-                    color="secondary"
+                  <button
+                    className="title rounded-none 
+                            text-xs uppercase  flex 
+                            items-center justify-center rounded-md border border-transparent
+                             bg-black px-2 py-1 text-base  text-white shadow-sm hover:bg-slate-700"
                     onClick={toggleWishList}
-                    sx={{
-                      marginRight: "-8px",
-                      border: "none",
-                      width: "fit-content",
-                      fontSize: "9px",
-                      padding: "4px 15px",
-                      borderRadius: 0,
-                      textTransform: "uppercase",
-                      background: "black",
-                      color: "white",
-                      ":disabled": {
-                        textDecoration: "none",
-                      },
-                      "&:hover": {
-                        border: "none",
-                        background: "transparent",
-                        color: "black",
-                        opacity: "0.9",
-                      },
-                    }}
                   >
                     Add to cart
-                  </Button>
+                  </button>
                 </Box>
               </FlexBetween>
             </Box>
@@ -231,7 +214,6 @@ const ShopMobileCard: FC<ProductCardProps> = ({
           anchor="bottom"
           onClose={toggleWishList}
           PaperProps={{
-            role: "drawer",
             sx: { height: "70vw", width: "100%" },
           }}
         >

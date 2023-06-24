@@ -287,3 +287,6 @@ export const createUrlWithSearch = (
   const query = search ? `?${search}` : "";
   return `${pathname}${query}`;
 };
+export function classNames(...classes) {
+  return classes.filter(Boolean).join(" ");
+}

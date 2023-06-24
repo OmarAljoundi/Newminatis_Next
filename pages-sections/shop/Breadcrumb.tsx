@@ -11,7 +11,10 @@ const Breadcrumb: FC<{ title?: string; link?: string }> = ({ title, link }) => {
       >
         <li>
           <div className="flex items-center">
-            <Link href="/" className="mr-2 text-sm font-medium text-gray-900">
+            <Link
+              href="/"
+              className="mr-2 text-sm font-medium text-gray-900 title"
+            >
               Home
             </Link>
             <svg
@@ -30,7 +33,7 @@ const Breadcrumb: FC<{ title?: string; link?: string }> = ({ title, link }) => {
           <div className="flex items-center">
             <Link
               href={"/shop"}
-              className="mr-2 text-sm font-medium text-gray-900"
+              className="mr-2 text-sm font-medium text-gray-900 title"
             >
               Shop
             </Link>

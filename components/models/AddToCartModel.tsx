@@ -16,13 +16,14 @@ import { TProduct } from "@/types/TProduct";
 import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
 import { calculateDiscount, calculateDiscountAsNumber, currency } from "@/lib";
 import { CartItem } from "@/store/Model/CartItem";
-import { GetSKU } from "@/helpers/Extensions";
+import { GetSKU, classNames, getSizeFromSKU } from "@/helpers/Extensions";
 import { AddItem, RemoveItem, UpdateItem } from "@/store/CartItem/Cart-action";
 import ProductService from "@/service/ProductService";
 import Link from "next/link";
 import { H2, H4, Paragraph } from "../Typography";
 import { FlexBetween, FlexBox } from "../flex-box";
 import { TooltipError, TooltipStock } from "../Tooltips";
+import { RadioGroup } from "@headlessui/react";
 type CartModelProps = {
   toggleDrawer: () => void;
   product: TProduct;
@@ -162,6 +163,10 @@ const AddToCardModel: FC<CartModelProps> = ({
     }
   }, [size]);
 
+  const isDisable = (value) => {
+    return valueVsQuantity?.find((x) => x.variable == value)?.quantity == 0;
+  };
+
   return (
     <Box px={4} py={1}>
       <Grid container item columnSpacing={3} mt={2} position="relative">
@@ -176,7 +181,10 @@ const AddToCardModel: FC<CartModelProps> = ({
           >
             <Button variant="text" sx={{ paddingLeft: "0", paddingRight: "0" }}>
               {" "}
-              <span className="text-10" style={{ textDecoration: "underline" }}>
+              <span
+                className="text-xs title"
+                style={{ textDecoration: "underline" }}
+              >
                 {" "}
                 View Product Details
               </span>
@@ -185,10 +193,8 @@ const AddToCardModel: FC<CartModelProps> = ({
         </Grid>
         <Grid item xs={8}>
           <Stack className="details">
-            <H2 className="text-12">{product.friendlyName}</H2>
-            <Paragraph className="text-12">
-              {product.shortDescription}
-            </Paragraph>
+            <H2 className="text-sm">{product.friendlyName}</H2>
+            <p className="text-xs mb-2">{product.shortDescription}</p>
             <FlexBox alignItems="center" gap={1} className="text-12">
               <Box color={"black"} className="text-12">
                 <H4 color="black" fontWeight={100} className="text-12">
@@ -203,78 +209,80 @@ const AddToCardModel: FC<CartModelProps> = ({
               )}
             </FlexBox>
 
-            <FlexBetween justifyContent={"start"}>
-              {product.subSku && (
-                <Box
-                  color="grey.600"
-                  mt={1}
-                  display="block"
-                  position={"relative"}
-                  pb={"20px"}
-                >
-                  {product.subSku.split(",")?.map((value) => (
-                    <>
-                      {valueVsQuantity.find((x) => x.variable == value) !=
-                      null ? (
-                        <Chip
-                          className="shadow"
-                          color="primary"
-                          key={value}
-                          label={
-                            value.split("-")[3] == "F"
-                              ? "FREE SIZE"
-                              : value.split("-")[3]
-                          }
-                          onClick={() => setSize(value.split("-")[3])}
-                          disabled={disableChip(value)}
-                          sx={{
-                            height:
-                              value.split("-")[3] == "F" ? "40px" : "30px",
-                            width: value.split("-")[3] == "F" ? "80px" : "40px",
-                            ":hover": {
-                              color: "white",
-                            },
-
-                            "&.MuiButtonBase-root.Mui-disabled::after ": {
-                              borderBottom: "0.20em solid black",
-                              content: '""',
-                              left: 0,
-
-                              position: "absolute",
-                              right: 0,
-                              top: "50%",
-                              width: "40%",
-                              margin: "auto",
-                            },
-
-                            borderRadius: "0",
-                            marginLeft: "2px",
-                            marginRight: "2px",
-                            background:
-                              value.split("-")[3] == size ? "#D3C4AB" : "white",
-
-                            color: "black",
-                          }}
-                        />
-                      ) : (
-                        <Skeleton
-                          variant="circular"
-                          sx={{
-                            background: "gray",
-                            display: "inline-block",
-                            height: "30px",
-                            width: "40px",
-                            borderRadius: "0",
-                            marginLeft: "2px",
-                            marginRight: "2px",
-                          }}
-                        />
-                      )}
-                    </>
-                  ))}
-                </Box>
-              )}
-            </FlexBetween>
+            <RadioGroup
+              value={size}
+              onChange={(e) => setSize(e.split("-")[3])}
+              className="mt-4"
+            >
+              <div
+                className={`mb-4 grid grid-cols-${
+                  product.subSku?.split(",").length
+                } gap-4`}
+              >
+                {product.subSku?.split(",")?.map((size) => (
+                  <>
+                    {valueVsQuantity.find((x) => x.variable == size) != null ? (
+                      <RadioGroup.Option
+                        key={size}
+                        value={size}
+                        disabled={isDisable(size)}
+                        className={({ active }) =>
+                          classNames(
+                            !isDisable(size)
+                              ? "cursor-pointer bg-white text-gray-900 shadow-sm"
+                              : "cursor-not-allowed bg-gray-50 text-gray-200",
+                            active ? "ring-2 ring-zinc-500" : "",
+                            "group relative flex items-center justify-center rounded-md border py-2 px-2 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1"
+                          )
+                        }
+                      >
+                        {({ active, checked }) => (
+                          <>
+                            <RadioGroup.Label as="span">
+                              {getSizeFromSKU(size)}
+                            </RadioGroup.Label>
+                            {!isDisable(size) ? (
+                              <span
+                                className={classNames(
+                                  active ? "border" : "border-2",
+                                  checked
+                                    ? "border-zinc-500"
+                                    : "border-transparent",
+                                  "pointer-events-none absolute -inset-px rounded-md"
+                                )}
+                                aria-hidden="true"
+                              />
+                            ) : (
+                              <span
+                                aria-hidden="true"
+                                className="pointer-events-none absolute -inset-px rounded-md border-2 border-gray-200"
+                              >
+                                <svg
+                                  className="absolute inset-0 h-full w-full stroke-2 text-gray-200"
+                                  viewBox="0 0 100 100"
+                                  preserveAspectRatio="none"
+                                  stroke="currentColor"
+                                >
+                                  <line
+                                    x1={0}
+                                    y1={100}
+                                    x2={100}
+                                    y2={0}
+                                    vectorEffect="non-scaling-stroke"
+                                  />
+                                </svg>
+                              </span>
+                            )}
+                          </>
+                        )}
+                      </RadioGroup.Option>
+                    ) : (
+                      <Skeleton className="group relative flex items-center justify-center rounded-md border py-3 px-4 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1" />
+                    )}
+                  </>
+                ))}
+              </div>
+            </RadioGroup>
             {valueVsQuantity.filter((x) => x.quantity > 0).length != 0 && (
               <FlexBetween>
                 <TooltipError
@@ -297,9 +305,11 @@ const AddToCardModel: FC<CartModelProps> = ({
                     },
                   }}
                 >
-                  <Button
-                    className="shadow text-10"
-                    color="secondary"
+                  <button
+                    className="title rounded-none 
+                            text-xs uppercase  flex 
+                            items-center justify-center rounded-md border border-transparent
+                             bg-black px-2 py-1 text-base  text-white shadow-sm hover:bg-slate-700"
                     onClick={() => {
                       if (size == "") {
                         handleToolOpen();
@@ -307,29 +317,9 @@ const AddToCardModel: FC<CartModelProps> = ({
                         handleCartAmountChange();
                       }
                     }}
-                    sx={{
-                      marginRight: "-8px",
-                      border: "none",
-                      width: "fit-content",
-                      fontSize: "9px",
-                      padding: "5px 10px",
-                      borderRadius: 0,
-                      textTransform: "uppercase",
-                      background: "black",
-                      color: "white",
-                      ":disabled": {
-                        textDecoration: "none",
-                      },
-                      "&:hover": {
-                        border: "none",
-                        background: "transparent",
-                        color: "black",
-                        opacity: "0.9",
-                      },
-                    }}
                   >
-                    ADD TO CART
-                  </Button>
+                    Add to cart
+                  </button>
                 </TooltipError>
 
                 <TooltipStock

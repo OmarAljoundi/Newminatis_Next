@@ -88,7 +88,7 @@ const ShopRootLayout: FC<ShopRootLayoutProp> = ({ children }) => {
         </div>
       </Sidenav>
 
-      <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-7xl px-0 sm:px-6 lg:px-8">
         <div className="flex items-baseline justify-between border-b border-gray-200  pt-6">
           <h1 className="text-4xl font-bold tracking-tight text-gray-900">
             {children}
@@ -97,7 +97,7 @@ const ShopRootLayout: FC<ShopRootLayoutProp> = ({ children }) => {
           <div className="flex items-center">
             <Menu as="div" className="relative inline-block text-left">
               <div>
-                <Menu.Button className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
+                <Menu.Button className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900 title">
                   Sort
                   <ChevronDownIcon
                     className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
@@ -127,7 +127,7 @@ const ShopRootLayout: FC<ShopRootLayoutProp> = ({ children }) => {
                               searchParams.get("sort") == option.href
                                 ? "font-medium text-gray-900 bg-slate-400"
                                 : "text-gray-500",
-                              "block px-4 py-2 text-sm",
+                              "block px-4 py-2 text-sm title",
                               "cursor-pointer"
                             )}
                           >

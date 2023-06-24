@@ -21,6 +21,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { toast } from "react-hot-toast";
 import axios from "axios";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import Currency from "./Currency";
 
 export const HeaderWrapper = styled(Box)(({ theme }) => ({
   zIndex: 3,
@@ -292,7 +293,7 @@ const Header = () => {
                                 open
                                   ? "border-indigo-600 text-indigo-600"
                                   : "border-transparent text-gray-700 hover:text-gray-800",
-                                "relative z-10 -mb-px flex items-center border-b-2 pt-px text-sm font-medium transition-colors duration-200 ease-out"
+                                "title relative z-10 -mb-px flex items-center border-b-2 pt-px text-sm font-medium transition-colors duration-200 ease-out"
                               )}
                             >
                               {category.name}
@@ -309,7 +310,7 @@ const Header = () => {
 
                                 <div className="relative bg-white">
                                   <div className="mx-auto max-w-7xl px-8">
-                                    <div className="grid grid-cols-2 gap-x-8 gap-y-10 py-16">
+                                    <div className="grid grid-cols-2 gap-x-8 gap-y-10 py-6">
                                       <div className="col-start-2 grid grid-cols-2 gap-x-8">
                                         {category.featured.map((item) => (
                                           <div
@@ -388,7 +389,7 @@ const Header = () => {
                     <Link
                       key={page.name}
                       href={page.href}
-                      className="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800"
+                      className="title flex items-center text-sm font-medium text-gray-700 hover:text-gray-800"
                     >
                       {page.name}
                     </Link>
@@ -399,11 +400,13 @@ const Header = () => {
               <div className="ml-auto flex items-center">
                 <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
                   {status === "authenticated" ? (
-                    <span>Welcome back, {session.user.email}</span>
+                    <span className="title">
+                      Welcome back, {session.user.email}
+                    </span>
                   ) : (
                     <Link
                       href="/auth/login"
-                      className="text-sm font-medium text-gray-700 hover:text-gray-800"
+                      className="title text-sm font-medium text-gray-700 hover:text-gray-800"
                     >
                       Sign in
                     </Link>
@@ -414,7 +417,7 @@ const Header = () => {
                   ) : (
                     <Link
                       href="/auth/register"
-                      className="text-sm font-medium text-gray-700 hover:text-gray-800"
+                      className="title text-sm font-medium text-gray-700 hover:text-gray-800"
                     >
                       Create account
                     </Link>
@@ -422,18 +425,8 @@ const Header = () => {
                 </div>
 
                 <div className="hidden lg:ml-8 lg:flex">
-                  <a
-                    href="#"
-                    className="flex items-center text-gray-700 hover:text-gray-800"
-                  >
-                    <img
-                      src="https://tailwindui.com/img/flags/flag-canada.svg"
-                      alt=""
-                      className="block h-auto w-5 flex-shrink-0"
-                    />
-                    <span className="ml-3 block text-sm font-medium">CAD</span>
-                    <span className="sr-only">, change currency</span>
-                  </a>
+                  <span className="sr-only">, change currency</span>
+                  <Currency />
                 </div>
 
                 {/* Search */}

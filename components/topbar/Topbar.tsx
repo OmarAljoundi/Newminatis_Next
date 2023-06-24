@@ -70,8 +70,8 @@ const Topbar: FC<TopbarProps> = ({ bgColor }) => {
                 paddingLeft: "10px",
                 fontWeight: 100,
               }}
-              className="marquee_span text-10"
-              fontFamily={"Alata-Regular"}
+              className="marquee_span text-sm"
+              fontFamily={"var(--Alata-Regular)"}
             >
               FREE WORLDWIDE EXPRESS SHIPPING
             </Span>
@@ -87,8 +87,8 @@ const Topbar: FC<TopbarProps> = ({ bgColor }) => {
                 paddingLeft: "10px",
                 fontWeight: 100,
               }}
-              className="marquee_span text-10"
-              fontFamily={"Alata-Regular"}
+              className="marquee_span text-sm"
+              fontFamily={"var(--Alata-Regular)"}
             >
               SAME DAY DELIVERY IN UAE
             </Span>
@@ -110,8 +110,8 @@ const Topbar: FC<TopbarProps> = ({ bgColor }) => {
                 paddingLeft: "10px",
                 fontWeight: 100,
               }}
-              className="marquee_span text-10"
-              fontFamily={"Alata-Regular"}
+              className="marquee_span text-sm"
+              fontFamily={"var(--Alata-Regular)"}
             >
               GO SEAMLESS WITH APPLE PAY
             </Span>

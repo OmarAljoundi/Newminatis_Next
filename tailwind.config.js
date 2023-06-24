@@ -26,8 +26,5 @@ module.exports = {
       animation: ["group-hover"],
     },
   },
-  plugins: [
-    require("@tailwindcss/forms"),
-    require("@tailwindcss/aspect-ratio"),
-  ],
+  plugins: [require("@tailwindcss/aspect-ratio")],
 };

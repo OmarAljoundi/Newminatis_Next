@@ -13,18 +13,39 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import ShopLayout from "@/components/layouts/ShopLayout";
 import { SessionProvider } from "next-auth/react";
-
+import localFont from "next/font/local";
+import Aos from "aos";
+import "aos/dist/aos.css";
 type RootLayoutProp = {
   children: ReactNode;
 };
 
-const RootLayout: FC<RootLayoutProp> = ({ children }) => {
-  useLayoutEffect(() => {
-    if (typeof window !== "undefined") {
-      require("bootstrap/dist/js/bootstrap");
-    }
-  }, []);
+const Font1 = localFont({
+  src: [
+    {
+      path: "../public/assets/fonts/GlacialIndifference-Regular.otf",
+      weight: "100",
+      style: "normal",
+    },
+    {
+      path: "../public/assets/fonts/GlacialIndifference-Bold.otf",
+      weight: "bold",
+      style: "normal",
+    },
+    {
+      path: "../public/assets/fonts/GlacialIndifference-Italic.otf",
+      weight: "100",
+      style: "italic",
+    },
+  ],
+  variable: "--GlacialIndifference",
+});
+const Font2 = localFont({
+  src: "../public/assets/fonts/Alata-Regular.ttf",
+  variable: "--Alata-Regular",
+});
 
+const RootLayout: FC<RootLayoutProp> = ({ children }) => {
   const pathname = usePathname();
 
   useEffect(() => {
@@ -35,9 +56,16 @@ const RootLayout: FC<RootLayoutProp> = ({ children }) => {
     });
   }, [pathname]);
 
+  useEffect(() => {
+    Aos.init({
+      duration: 1200,
+      once: true,
+    });
+  }, []);
+
   return (
     <html lang="en">
-      <body>
+      <body className={`${Font1.variable} ${Font2.variable}`}>
         <div id="__next">
           <Provider store={store}>
             <PersistGate loading={null} persistor={persistor}>
