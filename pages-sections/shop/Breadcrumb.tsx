@@ -53,7 +53,7 @@ const Breadcrumb: FC<{ title?: string; link?: string }> = ({ title, link }) => {
             <Link
               href={link}
               aria-current="page"
-              className="font-medium text-gray-500 hover:text-gray-600"
+              className="capitalize  font-medium text-gray-500 hover:text-gray-600"
             >
               {title}
             </Link>

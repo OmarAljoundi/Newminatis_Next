@@ -17,14 +17,7 @@ const ProductList: FC<ProductListProps> = ({ products }) => {
     <Fragment>
       <Grid container spacing={1} rowSpacing={2}>
         {products?.map((item: TProduct, index: number) => (
-          <Grid
-            item
-            lg={4}
-            sm={6}
-            xs={6}
-            key={item?.id ?? index}
-            sx={{ paddingTop: "0!important" }}
-          >
+          <Grid item lg={4} sm={6} xs={6} key={item?.id ?? index}>
             {downSm ? (
               <ShopMobileCard
                 discount={(item.salePrice as unknown as number) ?? 0}

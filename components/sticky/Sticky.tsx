@@ -127,11 +127,7 @@ const Sticky: FC<StickyProps> = ({
 
   return (
     <StyledBox fixedOn={fixedOn} componentHeight={parentHeight} fixed={fixed}>
-      <div
-        className={clsx({ hold: !fixed, fixed: fixed })}
-        ref={elementRef}
-        style={{ zIndex: "99999" }}
-      >
+      <div className={clsx({ hold: !fixed, fixed: fixed })} ref={elementRef}>
         {children}
       </div>
     </StyledBox>

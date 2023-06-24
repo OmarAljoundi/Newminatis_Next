@@ -203,11 +203,7 @@ const Signup: FC<Prop> = ({ handleSetType, onClose }) => {
         </Button>
       </form>
 
-      <SocialButtons
-        onClose={onClose}
-        message="Registered successfully"
-        setLoad={setLoad}
-      />
+      <SocialButtons message="Registered successfully" setLoad={setLoad} />
       <FlexRowCenter mt="1.25rem">
         <Box>Already have an account?</Box>
 

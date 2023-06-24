@@ -800,3 +800,33 @@ h1 {
 button {
   outline: none;
 }
+
+.or-separator_contain {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  width: 100%;
+  margin: 20px 0;
+}
+.or-separator_contain:after,
+.or-separator_contain:before {
+  content: "";
+  -ms-flex: 1 1;
+  flex: 1 1;
+  border-top: 1px solid #cbd5de;
+}
+.or-separator_or {
+  position: relative;
+  -ms-flex-item-align: baseline;
+  align-self: baseline;
+  margin-left: 26px;
+  margin-right: 26px;
+  color: #0b0b0b;
+  font-family: "PolySans", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  font-size: 1rem;
+  line-height: 30px;
+  line-height: 1.875rem;
+}

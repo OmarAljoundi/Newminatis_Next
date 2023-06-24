@@ -14,6 +14,7 @@ import Link from "next/link";
 import { LoadingButton } from "@mui/lab";
 import { signIn } from "next-auth/react";
 import { toast } from "react-hot-toast";
+import SocialButtons from "@/pages-sections/sessions/SocialButtons";
 
 export default function RegisterClientPage() {
   const [loading, setLoading] = useState(false);
@@ -60,23 +61,20 @@ export default function RegisterClientPage() {
       elevation={3}
       passwordVisibility={passwordVisibility}
       role={"drawer"}
-      sx={{ margin: "20px auto" }}
+      sx={{ margin: "20px auto", paddingTop: "5px" }}
     >
-      <div className="flex min-h-full flex-col justify-center py-12 ">
-        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <Image
-            width={90}
-            height={70}
-            className="mx-auto"
-            src="/assets/images/logos/newminatis-LOGO-black.png"
-            alt="Newminatis"
-          />
+      <div className="flex min-h-full flex-col justify-center  ">
+        <div className="sm:mx-auto sm:w-full sm:max-w-sm pb-4">
           <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
             Register a new account
           </h2>
         </div>
 
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        <SocialButtons setLoad={setLoading} message="Logged in successfully" />
+        <div className="or-separator_contain">
+          <p className="or-separator_or">OR</p>
+        </div>
+        <div className="mt-4 sm:mx-auto sm:w-full sm:max-w-sm">
           <form className="space-y-6" onSubmit={handleSubmit}>
             <TextField
               disabled={loading}

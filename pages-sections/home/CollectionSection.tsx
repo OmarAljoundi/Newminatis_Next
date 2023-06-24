@@ -9,7 +9,7 @@ const images = [
   {
     labtop: "/assets/images/custom/pic_1.jpg",
     text: "Men",
-    url: `shop?category0=Men's`,
+    url: `shop/men`,
     offset: "0",
     delay: "0",
     type: "fade-left",
@@ -17,7 +17,7 @@ const images = [
   {
     labtop: "/assets/images/custom/pic_4.jpg",
     text: "Women",
-    url: `shop?category0=Women's`,
+    url: `shop/women`,
     offset: "0",
     delay: "400",
     type: "fade-right",
@@ -25,7 +25,7 @@ const images = [
   {
     labtop: "/assets/images/custom/Collection(Dune).jpg",
     text: "DUNE",
-    url: "shop?tag0=dune",
+    url: "shop/dune",
     offset: "0",
     delay: "800",
     type: "fade-left",
@@ -33,7 +33,7 @@ const images = [
   {
     labtop: "/assets/images/custom/unisex2.jpg",
     text: "UNISEX",
-    url: "shop?category0=unisex",
+    url: "shop/unisex",
     offset: "0",
     delay: "1200",
     type: "fade-right",

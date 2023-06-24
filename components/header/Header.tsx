@@ -22,11 +22,8 @@ import Image from "next/image";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { toast } from "react-hot-toast";
 import axios from "axios";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-const coUser = {
-  email: "Aws@newminatis.com",
-  password: "123456789",
-};
 export const HeaderWrapper = styled(Box)(({ theme }) => ({
   zIndex: 3,
   position: "relative",
@@ -43,7 +40,10 @@ function classNames(...classes) {
 }
 const Header = () => {
   const { data: session, status } = useSession();
-  const theme = useTheme();
+
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const route = useRouter();
   const cartItems = useAppSelector((state) =>
     calcualteQty(state.Store?.CartReducer?.CartItems || [])
   );
@@ -72,6 +72,9 @@ const Header = () => {
       Cookies.remove("token");
     } else if (status == "authenticated") {
       Cookies.set("token", session.user?.access_token);
+      if (pathname?.includes("auth")) {
+        route.push(searchParams?.get("_nextUrl") ?? "/");
+      }
     }
   }, [session]);
 

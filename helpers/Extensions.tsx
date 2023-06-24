@@ -4,6 +4,7 @@ import { eOrderStatus } from "@/types/TOrder";
 import { TProductReview, eReviewStatus } from "@/types/TProductReview";
 import { TProductVariant } from "@/types/TProductVariant";
 import { Order, SearchQuery, eFilterOperator } from "@/types/TSearchQuery";
+import { ReadonlyURLSearchParams } from "next/navigation";
 
 export const findDuplicates = (arr: TProductVariant[]) => {
   let sorted_arr = arr.slice().sort();
@@ -250,3 +251,36 @@ export const getTotalPrice = (cartList: CartItem[] = []) =>
       accum + calculateDiscountAsNumber(item.price, item.salePrice) * item.qty,
     0
   );
+
+export const createUrlWithSearch = (
+  key: string | string[],
+  value: string | string[] | null,
+  searchParams: ReadonlyURLSearchParams | null,
+  pathname: string | null
+) => {
+  const current = new URLSearchParams(Array.from(searchParams!.entries()));
+  if (Array.isArray(key) && Array.isArray(value)) {
+    key.forEach((element, index) => {
+      current.set(element as string, value[index]);
+    });
+    const search = current.toString();
+    const query = search ? `?${search}` : "";
+    return `${pathname}${query}`;
+  } else if (Array.isArray(key) && !value) {
+    key.forEach((element) => {
+      current.delete(element as string);
+    });
+
+    const search = current.toString();
+    const query = search ? `?${search}` : "";
+    return `${pathname}${query}`;
+  }
+  if (!value) {
+    current.delete(key as string);
+  } else {
+    current.set(key as string, value as string);
+  }
+  const search = current.toString();
+  const query = search ? `?${search}` : "";
+  return `${pathname}${query}`;
+};

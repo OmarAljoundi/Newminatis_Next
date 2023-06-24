@@ -1,5 +1,7 @@
 import NextAuth, { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import FacebookProvider from "next-auth/providers/facebook";
+import GoogleProvider from "next-auth/providers/google";
 import UserService from "@/service/UserService";
 import { RegisterType, Role, TUser } from "@/types/TUser";
 export const authOptions: AuthOptions = {
@@ -54,6 +56,56 @@ export const authOptions: AuthOptions = {
           //@ts-ignore
           id: user?.data?.user.id.toString(),
           access_token: user?.data?.token,
+        };
+      },
+    }),
+    FacebookProvider({
+      clientId: process.env.FACEBOOK_CLIENT_ID!,
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET!,
+      async profile(profile, tokens) {
+        var user: TUser = {
+          id: 0,
+          email: profile?.email,
+          role: Role.User,
+          type: RegisterType.Facebook,
+        };
+
+        const response = await UserService.authByThirdParty(user);
+
+        if (!response || !response?.data?.success) {
+          throw new Error(response?.data?.message);
+        }
+
+        return {
+          ...response?.data?.user,
+          //@ts-ignore
+          id: response?.data?.user.id.toString(),
+          access_token: response?.data?.token,
+        };
+      },
+    }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+      async profile(profile, tokens) {
+        var user: TUser = {
+          id: 0,
+          email: profile?.email,
+          role: Role.User,
+          type: RegisterType.Google,
+        };
+
+        const response = await UserService.authByThirdParty(user);
+
+        if (!response || !response?.data?.success) {
+          throw new Error(response?.data?.message);
+        }
+
+        return {
+          ...response?.data?.user,
+          //@ts-ignore
+          id: response?.data?.user.id.toString(),
+          access_token: response?.data?.token,
         };
       },
     }),

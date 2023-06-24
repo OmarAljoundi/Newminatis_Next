@@ -3,7 +3,6 @@ import React, { FC, ReactNode, useEffect, useLayoutEffect } from "react";
 import { usePathname } from "next/navigation";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
-import { GoogleOAuthProvider } from "@react-oauth/google";
 import { QueryClient, QueryClientProvider, useQuery } from "react-query";
 import { persistor, store } from "@/store";
 import { Toaster } from "react-hot-toast";
@@ -42,18 +41,14 @@ const RootLayout: FC<RootLayoutProp> = ({ children }) => {
         <div id="__next">
           <Provider store={store}>
             <PersistGate loading={null} persistor={persistor}>
-              <GoogleOAuthProvider
-                clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT || ""}
-              >
-                <QueryClientProvider client={new QueryClient()}>
-                  <MuiTheme>
-                    <Toaster />
-                    <SessionProvider>
-                      <ShopLayout>{children}</ShopLayout>
-                    </SessionProvider>
-                  </MuiTheme>
-                </QueryClientProvider>
-              </GoogleOAuthProvider>
+              <QueryClientProvider client={new QueryClient()}>
+                <MuiTheme>
+                  <Toaster />
+                  <SessionProvider>
+                    <ShopLayout>{children}</ShopLayout>
+                  </SessionProvider>
+                </MuiTheme>
+              </QueryClientProvider>
             </PersistGate>
           </Provider>
         </div>

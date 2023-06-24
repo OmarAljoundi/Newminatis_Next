@@ -146,11 +146,7 @@ const Login: FC<Prop> = ({ onClose, handleSetType }) => {
         </Button>
       </form>
 
-      <SocialButtons
-        onClose={onClose}
-        message="Logged in successfully"
-        setLoad={setLoad}
-      />
+      <SocialButtons message="Logged in successfully" setLoad={setLoad} />
 
       <FlexRowCenter mt="1.25rem">
         <Box>Not a member yet?</Box>
