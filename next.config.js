@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "export",
+  experimental: {
+    appDir: true,
+  },
   images: {
     minimumCacheTTL: 86400,
     remotePatterns: [
