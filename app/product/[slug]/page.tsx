@@ -58,3 +58,22 @@ export default async function SingleProductPage({ params: { slug } }: Params) {
     </div>
   );
 }
+
+export async function generateStaticParams() {
+  const SearchQuery: SearchQuery = {
+    FilterByOptions: [],
+    OrderByOptions: [],
+    PageIndex: 0,
+    PageSize: 0,
+  };
+  SearchQuery.FilterByOptions.push({
+    FilterFor: 1,
+    MemberName: "Status",
+    FilterOperator: eFilterOperator.Equal,
+  });
+  const products = await ProductService.searchShop(SearchQuery);
+
+  return products?.data?.products.map((product) => ({
+    slug: `${product.name.toLowerCase()}-${product.color.toString()}`,
+  }));
+}
