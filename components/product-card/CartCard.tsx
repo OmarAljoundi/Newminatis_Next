@@ -6,16 +6,30 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
 import { updateCart } from "@/store/CartItem/ThunkAPI";
 import { CartItem } from "@/store/Model/CartItem";
-import { GetSKU, MapColors } from "@/helpers/Extensions";
+import {
+  GetSKU,
+  MapColors,
+  getSizeAsOne,
+  getSizeFromSKU,
+} from "@/helpers/Extensions";
 import { toast } from "react-hot-toast";
 import { AddItem, RemoveItem, UpdateItem } from "@/store/CartItem/Cart-action";
 import Link from "next/link";
 import { BlurImage } from "../BlurImage";
-import { FlexBox } from "../flex-box";
+import { FlexBetween, FlexBox } from "../flex-box";
 import { H4, Small, Span } from "../Typography";
 import { calculateDiscount, calculateDiscountAsNumber, currency } from "@/lib";
 import { ProductCardWrapper, StyledChip } from "./StyledComponents";
+const Wrapper = styled(Card)(({ theme }) => ({
+  display: "flex",
+  overflow: "hidden",
+  alignItems: "center",
+  position: "relative",
+  borderRadius: "10px",
+  marginBottom: "1.5rem",
 
+  backgroundColor: theme.palette.background.paper,
+}));
 // =========================================================
 type ProductCardProps = {
   qty: number;
@@ -59,9 +73,9 @@ const CartCard: FC<ProductCardProps> = ({
         qty: amount,
         slug: slug,
         imgUrl: imgUrl,
-        sku: GetSKU(name, color, size),
+        sku: GetSKU(name, color, getSizeAsOne(size)),
         color: color,
-        size: size,
+        size: getSizeFromSKU(GetSKU(name, color, size)),
         stock: stock,
         salePrice: salePrice,
       };
@@ -82,19 +96,20 @@ const CartCard: FC<ProductCardProps> = ({
     };
 
   return (
-    <ProductCardWrapper elevation={1}>
+    <Wrapper
+      elevation={1}
+      sx={{
+        borderRadius: "0",
+        border: "1px solid #d5d5d5",
+        padding: "0!important",
+      }}
+    >
       <Link
         href={`/product/${name.toLowerCase()}-${color.toString()}`}
         style={{ color: "black" }}
       >
         <Box position={"relative"}>
-          <BlurImage
-            title={name}
-            height={200}
-            aspect={true}
-            image={imgUrl || ""}
-            q={100}
-          />
+          <BlurImage title={name} height={210} image={imgUrl!} aspect />
           {!!salePrice && (
             <StyledChip
               color="secondary"
@@ -238,7 +253,7 @@ const CartCard: FC<ProductCardProps> = ({
           </H4>
         )}
       </FlexBox>
-    </ProductCardWrapper>
+    </Wrapper>
   );
 };
 

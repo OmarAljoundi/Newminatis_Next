@@ -38,7 +38,6 @@ export default function CartClientPage() {
         ))}
       </Grid>
 
-      {/* CHECKOUT FORM */}
       <Grid item md={4} xs={12}>
         <Card sx={{ borderRadius: "0" }} elevation={1}>
           <EDD />

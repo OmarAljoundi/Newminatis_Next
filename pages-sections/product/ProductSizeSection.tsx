@@ -98,17 +98,16 @@ const ProductSizeSection: FC<ProductSizeSectionProp> = ({ product }) => {
         qty: qty,
         slug: name,
         imgUrl: mainImage || "",
-        sku: GetSKU(name, color, selectedSize),
+        sku: selectedSize,
         color: color,
-        size: selectedSize,
+        size: getSizeFromSKU(selectedSize),
         stock:
-          valueVsQuantity.find(
-            (x) => x.variable == GetSKU(name, color, selectedSize)
-          )?.quantity || 0,
+          valueVsQuantity.find((x) => x.variable == selectedSize)?.quantity ||
+          0,
       };
       setStock(cart.stock);
 
-      if (!cartItem?.find((x) => x.sku == GetSKU(name, color, selectedSize))) {
+      if (!cartItem?.find((x) => x.sku == selectedSize)) {
         dispatch(AddItem(cart));
         toasterSuccess(
           "Item added to cart",
@@ -116,9 +115,8 @@ const ProductSizeSection: FC<ProductSizeSectionProp> = ({ product }) => {
         );
       } else if (qty != 0) {
         var qttyy =
-          valueVsQuantity.find(
-            (x) => x.variable == GetSKU(name, color, selectedSize)
-          )?.quantity ?? 0;
+          valueVsQuantity.find((x) => x.variable == selectedSize)?.quantity ??
+          0;
         if (qty > qttyy) {
           //enqueueSnackbar(`Only avaliable ${qttyy} pieces you can't add more`);
           return;
@@ -158,8 +156,8 @@ const ProductSizeSection: FC<ProductSizeSectionProp> = ({ product }) => {
             <>
               {!loadStock ? (
                 <RadioGroup.Option
-                  key={getSizeFromSKU(size)}
-                  value={getSizeFromSKU(size)}
+                  key={size}
+                  value={size}
                   disabled={isDisable(size)}
                   className={({ active }) =>
                     classNames(

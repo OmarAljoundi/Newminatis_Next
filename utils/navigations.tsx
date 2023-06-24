@@ -4,56 +4,65 @@ const categories = [
     name: "Men",
     featured: [
       {
-        name: "New Arrivals",
-        href: "#",
+        name: "Dune",
+        href: "/product/dune-2",
         imageSrc:
-          "https://tailwindui.com/img/ecommerce-images/product-page-04-detail-product-shot-01.jpg",
-        imageAlt:
-          "Drawstring top with elastic loop closure and textured interior padding.",
+          "https://newminatis.s3.eu-central-1.amazonaws.com/product-57-/41498650x_.webp",
+        imageAlt: "Dune Clothing",
       },
       {
-        name: "Artwork Tees",
-        href: "#",
+        name: "LATOPOLIS",
+        href: "/product/latopolis-1",
         imageSrc:
-          "https://tailwindui.com/img/ecommerce-images/category-page-02-image-card-06.jpg",
-        imageAlt:
-          "Three shirts in gray, white, and blue arranged on table with same line drawing of hands and shapes overlapping on front of shirt.",
+          "https://newminatis.s3.eu-central-1.amazonaws.com/product-45-/14428656x_.webp",
+        imageAlt: "LATOPOLIS",
       },
     ],
     sections: [
       {
         id: "clothing",
-        name: "Clothing",
+        name: "Collections",
         items: [
-          { name: "Tops", href: "#" },
-          { name: "Pants", href: "#" },
-          { name: "Sweaters", href: "#" },
-          { name: "T-Shirts", href: "#" },
-          { name: "Jackets", href: "#" },
-          { name: "Activewear", href: "#" },
-          { name: "Browse All", href: "#" },
-        ],
-      },
-      {
-        id: "accessories",
-        name: "Accessories",
-        items: [
-          { name: "Watches", href: "#" },
-          { name: "Wallets", href: "#" },
-          { name: "Bags", href: "#" },
-          { name: "Sunglasses", href: "#" },
-          { name: "Hats", href: "#" },
-          { name: "Belts", href: "#" },
-        ],
-      },
-      {
-        id: "brands",
-        name: "Brands",
-        items: [
-          { name: "Re-Arranged", href: "#" },
-          { name: "Counterfeit", href: "#" },
-          { name: "Full Nelson", href: "#" },
-          { name: "My Way", href: "#" },
+          {
+            title: "Jackets and Hoodies",
+            url: "shop/men/jackets-and-hoodies",
+            border: "1px solid #0000004d",
+          },
+          {
+            title: "Short Sleeve T- Shirts",
+            url: "shop/men/short-sleeve-TShirts",
+            border: "1px solid #0000004d",
+          },
+          {
+            title: "Long Sleeve T- Shirts",
+            url: "shop/men/long-sleeve-TShirts",
+            border: "1px solid #0000004d",
+          },
+          {
+            title: "Sleeveless Tops",
+            url: "shop/men/sleeveless-tops",
+            border: "1px solid #0000004d",
+          },
+          {
+            title: "Kimonos / Cardigans",
+            url: "shop/men/kimonos-cardigans",
+            border: "1px solid #0000004d",
+          },
+
+          {
+            title: "Pants",
+            url: "shop/men/pants",
+            border: "1px solid #0000004d",
+          },
+          {
+            title: "Shorts",
+            url: "shop/men/shorts",
+            border: "1px solid #0000004d",
+          },
+          {
+            title: "Dune collection",
+            url: "shop/men/dune",
+          },
         ],
       },
     ],
@@ -63,59 +72,115 @@ const categories = [
     name: "Women",
     featured: [
       {
-        name: "New Arrivals",
-        href: "#",
+        name: "REVANA",
+        href: "/product/revana-1",
         imageSrc:
-          "https://tailwindui.com/img/ecommerce-images/mega-menu-category-01.jpg",
-        imageAlt:
-          "Models sitting back to back, wearing Basic Tee in black and bone.",
+          "https://newminatis.s3.eu-central-1.amazonaws.com/product-55-/66129251.jpg",
+        imageAlt: "Revana Clothing",
       },
       {
-        name: "Basic Tees",
-        href: "#",
+        name: "AVALON",
+        href: "/product/avalon-1",
         imageSrc:
-          "https://tailwindui.com/img/ecommerce-images/mega-menu-category-02.jpg",
-        imageAlt:
-          "Close up of Basic Tee fall bundle with off-white, ochre, olive, and black tees.",
+          "https://newminatis.s3.eu-central-1.amazonaws.com/product-71-/0O4A7203x_.webp",
+        imageAlt: "AVALON Clothing",
       },
     ],
     sections: [
       {
         id: "clothing",
-        name: "Clothing",
+        name: "Collections",
         items: [
-          { name: "Tops", href: "#" },
-          { name: "Dresses", href: "#" },
-          { name: "Pants", href: "#" },
-          { name: "Denim", href: "#" },
-          { name: "Sweaters", href: "#" },
-          { name: "T-Shirts", href: "#" },
-          { name: "Jackets", href: "#" },
-          { name: "Activewear", href: "#" },
-          { name: "Browse All", href: "#" },
+          {
+            title: "Tops",
+            url: "shop/women/tops",
+            border: "1px solid #0000004d",
+          },
+          {
+            title: "Jackets and hoodies ",
+            url: "shop/women/jackets-and-hoodies",
+            border: "1px solid #0000004d",
+          },
+          {
+            title: "Kimonos / Cardigans",
+            url: "shop/women/kimonos-cardigans",
+            border: "1px solid #0000004d",
+          },
+          {
+            title: "Skirts ",
+            url: "shop/women/skirts",
+            border: "1px solid #0000004d",
+          },
+          {
+            title: "Pants",
+            url: "shop/women/pants",
+            border: "1px solid #0000004d",
+          },
+          {
+            title: "Shorts ",
+            url: "shop/women/shorts",
+            border: "1px solid #0000004d",
+          },
+          {
+            title: "Dune collection",
+            url: "shop/women/dune",
+          },
         ],
       },
+    ],
+  },
+  {
+    id: "unisex",
+    name: "Unisex",
+    featured: [
       {
-        id: "accessories",
-        name: "Accessories",
-        items: [
-          { name: "Watches", href: "#" },
-          { name: "Wallets", href: "#" },
-          { name: "Bags", href: "#" },
-          { name: "Sunglasses", href: "#" },
-          { name: "Hats", href: "#" },
-          { name: "Belts", href: "#" },
-        ],
+        name: "UNTOLD",
+        href: "/product/untold-2",
+        imageSrc:
+          "https://newminatis.s3.eu-central-1.amazonaws.com/product-58-/66827243x_.webp",
+        imageAlt: "UNTOLD Clothing",
       },
       {
-        id: "brands",
-        name: "Brands",
+        name: "DAYDREAMER",
+        href: "/product/daydreamer-2",
+        imageSrc:
+          "https://newminatis.s3.eu-central-1.amazonaws.com/product-42-/3D2A8196x_.webp",
+        imageAlt: "DAYDREAMER Clothing",
+      },
+    ],
+    sections: [
+      {
+        id: "clothing",
+        name: "Collections",
         items: [
-          { name: "Full Nelson", href: "#" },
-          { name: "My Way", href: "#" },
-          { name: "Re-Arranged", href: "#" },
-          { name: "Counterfeit", href: "#" },
-          { name: "Significant Other", href: "#" },
+          {
+            title: "Tops ",
+            url: "shop/unisex/tops",
+            border: "1px solid #0000004d",
+          },
+
+          {
+            title: "Jackets and hoodies ",
+            url: "shop/unisex/jackets-and-hoodies",
+            border: "1px solid #0000004d",
+          },
+          {
+            title: "Kimonos / Cardigans",
+            url: "shop/unisex/kimonos-cardigans",
+            border: "1px solid #0000004d",
+          },
+          {
+            title: "Pants",
+            url: "shop/unisex/pants",
+            border: "1px solid #0000004d",
+          },
+          {
+            title: "Shorts",
+            url: "shop/unisex/shorts",
+            border: "1px solid #0000004d",
+          },
+
+          { title: "Dune collection", url: "shop/unisex/dune" },
         ],
       },
     ],

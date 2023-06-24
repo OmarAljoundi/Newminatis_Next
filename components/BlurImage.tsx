@@ -52,7 +52,7 @@ export const BlurImage: FC<{
                   ? "scale-110 blur-2xl grayscale"
                   : "scale-100 blur-0 grayscale-0"
               }) `}
-          onLoadingComplete={() => setLoading(false)}
+          onLoad={() => setLoading(false)}
         />
       ) : (
         <Image
@@ -73,7 +73,7 @@ export const BlurImage: FC<{
                   ? "scale-110 blur-2xl grayscale"
                   : "scale-100 blur-0 grayscale-0"
               })`}
-          onLoadingComplete={() => setLoading(false)}
+          onLoad={() => setLoading(false)}
         />
       )}
     </div>

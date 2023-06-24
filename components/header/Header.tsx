@@ -1,7 +1,5 @@
 import { FC, useState, useEffect } from "react";
 import { Box, Fade, styled } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
-import useMediaQuery from "@mui/material/useMediaQuery";
 import Cookies from "js-cookie";
 import { layoutConstant } from "@/utils/constants";
 import Link from "next/link";
@@ -187,12 +185,12 @@ const Header = () => {
                               className="mt-6 flex flex-col space-y-6"
                             >
                               {section.items.map((item) => (
-                                <li key={item.name} className="flow-root">
+                                <li key={item.title} className="flow-root">
                                   <a
-                                    href={item.href}
+                                    href={item.url}
                                     className="-m-2 block p-2 text-gray-500"
                                   >
-                                    {item.name}
+                                    {item.title}
                                   </a>
                                 </li>
                               ))}
@@ -271,7 +269,6 @@ const Header = () => {
                 <Bars3Icon className="h-6 w-6" aria-hidden="true" />
               </button>
 
-              {/* Logo */}
               <div className="ml-4 flex lg:ml-0">
                 <Link href="/">
                   <span className="sr-only">Newminatis</span>
@@ -283,8 +280,6 @@ const Header = () => {
                   />
                 </Link>
               </div>
-
-              {/* Flyout menus */}
               <Popover.Group className="hidden lg:ml-8 lg:block lg:self-stretch">
                 <div className="flex h-full space-x-8">
                   {navigation.categories.map((category) => (
@@ -347,7 +342,7 @@ const Header = () => {
                                           </div>
                                         ))}
                                       </div>
-                                      <div className="row-start-1 grid grid-cols-3 gap-x-8 gap-y-10 text-sm">
+                                      <div className="row-start-1 grid grid-cols-1 gap-x-8 gap-y-10 text-sm">
                                         {category.sections.map((section) => (
                                           <div key={section.name}>
                                             <p
@@ -359,18 +354,18 @@ const Header = () => {
                                             <ul
                                               role="list"
                                               aria-labelledby={`${section.name}-heading`}
-                                              className="mt-6 space-y-6 sm:mt-4 sm:space-y-4"
+                                              className="mt-6 grid grid-cols-3  sm:mt-4 gap-4"
                                             >
                                               {section.items.map((item) => (
                                                 <li
-                                                  key={item.name}
+                                                  key={item.title}
                                                   className="flex"
                                                 >
                                                   <a
-                                                    href={item.href}
+                                                    href={item.url}
                                                     className="hover:text-gray-800"
                                                   >
-                                                    {item.name}
+                                                    {item.title}
                                                   </a>
                                                 </li>
                                               ))}

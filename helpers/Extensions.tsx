@@ -244,6 +244,9 @@ export const removeDuplicates = (arr) => {
 export const getSizeFromSKU = (value: string) => {
   return value.split("-")[3] == "F" ? "FREE SIZE" : value.split("-")[3];
 };
+export const getSizeAsOne = (value: string) => {
+  return value.toUpperCase() == "FREE SIZE" ? "F" : value.toUpperCase();
+};
 
 export const getTotalPrice = (cartList: CartItem[] = []) =>
   cartList.reduce(

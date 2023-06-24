@@ -79,18 +79,20 @@ export default function CheckoutClientPage() {
         break;
     }
 
-    const result = (await CreateCheckoutSession(
-      session
-    )) as IShoppingSessionResponse;
-    if (result.success) {
-      Cookies.set("Session", result.shoppingSession.id.toString());
+    if (userType != "None") {
+      const result = (await CreateCheckoutSession(
+        session
+      )) as IShoppingSessionResponse;
+      if (result.success) {
+        Cookies.set("Session", result.shoppingSession.id.toString());
+      }
+      setCheckoutSummary({
+        Discount: result.shoppingSession.discount,
+        Total: result.shoppingSession.total,
+        Type: result.shoppingSession.voucherType || "",
+        Voucher: result.shoppingSession.voucher || "",
+      });
     }
-    setCheckoutSummary({
-      Discount: result.shoppingSession.discount,
-      Total: result.shoppingSession.total,
-      Type: result.shoppingSession.voucherType || "",
-      Voucher: result.shoppingSession.voucher || "",
-    });
   };
 
   useEffect(() => {
