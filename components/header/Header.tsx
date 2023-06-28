@@ -217,7 +217,7 @@ const Header = () => {
                     width={70}
                     height={60}
                     src="/assets/images/logos/newminatis-LOGO-black.png"
-                    alt="Newminatis Logo"
+                    alt="Newminatis"
                     priority={true}
                     quality={90}
                   />
