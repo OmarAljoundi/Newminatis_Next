@@ -290,3 +290,25 @@ export const createUrlWithSearch = (
 export function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
+export const getOutOfStockMessage = (
+  qty: number,
+  stock: number,
+  name: string,
+  size: string
+) => {
+  if (qty > stock && stock != 0) {
+    return `Please reduce your quantity as there are only ${stock} items of{" "}
+            ${name} size ${size} left in the stock`;
+  } else if (stock == 0) {
+    return `Please remove ${name} size ${size} from your cart to proceed, as the
+            item is out of stuck`;
+  }
+  return null;
+};
+
+export const isStockAvailable = (qty: number, stock: number) => {
+  if ((qty > stock && stock != 0) || stock == 0) {
+    return false;
+  }
+  return true;
+};

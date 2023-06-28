@@ -6,7 +6,7 @@ import { TProduct } from "@/types/TProduct";
 import { ValueVsQuantity } from "@/types/TProductInventory";
 import { RadioGroup } from "@headlessui/react";
 import { Add, Remove } from "@mui/icons-material";
-import { Box, Chip, IconButton, Skeleton } from "@mui/material";
+import { Box, Chip, IconButton, Skeleton, Zoom } from "@mui/material";
 import React, { useEffect, useState, FC } from "react";
 import { Button } from "@mui/material";
 import { calculateDiscountAsNumber, currency } from "@/lib";
@@ -15,6 +15,8 @@ import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
 import { AddItem, RemoveItem, UpdateItem } from "@/store/CartItem/Cart-action";
 import { toasterSuccess } from "@/service/toasterService";
 import { useRouter } from "next/navigation";
+import { TooltipError } from "@/components/Tooltips";
+import ProductSizeGuid from "./ProductSizeGuid";
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -24,7 +26,7 @@ type ProductSizeSectionProp = {
 };
 
 const ProductSizeSection: FC<ProductSizeSectionProp> = ({ product }) => {
-  const route = useRouter();
+  const [openTool, setOpenTool] = useState(false);
   const { subSku, name, color, salePrice, price, id, mainImage } = product;
   const [loadStock, setLoadStock] = useState(true);
   const [qty, setQty] = useState(1);
@@ -109,10 +111,7 @@ const ProductSizeSection: FC<ProductSizeSectionProp> = ({ product }) => {
 
       if (!cartItem?.find((x) => x.sku == selectedSize)) {
         dispatch(AddItem(cart));
-        toasterSuccess(
-          "Item added to cart",
-          currency(getTotalPrice() + __price * qty, _setting)
-        );
+        toasterSuccess(currency(getTotalPrice() + __price * qty, _setting));
       } else if (qty != 0) {
         var qttyy =
           valueVsQuantity.find((x) => x.variable == selectedSize)?.quantity ??
@@ -123,26 +122,23 @@ const ProductSizeSection: FC<ProductSizeSectionProp> = ({ product }) => {
         }
         dispatch(UpdateItem(cart));
 
-        toasterSuccess(
-          "Item added to cart",
-          currency(getTotalPrice() + __price * qty, _setting)
-        );
+        toasterSuccess(currency(getTotalPrice() + __price * qty, _setting));
       } else {
         dispatch(RemoveItem(cart));
       }
     }
   };
 
+  const handleToolOpen = () => {
+    setOpenTool(true);
+  };
+
   return (
     <div className="lg:border-t-0 border-t-4">
       <div className="flex items-center justify-between pt-2">
         <h4 className="text-sm font-medium text-gray-900">Size</h4>
-        <a
-          href="#"
-          className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
-        >
-          Size guide
-        </a>
+
+        <ProductSizeGuid product={product} />
       </div>
 
       <RadioGroup
@@ -257,18 +253,40 @@ const ProductSizeSection: FC<ProductSizeSectionProp> = ({ product }) => {
             <Add fontSize="small" />
           </IconButton>
         </div>
-        <button
-          className="default-btn"
-          onClick={() => {
-            if (selectedSize == "") {
-              //handleToolOpen();
-            } else {
-              handleCartAmountChange();
-            }
+        <TooltipError
+          arrow
+          TransitionComponent={Zoom}
+          open={openTool}
+          disableHoverListener
+          disableTouchListener
+          onClose={() => setOpenTool(false)}
+          placement="left"
+          title="Please select a size"
+          componentsProps={{
+            tooltip: {
+              sx: {
+                color: "white",
+                backgroundColor: "#E53935",
+                "& .MuiTooltip-arrow": {
+                  color: "#E53935",
+                },
+              },
+            },
           }}
         >
-          ADD TO CART
-        </button>
+          <button
+            className="default-btn text-xs "
+            onClick={() => {
+              if (!selectedSize) {
+                handleToolOpen();
+              } else {
+                handleCartAmountChange();
+              }
+            }}
+          >
+            ADD TO CART
+          </button>
+        </TooltipError>
       </div>
     </div>
   );

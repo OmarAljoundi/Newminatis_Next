@@ -27,7 +27,6 @@ import { stripePromise } from "@/components/stripe/StripeScript";
 export default function CheckoutClientPage() {
   const pathname = usePathname();
   const auth = useAppSelector((x) => x.Store.AuthReducer.Auth);
-  const [guestAddress, setGuestAddress] = useState<TUserGuest>();
   const cart = useAppSelector((x) => x.Store.CartReducer?.CartItems);
   const route = useRouter();
   const dispatch = useAppDispatch();
@@ -125,7 +124,6 @@ export default function CheckoutClientPage() {
 
           <Grid item lg={4} md={4} xs={12}>
             <CheckoutSummary
-              guestAddress={guestAddress}
               Total={checkoutSummary?.Total || 0}
               Type={checkoutSummary?.Type || ""}
               Discount={checkoutSummary?.Discount}

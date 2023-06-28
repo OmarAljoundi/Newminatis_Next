@@ -17,7 +17,7 @@ export const ProductCardLoading: FC<Prop> = ({ loop }) => {
                 sx={{
                   backgroundColor: "rgba(200,200,200,0.5)",
                   borderRadius: "0",
-                  padding: 0,
+                  padding: "0!important",
                 }}
                 elevation={6}
               >

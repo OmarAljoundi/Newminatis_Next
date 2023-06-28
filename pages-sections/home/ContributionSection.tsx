@@ -11,41 +11,18 @@ export default function ContributionSection() {
       <div className="hero">
         <div className="hero-content">
           <div className="inner ">
-            <H1
-              data-aos="fade-left"
-              textAlign={"center"}
-              mb={4}
-              mt={10}
-              sx={{
-                width: "fit-content",
-                paddingY: 0.5,
-                borderRadius: "10px",
-                marginRight: "auto",
-                marginLeft: "0",
-                marginTop: "10px",
-                color: "white",
-                fontSize: {
-                  xs: "16px",
-                  sm: "24px",
-                  md: "24px",
-                  lg: "24px",
-                  xl: "24px",
-                },
-              }}
-            >
+            <h1 data-aos="fade-left" className="text-white text-xl md:text-2xl">
               OUR CONTRIBUTION
-            </H1>
-            <Paragraph
-              color={"white"}
-              lineHeight={1.2}
-              className="text-xl md:text-2xl"
+            </h1>
+            <p
+              className="text-sm md:text-xl lg:text-2xl text-white"
               data-aos="fade-up"
               data-aos-anchor-placement="top-bottom"
             >
               A part of our revenue goes towards initiatives that remove carbon
               dioxide from the atmosphere, and we strive to promote sustainable
               practices within the industry.
-            </Paragraph>
+            </p>
           </div>
         </div>
         <div className="hero-image" style={{ marginBottom: "-5px" }}>

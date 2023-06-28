@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import Grid from "@mui/material/Grid";
-import { BlurImage } from "@/components/BlurImage";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper";
 import Image from "next/image";
@@ -28,9 +27,9 @@ export default function ProductImagesSection({ product }) {
                 height={888}
                 blurDataURL={rgbDataURL(214, 214, 214)}
                 placeholder="blur"
-                priority={i > 0}
-                fetchPriority="high"
-                quality={70}
+                priority={i == 0}
+                fetchPriority={i == 0 ? "high" : "auto"}
+                quality={85}
               />
             </SwiperSlide>
           ))}

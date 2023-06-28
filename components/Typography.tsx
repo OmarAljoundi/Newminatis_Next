@@ -36,7 +36,6 @@ export const H1: FC<BoxProps & Props> = ({
 }) => {
   return (
     <StyledBox
-      fontFamily="var(--Alata-Regular)"
       textTransformStyle={textTransform}
       ellipsis={ellipsis ? 1 : undefined}
       className={clsx({ [className || ""]: true })}
@@ -67,7 +66,6 @@ export const H2: FC<BoxProps & Props> = ({
       className={clsx({
         [className || ""]: true,
       })}
-      fontFamily="var(--Alata-Regular)"
       component="h2"
       mb={0}
       mt={0}
@@ -92,7 +90,6 @@ export const H3: FC<BoxProps & Props> = ({
       mb={0}
       mt={0}
       component="h3"
-      fontFamily="var(--Alata-Regular)"
       fontWeight="500"
       lineHeight="1.5"
       ellipsis={ellipsis ? 1 : undefined}
@@ -118,7 +115,6 @@ export const H4: FC<BoxProps & Props> = ({
       mt={0}
       component="h4"
       fontWeight="500"
-      fontFamily="var(--Alata-Regular)"
       lineHeight="1.5"
       ellipsis={ellipsis ? 1 : undefined}
       textTransformStyle={textTransform}
@@ -145,10 +141,6 @@ export const H5: FC<BoxProps & Props> = ({
         [className || ""]: true,
       })}
       component="h5"
-      sx={{
-        ...props.sx,
-        fontFamily: "var(--Alata-Regular)",
-      }}
       mb={0}
       mt={0}
       color="white"
@@ -180,10 +172,6 @@ export const H6: FC<BoxProps & Props> = ({
       mt={0}
       fontWeight="500"
       lineHeight="1.5"
-      sx={{
-        ...props.sx,
-        fontFamily: "var(--Alata-Regular)",
-      }}
       {...props}
     >
       {children}
@@ -208,8 +196,6 @@ export const Paragraph: FC<BoxProps & Props> = ({
       component="p"
       mb={0}
       mt={0}
-      fontWeight={"500"}
-      fontFamily={"GlacialIndifference-Regular"}
       {...props}
     >
       {children}
@@ -234,7 +220,6 @@ export const Small: FC<BoxProps & Props> = ({
       component="small"
       fontSize="10px"
       lineHeight="1.5"
-      fontFamily={"GlacialIndifference-Regular"}
       {...props}
     >
       {children}

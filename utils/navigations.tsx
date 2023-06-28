@@ -20,8 +20,7 @@ const categories = [
     ],
     sections: [
       {
-        id: "clothing",
-        name: "Collections",
+        id: "Men clothing",
         items: [
           {
             title: "Jackets and Hoodies",
@@ -88,8 +87,7 @@ const categories = [
     ],
     sections: [
       {
-        id: "clothing",
-        name: "Collections",
+        id: "Women clothing",
         items: [
           {
             title: "Tops",
@@ -150,8 +148,7 @@ const categories = [
     ],
     sections: [
       {
-        id: "clothing",
-        name: "Collections",
+        id: "Unisex clothing",
         items: [
           {
             title: "Tops ",

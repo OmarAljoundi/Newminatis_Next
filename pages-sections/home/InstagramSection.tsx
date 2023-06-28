@@ -87,7 +87,6 @@ export const InstagramSection = () => {
                   <a href={item.permalink} target="_blank">
                     <Card elevation={6} sx={{ padding: "0!important" }}>
                       <BlurImage
-                        width={300}
                         image={item.media_url}
                         height={400}
                         title={item.permalink}

@@ -16,13 +16,14 @@ import { CartItem } from "@/store/Model/CartItem";
 import { GetSKU, getDatesBetween, isHTMLString } from "@/helpers/Extensions";
 import { AddItem, RemoveItem, UpdateItem } from "@/store/CartItem/Cart-action";
 import { Skeleton } from "@mui/lab";
-import { Button, Container, IconButton, Zoom } from "@mui/material";
+import { Button, Collapse, Container, IconButton, Zoom } from "@mui/material";
 import { MdOutlineWatchLater } from "react-icons/md";
-import { Disclosure } from "@headlessui/react";
+import { Disclosure, Transition } from "@headlessui/react";
 import { ChevronUpIcon } from "@heroicons/react/24/outline";
 import { FiPackage } from "react-icons/fi";
 import { ShippingInfo } from "@/components/Policies/ShippingInfo";
 import ProductSizeSection from "./ProductSizeSection";
+import ProductSpecialIcons from "./ProductSpecialIcons";
 
 export default function ProductInfoSection({ response }) {
   const { product, closeDay, hours, minEdd, maxEdd, currentDate } = response;
@@ -85,7 +86,7 @@ export default function ProductInfoSection({ response }) {
           background: "transparent",
         }}
       >
-        <div className="mb-6  grid grid-cols-1 gap-x-6 gap-y-2  lg:grid-cols-2 xl:gap-x-8 ">
+        <div className="mb-6  grid grid-cols-1 gap-x-6 gap-y-2  lg:grid-cols-2 xl:gap-x-8 px-4 ">
           <div className="product-details">
             <H4
               title={name}
@@ -111,7 +112,7 @@ export default function ProductInfoSection({ response }) {
             <FlexBetween>
               <FlexBox alignItems="center" gap={1}>
                 <Box color="primary.main">
-                  <H5 color="black" fontWeight={100} mt={1}>
+                  <H5 color="black" fontWeight={300} mt={1}>
                     {calculateDiscount(price, salePrice, _setting)}
                   </H5>
                 </Box>
@@ -222,77 +223,108 @@ export default function ProductInfoSection({ response }) {
           </Box>
         </Box>
         <div className="w-full pt-4">
-          <div className="mx-auto w-full bg-white p-2">
-            <Disclosure defaultOpen>
+          <div className="mx-auto w-full bg-transparent p-0">
+            <Disclosure>
               {({ open }) => (
                 <>
-                  <Disclosure.Button className="flex w-full justify-between bg-slate-950 px-4 py-2 text-left text-sm font-medium text-white hover:bg-slate-500 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75">
-                    <span className="white">DESCRIPTION</span>
+                  <Disclosure.Button
+                    className="flex w-full justify-between bg-transparent border-b border-gray-400
+                  px-4 py-2 text-left text-sm font-medium text-white  
+                  focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75"
+                  >
+                    <span className="text-black font-semibold">
+                      DESCRIPTION
+                    </span>
                     <ChevronUpIcon
                       className={`${
                         open ? "rotate-180 transform" : ""
-                      } h-5 w-5 text-white`}
+                      } h-5 w-5 text-black`}
                     />
                   </Disclosure.Button>
+                  <Collapse in={open}>
+                    {isHTMLString(description) ? (
+                      <Disclosure.Panel
+                        dangerouslySetInnerHTML={{
+                          __html: description,
+                        }}
+                        static
+                        className="px-4 pt-4 pb-2 text-sm text-black"
+                      ></Disclosure.Panel>
+                    ) : (
+                      <Disclosure.Panel
+                        static
+                        className="px-4 pt-4 pb-2 text-sm text-gray-500"
+                        style={{ whiteSpace: "break-spaces" }}
+                      >
+                        {description}
+                      </Disclosure.Panel>
+                    )}
+                  </Collapse>
+                </>
+              )}
+            </Disclosure>
 
-                  {isHTMLString(description) ? (
+            <Disclosure as="div" className="mt-2" defaultOpen>
+              {({ open }) => (
+                <>
+                  <Disclosure.Button
+                    className="flex w-full justify-between 
+                   px-4 py-2 text-left text-sm font-medium text-white bg-transparent border-b border-gray-400 focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75"
+                  >
+                    <span className="text-black font-semibold">
+                      SHIPPING INFO
+                    </span>
+                    <ChevronUpIcon
+                      className={`${
+                        open ? "rotate-180 transform" : ""
+                      } h-5 w-5 text-black`}
+                    />
+                  </Disclosure.Button>
+                  <Collapse in={open}>
                     <Disclosure.Panel
-                      dangerouslySetInnerHTML={{
-                        __html: description,
-                      }}
                       className="px-4 pt-4 pb-2 text-sm text-gray-500"
-                    ></Disclosure.Panel>
-                  ) : (
-                    <Disclosure.Panel
-                      className="px-4 pt-4 pb-2 text-sm text-gray-500"
-                      style={{ whiteSpace: "break-spaces" }}
+                      static
                     >
-                      {description}
+                      <ShippingInfo />
                     </Disclosure.Panel>
-                  )}
+                  </Collapse>
                 </>
               )}
             </Disclosure>
             <Disclosure as="div" className="mt-2" defaultOpen>
               {({ open }) => (
                 <>
-                  <Disclosure.Button className="flex w-full justify-between  bg-slate-950 px-4 py-2 text-left text-sm font-medium text-white hover:bg-slate-500 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75">
-                    <span className="white">SHIPPING INFO</span>
+                  <Disclosure.Button
+                    className="flex w-full justify-between  
+                   px-4 py-2 text-left text-sm bg-transparent border-b border-gray-400 focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75"
+                  >
+                    <span className="text-black font-semibold">
+                      RETURN POLICY
+                    </span>
                     <ChevronUpIcon
                       className={`${
                         open ? "rotate-180 transform" : ""
-                      } h-5 w-5 text-white`}
+                      } h-5 w-5 text-black`}
                     />
                   </Disclosure.Button>
-                  <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-500">
-                    <ShippingInfo />
-                  </Disclosure.Panel>
-                </>
-              )}
-            </Disclosure>
-            <Disclosure as="div" className="mt-2" defaultOpen>
-              {({ open }) => (
-                <>
-                  <Disclosure.Button className="flex w-full justify-between  bg-slate-950 px-4 py-2 text-left text-sm font-medium text-white hover:bg-slate-500 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75">
-                    <span className="white">RETURN POLICY</span>
-                    <ChevronUpIcon
-                      className={`${
-                        open ? "rotate-180 transform" : ""
-                      } h-5 w-5 text-white`}
-                    />
-                  </Disclosure.Button>
-                  <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-500">
-                    {
-                      Content?.returnPolicy.find(
-                        (x) => x.title.toLowerCase() == "returns"
-                      )?.description
-                    }
-                  </Disclosure.Panel>
+                  <Collapse in={open}>
+                    <Disclosure.Panel
+                      className="px-4 pt-4 pb-2 text-sm text-gray-500"
+                      static
+                    >
+                      {
+                        Content?.returnPolicy.find(
+                          (x) => x.title.toLowerCase() == "returns"
+                        )?.description
+                      }
+                    </Disclosure.Panel>
+                  </Collapse>
                 </>
               )}
             </Disclosure>
           </div>
         </div>
+        <ProductSpecialIcons />
       </ContentWrapper>
     </Grid>
   );

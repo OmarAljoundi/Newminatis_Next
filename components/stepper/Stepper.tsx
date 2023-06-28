@@ -1,6 +1,7 @@
 import { FC, Fragment, useEffect, useState } from "react";
 import { Box, Chip } from "@mui/material";
 import { FlexRowCenter } from "../flex-box";
+import { classNames } from "@/helpers/Extensions";
 
 // ========================================================
 export type Step = { title: string; disabled: boolean };
@@ -33,30 +34,24 @@ const Stepper: FC<StepperProps> = ({
     <FlexRowCenter flexWrap="wrap" my="-4px">
       {stepperList.map((step, ind) => (
         <Fragment key={step.title}>
-          <Chip
+          <button
             disabled={step.disabled}
-            label={`${ind + 1}. ${step.title}`}
             onClick={handleStepClick(step, ind)}
-            sx={{
-              backgroundColor:
-                ind <= selected ? "primary.main" : "primary.light",
-              color: ind <= selected ? "primary.contrastText" : "primary.main",
-              p: "0.5rem 1rem",
-              fontSize: "14px",
-              fontWeight: "600",
-              my: "4px",
-              borderRadius: "0",
-              "&:hover:not(:disabled)": {
-                backgroundColor: "primary.main",
-                color: "primary.contrastText",
-              },
-            }}
-          />
+            className={classNames(
+              `${
+                ind <= selected
+                  ? "bg-black text-white"
+                  : "bg-gray-500 text-white"
+              }`,
+              "px-1 py-2 font-semibold my-1 rounded-none w-32"
+            )}
+          >
+            {step.title}
+          </button>
           {ind < stepperList.length - 1 && (
-            <Box
-              width="50px"
-              height="4px"
-              bgcolor={ind < selected ? "primary.main" : "primary.light"}
+            <div
+              style={{ width: "40px", height: "3px" }}
+              className={`${ind < selected ? "bg-black" : "bg-gray-300"}`}
             />
           )}
         </Fragment>

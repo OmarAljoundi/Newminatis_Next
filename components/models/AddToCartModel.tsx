@@ -16,7 +16,12 @@ import { TProduct } from "@/types/TProduct";
 import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
 import { calculateDiscount, calculateDiscountAsNumber, currency } from "@/lib";
 import { CartItem } from "@/store/Model/CartItem";
-import { GetSKU, classNames, getSizeFromSKU } from "@/helpers/Extensions";
+import {
+  GetSKU,
+  classNames,
+  getSizeFromSKU,
+  getTotalPrice,
+} from "@/helpers/Extensions";
 import { AddItem, RemoveItem, UpdateItem } from "@/store/CartItem/Cart-action";
 import ProductService from "@/service/ProductService";
 import Link from "next/link";
@@ -24,6 +29,7 @@ import { H2, H4, Paragraph } from "../Typography";
 import { FlexBetween, FlexBox } from "../flex-box";
 import { TooltipError, TooltipStock } from "../Tooltips";
 import { RadioGroup } from "@headlessui/react";
+import { toasterSuccess } from "@/service/toasterService";
 type CartModelProps = {
   toggleDrawer: () => void;
   product: TProduct;
@@ -88,14 +94,8 @@ const AddToCardModel: FC<CartModelProps> = ({
 
     if (!cartItem?.find((x) => x.sku == GetSKU(name, color, size))) {
       dispatch(AddItem(cart));
+      toasterSuccess(currency(getTotalPrice() + __price * qty, _setting));
       toggleDrawer();
-      //   toasterSuccess(
-      //     `Item added to cart <br/> <div class="d-flex"><div>Cart Total:</div><div style="position:absolute;right:20px"> ${currency(
-      //       getTotalPrice() + __price * qty,
-      //       _setting
-      //     )}</div></div>`,
-      //     () => route("/cart")
-      //   );
     } else if (qty != 0) {
       var qttyy =
         valueVsQuantity.find((x) => x.variable == GetSKU(name, color, size))
@@ -105,14 +105,8 @@ const AddToCardModel: FC<CartModelProps> = ({
         return;
       }
       dispatch(UpdateItem(cart));
+      toasterSuccess(currency(getTotalPrice() + __price * qty, _setting));
       toggleDrawer();
-      //   toasterSuccess(
-      //     `Item added to cart <br/> <div class="d-flex"><div>Cart Total:</div><div style="position:absolute;right:20px"> ${currency(
-      //       getTotalPrice() + __price * qty,
-      //       _setting
-      //     )}</div></div>`,
-      //     () => route("/cart")
-      //   );
     } else {
       dispatch(RemoveItem(cart));
     }

@@ -1,48 +1,56 @@
-import { Box, Button } from "@mui/material";
 import Link from "next/link";
 import { toast } from "react-hot-toast";
 import { IoBagCheck } from "react-icons/io5";
-const toasterSuccess = (message: string, total?: any) => {
+const toasterSuccess = (total?: any) => {
   toast(
     (t) => (
-      <>
-        <div className="flex flex-row items-center w-full">
-          <div className="basis-1/2">
-            <div className="flex items-start">
-              <div className="flex-shrink-0 pt-0.5">
-                <IoBagCheck />
-              </div>
-              <div className="ml-3 flex-1">
-                <p className="text-sm font-medium text-gray-900">{message}</p>
-                <p className="mt-1 text-sm text-gray-500">Total: {total}</p>
-              </div>
+      <div
+        className="bg-white border-2 border-gray-400 w-full shadow-lg p-5"
+        style={{ borderRadius: "0" }}
+      >
+        <div className="">
+          <div
+            className="flex pb-3"
+            style={{ alignItems: "center", columnGap: "12px" }}
+          >
+            <div className="">
+              <IoBagCheck color="black" size={"27px"} />
             </div>
+            <p className="text-xs" style={{ textTransform: "uppercase" }}>
+              Item added to cart <br />{" "}
+              <div className="flex">
+                <div>Cart Total:</div>
+                <div className="absolute right-9 font-semibold">{total}</div>
+              </div>
+            </p>
           </div>
-          <div className="basis-1/2">
-            <div className="grid border-l border-gray-200 justify-items-center">
-              <button
-                onClick={() => toast.dismiss(t.id)}
-                className="w-full border border-transparent rounded-none rounded-r-lg  flex items-center justify-center text-sm font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              >
-                Continue Shopping
-                <br />
-              </button>
-
-              <div className="mt-1">
-                <Link href={"/checkout"} className="mt-1 text-sm text-gray-500">
-                  Check out
-                </Link>
-              </div>
-            </div>
+          <div className="flex" style={{ columnGap: "12px" }}>
+            <button
+              className="py-1 w-full text-xs bg-black text-white border-0"
+              onClick={() => toast.dismiss(t.id)}
+            >
+              CONTINUE SHOPPING
+            </button>
+            <Link
+              href={"/checkout"}
+              className="px-2 py-1 text-xs w-2/4 border border-black text-black bg-transparent"
+              onClick={() => {
+                toast.dismiss(t.id);
+              }}
+            >
+              CHECK OUT
+            </Link>
           </div>
         </div>
-      </>
+      </div>
     ),
     {
+      position: "bottom-center",
       duration: 8000,
       style: {
-        minWidth: "350px",
-        height: "90px",
+        minWidth: "100%",
+        background: "transparent",
+        boxShadow: "none",
       },
     }
   );

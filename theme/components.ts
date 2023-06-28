@@ -1,6 +1,6 @@
 import { Components, Theme } from "@mui/material";
 import { dark, grey } from "./themeColors";
-import { fontFamily, fontSize } from "./typography";
+import { fontSize } from "./typography";
 
 // ========================================================
 declare module "@mui/material/Button" {
@@ -64,7 +64,7 @@ export const components: Components = {
           fontSize: "18px",
         },
       },
-      button: { fontFamily, fontSize },
+      button: { fontSize },
       ".MuiRating-sizeSmall": { fontSize: "20px" },
       a: {
         textDecoration: "none",
@@ -161,10 +161,10 @@ export const components: Components = {
           },
         }),
         "& .MuiOutlinedInput-root": {
-          fontSize: "18px",
+          fontSize: "14px",
 
           "@media (max-width: 600px)": {
-            fontSize: "16px",
+            fontSize: "14px",
           },
         },
 
@@ -177,6 +177,9 @@ export const components: Components = {
             WebkitBoxShadow: "0 0 0 1000px white inset",
             transitionDelay: "9999s",
           },
+        },
+        fieldset: {
+          borderRadius: 0,
         },
 
         "& .MuiFormLabel-root": {
@@ -235,6 +238,7 @@ export const components: Components = {
   MuiButton: {
     styleOverrides: {
       root: ({ ownerState }) => ({
+        padding: "5px 15px",
         ...(ownerState.color === "primary" && {
           color: "white",
           backgroundColor: "black!important",
@@ -266,7 +270,6 @@ export const components: Components = {
         fontSize: "14px",
         ["@media only screen and (max-width: 678px)"]: { fontSize: "11px" },
       }),
-      sizeLarge: { padding: ".6rem 2.5rem" },
     },
     defaultProps: { color: "inherit" },
   },

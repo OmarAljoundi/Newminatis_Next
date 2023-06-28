@@ -7,8 +7,6 @@ import {
   Grid,
   TextField,
 } from "@mui/material";
-import * as yup from "yup";
-import { Formik, useFormik } from "formik";
 import Autocomplete from "@mui/material/Autocomplete";
 import { Country, State, City } from "country-state-city";
 import { ICountry, IState, ICity } from "country-state-city";
@@ -29,6 +27,7 @@ import { FlexBetween, FlexBox } from "@/components/flex-box";
 import { H3, H6 } from "@/components/Typography";
 import { ex_countries } from "@/utils/constants";
 import Link from "next/link";
+import { useFormik } from "formik";
 
 const GuestForm: FC = () => {
   const router = useRouter();
@@ -52,9 +51,7 @@ const GuestForm: FC = () => {
     newsletter: false,
   });
 
-  const [dialogOpen, setDialogOpen] = useState(false);
   const { onGetGuest, onCreateGuest, userLoad } = useUserService();
-  const toggleDialog = () => setDialogOpen(!dialogOpen);
   const handleFormSubmit = async (values: TUserGuest) => {
     setLoading(true);
     values.city = values.state;
@@ -62,7 +59,7 @@ const GuestForm: FC = () => {
     if (result.success) {
       await pushFacebookEvent(values);
       setLoading(false);
-      router.push("cart/checkout/payment");
+      router.push("/payment");
     } else {
       setLoading(false);
       toast.success(result.message);
@@ -394,7 +391,7 @@ const GuestForm: FC = () => {
           <Grid item sm={6} xs={6}>
             <LoadingButton
               variant="contained"
-              color="dark"
+              color="primary"
               loading={loading}
               type={"submit"}
               fullWidth

@@ -1,7 +1,15 @@
 "use client";
 import { FC, useEffect } from "react";
 import { Add, Remove } from "@mui/icons-material";
-import { Box, Button, Card, Chip, IconButton, styled } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  Chip,
+  IconButton,
+  Zoom,
+  styled,
+} from "@mui/material";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
 import { updateCart } from "@/store/CartItem/ThunkAPI";
@@ -9,8 +17,10 @@ import { CartItem } from "@/store/Model/CartItem";
 import {
   GetSKU,
   MapColors,
+  getOutOfStockMessage,
   getSizeAsOne,
   getSizeFromSKU,
+  isStockAvailable,
 } from "@/helpers/Extensions";
 import { toast } from "react-hot-toast";
 import { AddItem, RemoveItem, UpdateItem } from "@/store/CartItem/Cart-action";
@@ -20,6 +30,7 @@ import { FlexBetween, FlexBox } from "../flex-box";
 import { H4, Small, Span } from "../Typography";
 import { calculateDiscount, calculateDiscountAsNumber, currency } from "@/lib";
 import { ProductCardWrapper, StyledChip } from "./StyledComponents";
+import { TooltipError } from "../Tooltips";
 const Wrapper = styled(Card)(({ theme }) => ({
   display: "flex",
   overflow: "hidden",
@@ -145,9 +156,8 @@ const CartCard: FC<ProductCardProps> = ({
         >
           <Span
             ellipsis
-            fontWeight="100"
             color={"black"}
-            className="text-12"
+            className="text-xs"
             sx={{ textTransform: "uppercase" }}
           >
             {name}
@@ -156,10 +166,9 @@ const CartCard: FC<ProductCardProps> = ({
         </Link>
 
         <Span
-          fontWeight={100}
           color="black"
+          className="text-xs"
           mb={0.3}
-          className="text-12"
           sx={{ textTransform: "uppercase" }}
         >
           COLOR:
@@ -167,16 +176,16 @@ const CartCard: FC<ProductCardProps> = ({
         </Span>
 
         {!!salePrice && (
-          <Span color="black" className="text-12">
+          <Span color="black" className="text-xs">
             Original Price <del>{currency(price, _setting)}</del>
           </Span>
         )}
 
-        <Span color="black" className="text-12">
+        <span className="text-xs">
           {calculateDiscount(price, salePrice, _setting)} x {qty}
-        </Span>
+        </span>
 
-        <Box className="text-12" color="black" mt={0.3}>
+        <Box className="text-xs" color="black" mt={0.3}>
           TOTAL:{" "}
           {currency(
             calculateDiscountAsNumber(price, salePrice) * qty,
@@ -185,17 +194,38 @@ const CartCard: FC<ProductCardProps> = ({
         </Box>
 
         <FlexBox alignItems="center" mt={1}>
-          <IconButton
-            disabled={qty === 1 || stock == 0}
-            onClick={handleCartAmountChange(qty - 1, "update")}
-            sx={{
-              py: 0.1,
-              px: 0.1,
-              border: "1px solid #d5d5d5",
+          <TooltipError
+            arrow
+            open={!isStockAvailable(qty, stock)}
+            TransitionComponent={Zoom}
+            disableHoverListener
+            disableTouchListener
+            placement="bottom"
+            title={getOutOfStockMessage(qty, stock, name, size)}
+            componentsProps={{
+              tooltip: {
+                sx: {
+                  color: "white",
+                  backgroundColor: "#E53935",
+                  "& .MuiTooltip-arrow": {
+                    color: "#E53935",
+                  },
+                },
+              },
             }}
           >
-            <Remove fontSize="small" />
-          </IconButton>
+            <IconButton
+              disabled={qty === 1 || stock == 0}
+              onClick={handleCartAmountChange(qty - 1, "update")}
+              sx={{
+                py: 0.1,
+                px: 0.1,
+                border: "1px solid #d5d5d5",
+              }}
+            >
+              <Remove fontSize="small" />
+            </IconButton>
+          </TooltipError>
 
           <Box
             sx={{
@@ -225,33 +255,13 @@ const CartCard: FC<ProductCardProps> = ({
           </IconButton>
         </FlexBox>
 
-        <Small
-          color={"gray"}
-          display={"inline-block"}
-          className="text-10 mt-2"
-          sx={{
-            textTransform: "uppercase",
-            fontFamily: "Alata-Regular",
-          }}
-        >
+        <span className="text-xs mt-2">
           {stock == 0
             ? "Item out of stock"
             : stock <= 2
             ? ` Only (${stock}) Avaliable In Stock!`
             : ""}
-        </Small>
-        {qty > stock && stock != 0 && (
-          <H4 color={"#D3C4AB"}>
-            Please reduce your quantity as there are only {stock} items of{" "}
-            {name} size {size} left in the stock
-          </H4>
-        )}
-        {stock == 0 && (
-          <H4 color={"#D3C4AB"}>
-            Please remove {name} size {size} from your cart to proceed, as the
-            item is out of stuck
-          </H4>
-        )}
+        </span>
       </FlexBox>
     </Wrapper>
   );

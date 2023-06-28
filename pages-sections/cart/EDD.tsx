@@ -37,11 +37,11 @@ const EDD = () => {
           }}
         >
           <FlexBetween alignItems={"center"} justifyContent={"flex-start"}>
-            <MdOutlineWatchLater
+            {/* <MdOutlineWatchLater
               color="black"
               size={25}
               style={{ margin: "0px 0px 0px 14px" }}
-            />
+            /> */}
             <H6
               textAlign={"left"}
               display={"inline-block"}
@@ -63,11 +63,11 @@ const EDD = () => {
           }}
         >
           <FlexBetween alignItems={"flex-start"} justifyContent={"flex-start"}>
-            <MdOutlineWatchLater
+            {/* <MdOutlineWatchLater
               color="black"
               size={40}
               style={{ margin: "0px 0px 0px 14px" }}
-            />
+            /> */}
             <H6
               textAlign={"left"}
               display={"inline-block"}

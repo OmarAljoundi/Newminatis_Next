@@ -6,6 +6,7 @@ import React from "react";
 import ProductImagesSection from "@/pages-sections/product/ProductImagesSection";
 import ProductInfoSection from "@/pages-sections/product/ProductInfoSection";
 import Breadcrumb from "@/pages-sections/shop/Breadcrumb";
+import ProductRelatedSection from "@/pages-sections/product/ProductRelatedSection";
 
 type Params = {
   params: {
@@ -40,7 +41,7 @@ export default async function SingleProductPage({ params: { slug } }: Params) {
   )) as AxiosResponse<IProductResponse>;
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-4 sm:px-6 sm:py-6 lg:max-w-7xl lg:px-8">
+    <div className="mx-auto max-w-2xl  py-4 px-0 sm:py-6 lg:max-w-7xl lg:px-8">
       {/* <ReviewModel product={_response.product} /> */}
 
       <div>
@@ -56,10 +57,10 @@ export default async function SingleProductPage({ params: { slug } }: Params) {
         <ProductInfoSection response={_response?.data} />
       </div>
 
-      {/* <RelatedProducts
-              related={_response.product?.relatedProducts}
-              id={_response.product?.id}
-            /> */}
+      <ProductRelatedSection
+        related={_response?.data?.product?.relatedProducts || ""}
+        id={_response?.data?.product?.id}
+      />
     </div>
   );
 }

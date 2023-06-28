@@ -3,6 +3,7 @@ import { FC } from "react";
 import { Box, Container, Grid } from "@mui/material";
 import { H5 } from "@/components/Typography";
 import { FlexBox } from "@/components/flex-box";
+import Image from "next/image";
 
 const styles = {
   container: {
@@ -29,179 +30,62 @@ const ValueSection: FC = () => {
         zIndex: "1",
       }}
     >
-      <Box
-        sx={{
-          backgroundColor: "#000000",
-          opacity: "0.5",
-          transition: "background 0.3s, border-radius 0.3s, opacity 0.3s",
-          height: "100%",
-          width: "100%",
-          top: "0",
-          left: "0",
-          position: "absolute",
-          zIndex: "-1",
-        }}
-      ></Box>
-
       <Container>
-        <Grid
-          container
-          item
-          sx={{
-            rowGap: {
-              xs: "20px",
-              sm: "20px",
-              md: "20px",
-              lg: "0",
-            },
-          }}
-          alignItems={"center"}
-        >
-          <Grid item sm={6} xs={12} md={6} lg={3}>
-            <FlexBox
-              justifyContent={{
-                sx: "flex-start",
-                xs: "flex-start",
-                md: "center",
-              }}
-              columnGap={"20px"}
-              alignItems={"center"}
+        <div className="grid grid-cols-1 justify-items-start md:grid-cols-4 md:justify-items-center gap-y-4">
+          {Icons.map((item) => (
+            <div
+              className="flex md:grid justify-items-start md:justify-items-center w-full gap-x-4 md:gap-x-0"
+              key={item.title}
             >
-              <Box
-                component={"img"}
-                sx={{
-                  width: {
-                    xs: "50px",
-                    md: "75px",
-                  },
-                  height: {
-                    xs: "50px",
-                    md: "75px",
-                  },
-                }}
-                src={"/assets/images/discount-04.svg"}
-                alt="logo"
-              />
-
-              <Box>
-                <H5 color={"white"}>COMMUNITY MEMBERSHIP</H5>
-                <H5 color={"white"} className="title-sub-font">
-                  Deals and Discounts
-                </H5>
-              </Box>
-            </FlexBox>
-          </Grid>
-
-          <Grid item sm={6} xs={12} md={6} lg={3}>
-            <FlexBox
-              justifyContent={{
-                sx: "flex-start",
-                xs: "flex-start",
-                md: "center",
-              }}
-              columnGap={"20px"}
-              alignItems={"center"}
-            >
-              <Box
-                component={"img"}
-                src={"/assets/images/secure-payement-03.svg"}
-                alt="logo"
-                color="red"
-                sx={{
-                  width: {
-                    xs: "50px",
-                    md: "75px",
-                  },
-                  height: {
-                    xs: "50px",
-                    md: "75px",
-                  },
-                }}
-              />
-
-              <Box>
-                <H5 color={"white"}>SECURE PAYMENT</H5>
-                <H5 color={"white"} className="title-sub-font">
-                  {" "}
-                  Apple Pay and Google Pay Accepted
-                </H5>
-              </Box>
-            </FlexBox>
-          </Grid>
-
-          <Grid item sm={6} xs={12} md={6} lg={3}>
-            <FlexBox
-              justifyContent={{
-                sx: "flex-start",
-                xs: "flex-start",
-                md: "center",
-              }}
-              columnGap={"20px"}
-              alignItems={"center"}
-            >
-              <Box
-                component={"img"}
-                src={"/assets/images/free-delivery-01.svg"}
-                alt="logo"
-                sx={{
-                  width: {
-                    xs: "50px",
-                    md: "75px",
-                  },
-                  height: {
-                    xs: "50px",
-                    md: "75px",
-                  },
-                }}
-              />
-
-              <Box>
-                <H5 color={"white"}>FREE DELIVERY</H5>
-                <H5 color={"white"} className="title-sub-font">
-                  Free Express Shipping Worldwide
-                </H5>
-              </Box>
-            </FlexBox>
-          </Grid>
-
-          <Grid item sm={6} xs={12} md={6} lg={3}>
-            <FlexBox
-              justifyContent={{
-                sx: "flex-start",
-                xs: "flex-start",
-                md: "center",
-              }}
-              columnGap={"20px"}
-              alignItems={"center"}
-            >
-              <Box
-                component={"img"}
-                src={"/assets/images/high-quality-02.svg"}
-                alt="logo"
-                sx={{
-                  width: {
-                    xs: "50px",
-                    md: "75px",
-                  },
-                  height: {
-                    xs: "50px",
-                    md: "75px",
-                  },
-                }}
-              />
-
-              <Box>
-                <H5 color={"white"}>UNIQUE DESIGNS</H5>
-                <H5 color={"white"} className="title-sub-font">
-                  Artistic Designs
-                </H5>
-              </Box>
-            </FlexBox>
-          </Grid>
-        </Grid>
+              <div style={{ minHeight: "70px" }} className="h-full flex">
+                <Image
+                  src={item.image}
+                  width={70}
+                  height={40}
+                  alt={item.title}
+                  title={item.title}
+                  quality={100}
+                  fetchPriority="auto"
+                  style={{ height: "auto" }}
+                />
+              </div>
+              <div className="mt-2 grid justify-items-start md:justify-items-center ">
+                <span className="text-sm text-white text-left md:text-center">
+                  {item.title}
+                </span>
+                <span className="text-xs text-white text-left md:text-center">
+                  {item.description}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
       </Container>
     </Container>
   );
 };
 
 export default ValueSection;
+
+const Icons = [
+  {
+    title: "COMMUNITY MEMBERSHIP",
+    description: "Deals and Discounts",
+    image: "/assets/images/discount-04.svg",
+  },
+  {
+    title: "UNIQUE DESIGNS",
+    description: "Artistic Designs",
+    image: "/assets/images/high-quality-02.svg",
+  },
+  {
+    title: "SECURE PAYMENT",
+    description: "Apple Pay and Google Pay Accepted",
+    image: "/assets/images/secure-payement-03.svg",
+  },
+  {
+    title: "FREE DELIVERY",
+    description: "Free Express Shipping Worldwide",
+    image: "/assets/images/free-delivery-01.svg",
+  },
+];

@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import Cookies from "js-cookie";
-import { Close } from "@mui/icons-material";
+import { Close, Delete } from "@mui/icons-material";
 import { TUserGuest } from "@/types/TUserGuest";
 import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
 import useOrderService from "@/hooks/useOrderService";
@@ -134,205 +134,102 @@ const CheckoutSummary: FC<Props> = ({
 
   return (
     <Card elevation={1} role={"drawer"}>
-      {state?.map((item) => (
-        <FlexBetween mb={1} key={item.id} columnGap={"10px"}>
-          <FlexBetween key={item.name} columnGap={"10px"}>
-            <Link
-              href={`/product/${item.name.toLowerCase()}-${item.color.toString()}`}
-            >
-              <Avatar
-                src={item.imgUrl}
-                sx={{ width: "75px", height: "75px" }}
-              />
-            </Link>
-            <Box display={"grid"} width={120}>
-              <Typography
-                color="grey.600"
-                display={"block"}
-                className="text-12 "
+      <div className="border-b-2 pb-3 border-gray-400 grid gap-y-3">
+        {state?.map((item) => (
+          <div key={item.id} className="grid grid-cols-4 gap-4 items-center">
+            <div className="grid">
+              <Link
+                href={`/product/${item.name.toLowerCase()}-${item.color.toString()}`}
               >
-                Item: {item.name}
-              </Typography>
-              <Typography
-                color="grey.600"
-                display={"block"}
-                className="text-12 "
-              >
-                Size: {item.size}
-              </Typography>
-              <Typography
-                color="grey.600"
-                display={"block"}
-                className="text-12"
-              >
-                Quantity: {item.qty}
-              </Typography>
-            </Box>
-          </FlexBetween>
-          <Box display={"grid"} width={70}>
-            <Span color="grey.600" className="text-12">
-              {calculateDiscount(item.price, item.salePrice, _setting)}
-              {!!item.salePrice && (
-                <Tiny
-                  sx={{ ml: 0.4, mb: 0.5, fontSize: "9px" }}
-                  color="#D3C4AB"
+                <Avatar
+                  src={item.imgUrl}
+                  sx={{ width: "75px", height: "75px" }}
+                />
+              </Link>
+            </div>
+            <div className="grid ">
+              <span className="text-xs font-medium">{item.name}</span>
+              <span className="text-xs font-medium"> Size: {item.size}</span>
+              <span className="text-xs font-medium"> Quantity: {item.qty}</span>
+            </div>
+            <div className="grid justify-items-center">
+              <span className="text-sm font-bold">
+                {currency(
+                  calculateDiscountAsNumber(item.price, item.salePrice) *
+                    item.qty,
+                  _setting
+                )}
+                {!!item.salePrice && (
+                  <Tiny
+                    sx={{ ml: 0.4, mb: 0.5, fontSize: "9px" }}
+                    color="#D3C4AB"
+                  >
+                    <del>{currency(item.price, _setting)}</del>
+                  </Tiny>
+                )}
+              </span>
+            </div>
+            <div>
+              <Tooltip title="Remove Item">
+                <IconButton
+                  size="small"
+                  sx={{ marginLeft: 2.5 }}
+                  onClick={() => handleCartAmountChange(item)}
                 >
-                  <del>{currency(item.price, _setting)}</del>
-                </Tiny>
-              )}
-            </Span>
+                  <Delete fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </div>
+          </div>
+        ))}
+      </div>
 
-            <Box
-              fontWeight={600}
-              fontSize="14px"
-              color="primary.main"
-              className="text-12 "
-              mt={0.5}
-            >
-              {currency(
-                calculateDiscountAsNumber(item.price, item.salePrice) *
-                  item.qty,
-                _setting
-              )}
-            </Box>
-          </Box>
-          <Tooltip title="Remove Item">
-            <IconButton
-              size="small"
-              sx={{ marginLeft: 2.5 }}
-              onClick={() => handleCartAmountChange(item)}
-            >
-              <Close fontSize="small" />
-            </IconButton>
-          </Tooltip>
-        </FlexBetween>
-      ))}
-
-      <Divider sx={{ mb: "1rem" }} />
-
-      <FlexBetween mb={1}>
-        <Typography
-          color="grey.600"
-          fontSize="18px"
-          fontWeight="600"
-          lineHeight="1"
-          textAlign="right"
-          mb={1}
-        >
-          SubTotal:
-        </Typography>
-        <Typography
-          fontSize="18px"
-          fontWeight="600"
-          lineHeight="1"
-          textAlign="right"
-          mb={1}
-        >
-          {currency(getTotalPrice(state), _setting)}
-        </Typography>
-      </FlexBetween>
-
-      <FlexBetween mb={1}>
-        <Typography
-          color="grey.600"
-          fontSize="18px"
-          fontWeight="600"
-          lineHeight="1"
-          textAlign="right"
-          mb={1}
-        >
-          Shipping:
-        </Typography>
-        <Typography
-          fontSize="18px"
-          fontWeight="600"
-          lineHeight="1"
-          textAlign="right"
-          mb={1}
-        >
-          FREE!
-        </Typography>
-      </FlexBetween>
-
-      {Discount > 0 && (
-        <>
-          <FlexBetween mb={1}>
-            <Typography
-              fontSize="18px"
-              fontWeight="600"
-              lineHeight="1"
-              textAlign="right"
-              mb={1}
-              color="#D3C4AB"
-            >
-              Discount:
-            </Typography>
-            <Typography
-              fontSize="18px"
-              fontWeight="600"
-              lineHeight="1"
-              textAlign="right"
-              mb={1}
-              color="#D3C4AB"
-            >
+      <div className="py-3 grid grid-cols-2">
+        <div className="grid gap-y-1">
+          <span className="text-sm font-medium">SubTotal:</span>
+          <span className="text-sm font-medium">Shipping:</span>
+          {Discount > 0 && (
+            <span className="text-sm font-medium">Discount:</span>
+          )}
+          {Discount > 0 && (
+            <span className="text-sm font-medium">Voucher Applied:</span>
+          )}
+          {<span className="text-sm font-medium">Total:</span>}
+        </div>
+        <div className="grid justify-items-end gap-y-1">
+          <span className="text-sm font-medium">
+            {currency(getTotalPrice(state), _setting)}
+          </span>
+          <span className="text-sm font-medium">FREE</span>
+          {Discount > 0 && (
+            <span className="text-sm font-medium">
               -{Type == "Fixed" ? "$" : "%"}
               {Discount}
-            </Typography>
-          </FlexBetween>
+            </span>
+          )}
+          {Discount > 0 && (
+            <span className="text-sm font-medium"> {Voucher}</span>
+          )}
+          <span className="text-sm font-medium">
+            {Discount > 0
+              ? currency(Total, _setting)
+              : currency(getTotalPrice(state), _setting)}
+          </span>
+        </div>
+      </div>
 
-          <FlexBetween mb={1}>
-            <Typography
-              color="grey.600"
-              fontSize="18px"
-              fontWeight="600"
-              lineHeight="1"
-              textAlign="right"
-              mb={1}
-            >
-              Voucher Applied:
-            </Typography>
-            <Typography
-              fontSize="18px"
-              fontWeight="600"
-              lineHeight="1"
-              textAlign="right"
-              mb={1}
-            >
-              {Voucher}
-            </Typography>
-          </FlexBetween>
-        </>
-      )}
-
-      <FlexBetween mb={1}>
-        <Typography
-          color="grey.600"
-          fontSize="18px"
-          fontWeight="600"
-          lineHeight="1"
-          textAlign="right"
-          mb={1}
-        >
-          Total:
-        </Typography>
-        <Typography
-          fontSize="18px"
-          fontWeight="600"
-          lineHeight="1"
-          textAlign="right"
-          mb={1}
-        >
-          {Discount > 0
-            ? currency(Total, _setting)
-            : currency(getTotalPrice(state), _setting)}
-        </Typography>
-      </FlexBetween>
       {pathname!.includes("payment") && (
-        <>
-          <Divider sx={{ mb: "1rem" }} />
-          <FlexBetween mb={1}>
-            <Typography color="grey.600">Name:</Typography>
-            <ShortSpan mb={0.5} color="black" width={"60%"}>
+        <div className="grid grid-cols-2 border-t-2 border-gray-400 py-3  gap-y-2">
+          <div className="grid gap-y-1">
+            <span className="text-sm font-medium">Name:</span>
+            <span className="text-sm font-medium">Address Line:</span>
+            <span className="text-sm font-medium"> Delievry Instructions:</span>
+            <span className="text-sm font-medium">Country/City:</span>
+            <span className="text-sm font-medium">Postal Code:</span>
+            <span className="text-sm font-medium">Contact Number:</span>
+          </div>
+          <div className="grid justify-items-end gap-y-1">
+            <span className="text-sm font-medium">
               {
                 //@ts-ignore
                 auth?.userAddress[auth.selectedAddress]?.firstName ??
@@ -343,139 +240,85 @@ const CheckoutSummary: FC<Props> = ({
                 auth?.userAddress[auth.selectedAddress]?.lastName ??
                   guestAddress?.lastName
               }
-            </ShortSpan>
-          </FlexBetween>
-          <FlexBetween mb={1}>
-            <Typography color="grey.600">Address Line:</Typography>
-            <ShortSpan mb={0.5} color="black" width={"60%"}>
+            </span>
+            <span className="text-sm font-medium">
               {
                 //@ts-ignore
                 auth?.userAddress[auth.selectedAddress]?.addressLine ??
                   guestAddress?.addressLine
               }
-            </ShortSpan>
-          </FlexBetween>
-
-          {
-            //@ts-ignore
-            (auth?.userAddress[auth.selectedAddress]?.deliveryInstructions ||
-              guestAddress?.deliveryInstructions) && (
-              <FlexBetween mb={1}>
-                <Typography color="grey.600">Delievry Instructions:</Typography>
-                <H6 mb={0.5}>
-                  <ShortSpan mb={0.5} color="black" width={"60%"}>
-                    {
-                      //@ts-ignore
-                      auth?.userAddress[auth.selectedAddress]
-                        ?.deliveryInstructions ??
-                        guestAddress?.deliveryInstructions
-                    }
-                  </ShortSpan>
-                </H6>
-              </FlexBetween>
-            )
-          }
-
-          <FlexBetween mb={1}>
-            <Typography color="grey.600">Country/City:</Typography>
-            <ShortSpan mb={0.5} color="black" width={"60%"}>
+            </span>
+            <span className="text-sm font-medium">
+              {
+                //@ts-ignore
+                auth?.userAddress[auth.selectedAddress]?.deliveryInstructions ??
+                  guestAddress?.deliveryInstructions
+              }
+            </span>
+            <span className="text-sm font-medium">
               {
                 //@ts-ignore
                 auth?.userAddress[auth.selectedAddress]?.country ??
                   guestAddress?.country
               }
-
               {", "}
               {
                 //@ts-ignore
                 auth?.userAddress[auth.selectedAddress]?.state ??
                   guestAddress?.state
               }
-            </ShortSpan>
-          </FlexBetween>
-
-          {
-            //@ts-ignore
-            (auth?.userAddress[auth.selectedAddress]?.postalCode ||
-              guestAddress?.postalCode) && (
-              <FlexBetween mb={1}>
-                <Typography color="grey.600">Postal Code:</Typography>
-                <ShortSpan mb={0.5} color="black" width={"60%"}>
-                  <Span color="black">
-                    {
-                      //@ts-ignore
-                      auth?.userAddress[auth.selectedAddress]?.postalCode ??
-                        guestAddress?.postalCode
-                    }
-                  </Span>
-                </ShortSpan>
-              </FlexBetween>
-            )
-          }
-
-          <FlexBetween mb={1}>
-            <Typography color="grey.600">Contact Number:</Typography>
-            <ShortSpan mb={0.5} color="black" width={"60%"}>
+            </span>
+            <span className="text-sm font-medium">
+              {
+                //@ts-ignore
+                auth?.userAddress[auth.selectedAddress]?.postalCode ??
+                  guestAddress?.postalCode
+              }
+            </span>
+            <span className="text-sm font-medium">
               {
                 //@ts-ignore
                 auth?.userAddress[auth.selectedAddress]?.phoneNumber ??
                   guestAddress?.phoneNumber
               }
-            </ShortSpan>
-          </FlexBetween>
-
-          <Link href="cart/checkout">
-            <Button
-              sx={{
-                color: "black",
-                background: "#D3C4AB",
-                fontWeight: "bold",
-                "&.MuiLoadingButton-root:hover": {
-                  background: "#D3C4AB",
-                },
-                "& .MuiLoadingButton-loadingIndicator": {
-                  color: "black",
-                },
-                ":disabled": {
-                  color: "black",
-                  opacity: "0.5",
-                },
-              }}
-              variant="outlined"
-            >
+            </span>
+          </div>
+          <Link href="/checkout" className="col-span-2">
+            <Button color="secondary" fullWidth variant="text">
               Change my shipping location
             </Button>
           </Link>
-        </>
+        </div>
       )}
 
       {pathname!.includes("payment") && (
         <>
-          <Divider sx={{ mt: "1rem", mb: "1rem" }} />
-          <div className="d-flex">
-            <TextField
-              placeholder="Voucher"
-              variant="outlined"
-              size="small"
-              value={_Voucher}
-              defaultValue={Voucher}
-              fullWidth
-              onChange={(e) => handleVoucherChange(e.target.value)}
-              error={ErrorMessage != ""}
-              onBlur={() => {
-                setErrorMessage("");
-                setOnError(false);
-              }}
-              InputProps={{
-                endAdornment: (
-                  <CheckVoucherIcon
-                    show={show}
-                    onError={onError}
-                    onSuccess={onSuccess}
-                  />
-                ),
-              }}
-            />
+          <div className="grid grid-cols-3 border-t-2 border-gray-400 pt-3 gap-x-4">
+            <div className="col-span-2">
+              <TextField
+                placeholder="Voucher"
+                variant="outlined"
+                size="small"
+                value={_Voucher}
+                defaultValue={Voucher}
+                fullWidth
+                onChange={(e) => handleVoucherChange(e.target.value)}
+                error={ErrorMessage != ""}
+                onBlur={() => {
+                  setErrorMessage("");
+                  setOnError(false);
+                }}
+                InputProps={{
+                  endAdornment: (
+                    <CheckVoucherIcon
+                      show={show}
+                      onError={onError}
+                      onSuccess={onSuccess}
+                    />
+                  ),
+                }}
+              />
+            </div>
 
             <LoadingButton
               loading={orderLoad}
@@ -483,10 +326,10 @@ const CheckoutSummary: FC<Props> = ({
               type="submit"
               disabled={_Voucher == ""}
               fullWidth
-              color="marron"
-              sx={{ width: "100%", maxWidth: "110px" }}
+              color="primary"
+              variant="contained"
             >
-              Apply Voucher
+              <span className="text-xs font-medium"> Voucher</span>
             </LoadingButton>
           </div>
         </>

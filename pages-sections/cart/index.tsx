@@ -39,65 +39,56 @@ export default function CartClientPage() {
       </Grid>
 
       <Grid item md={4} xs={12}>
-        <Card sx={{ borderRadius: "0" }} elevation={1}>
+        <Card sx={{ borderRadius: "0", paddingY: "1rem" }} elevation={1}>
           <EDD />
-          <Box p={3}>
-            <FlexBetween mb={1}>
-              <Typography color="grey.600" sx={{ textTransform: "uppercase" }}>
-                Subtotal:
-              </Typography>
-              <Typography className="text-14" lineHeight="1">
+          <div className="py-3 grid grid-cols-2 px-5">
+            <div className="grid gap-y-1">
+              <span className="text-sm font-medium">SubTotal:</span>
+              <span className="text-sm font-medium">Shipping:</span>
+              <span className="text-sm font-medium">Total:</span>
+            </div>
+            <div className="grid justify-items-end gap-y-1">
+              <span className="text-sm font-medium">
                 {currency(getTotalPrice(state), _setting)}
-              </Typography>
-            </FlexBetween>
-            <FlexBetween mb={1}>
-              <Typography color="grey.600" sx={{ textTransform: "uppercase" }}>
-                Shipping:
-              </Typography>
-              <Typography className="text-14" lineHeight="1">
-                FREE
-              </Typography>
-            </FlexBetween>
-            <Divider sx={{ mb: "1rem" }} />
-            <FlexBetween mb={2}>
-              <Typography color="grey.600" sx={{ textTransform: "uppercase" }}>
-                Total:
-              </Typography>
-              <Typography className="text-14" lineHeight="1">
+              </span>
+              <span className="text-sm font-medium">FREE</span>
+
+              <span className="text-sm font-medium">
                 {currency(getTotalPrice(state), _setting)}
-              </Typography>
-            </FlexBetween>
-            <Button
-              variant="contained"
-              component={Link}
-              href="/checkout"
-              disabled={
-                (state || [])?.filter((x) => x.stock < x.qty).length > 0
-              }
-              color="primary"
-              fullWidth
-            >
-              Checkout Now
-            </Button>{" "}
-            {!load && (
-              <Elements
-                stripe={stripePromise}
-                options={{
-                  loader: "auto",
-                  appearance: {
-                    disableAnimations: false,
-                    variables: {
-                      borderRadius: "8px",
-                      fontFamily: "Alata-Regular",
-                    },
-                    theme: "stripe",
-                  },
-                }}
+              </span>
+            </div>
+            <div className="mt-4 col-span-2">
+              <Button
+                variant="contained"
+                component={Link}
+                href="/checkout"
+                disabled={
+                  (state || [])?.filter((x) => x.stock < x.qty).length > 0
+                }
+                color="primary"
+                fullWidth
               >
-                <ExpressCheckoutNoEmail />
-              </Elements>
-            )}
-          </Box>
+                Checkout Now
+              </Button>{" "}
+              {!load && (
+                <Elements
+                  stripe={stripePromise}
+                  options={{
+                    loader: "auto",
+                    appearance: {
+                      disableAnimations: false,
+                      variables: {
+                        borderRadius: "8px",
+                      },
+                      theme: "stripe",
+                    },
+                  }}
+                >
+                  <ExpressCheckoutNoEmail />
+                </Elements>
+              )}
+            </div>
+          </div>
         </Card>
       </Grid>
     </Grid>

@@ -18,6 +18,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "scontent-mxp2-1.cdninstagram.com",
       },
+      {
+        protocol: "https",
+        hostname: "*.cdninstagram.com",
+      },
     ],
   },
   modularizeImports: {

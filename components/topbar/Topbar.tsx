@@ -62,36 +62,16 @@ const Topbar: FC<TopbarProps> = ({ bgColor }) => {
       >
         <SwiperSlide className="swiper-slider-section">
           <FlexBetween alignItems={"flex-start"} justifyContent={"center"}>
-            <Span
-              sx={{
-                display: "block",
-                marginTop: "8px",
-                textAlign: "left",
-                paddingLeft: "10px",
-                fontWeight: 100,
-              }}
-              className="marquee_span text-sm"
-              fontFamily={"var(--Alata-Regular)"}
-            >
+            <span className="marquee_span text-sm block mt-2 text-left font-semibold">
               FREE WORLDWIDE EXPRESS SHIPPING
-            </Span>
+            </span>
           </FlexBetween>
         </SwiperSlide>
         <SwiperSlide className="swiper-slider-section">
           <FlexBetween alignItems={"flex-start"} justifyContent={"center"}>
-            <Span
-              sx={{
-                display: "block",
-                marginTop: "8px",
-                textAlign: "left",
-                paddingLeft: "10px",
-                fontWeight: 100,
-              }}
-              className="marquee_span text-sm"
-              fontFamily={"var(--Alata-Regular)"}
-            >
+            <span className="marquee_span text-sm block mt-2 text-left font-semibold">
               SAME DAY DELIVERY IN UAE
-            </Span>
+            </span>
           </FlexBetween>
         </SwiperSlide>
         <SwiperSlide className="swiper-slider-section">
@@ -102,19 +82,9 @@ const Topbar: FC<TopbarProps> = ({ bgColor }) => {
               height={30}
               alt="apple pay logo"
             />
-            <Span
-              sx={{
-                display: "block",
-                marginTop: "8px",
-                textAlign: "left",
-                paddingLeft: "10px",
-                fontWeight: 100,
-              }}
-              className="marquee_span text-sm"
-              fontFamily={"var(--Alata-Regular)"}
-            >
+            <span className="marquee_span text-sm block mt-2 text-left font-semibold">
               GO SEAMLESS WITH APPLE PAY
-            </Span>
+            </span>
           </FlexBetween>
         </SwiperSlide>
       </Swiper>
