@@ -264,10 +264,8 @@ export const ExpressCheckoutNoEmail = () => {
         } catch (ex) {}
       }
 
-      dispatch(ClearCart());
-
       const orderIdEncrypted = EncryptData<IOrderResponse>(order_create);
-      route.push(`/payment/${orderIdEncrypted}`);
+      route.push(`/order_confirmation?secret=${orderIdEncrypted}`);
     }
   };
   const getClientSecretGuest = async (
