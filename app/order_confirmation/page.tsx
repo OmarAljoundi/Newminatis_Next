@@ -1,7 +1,11 @@
-"use client";
 import { OrderReviewClient } from "@/pages-sections/order_confirmation";
+import { Metadata } from "next";
 import React from "react";
 
-export default function OrderConfirmation(props) {
-  return <OrderReviewClient secret={props.searchParams.secret} />;
+export const metadata: Metadata = {
+  title: "Newminatis - Your order is confirmed",
+};
+
+export default function OrderConfirmation() {
+  return <OrderReviewClient />;
 }

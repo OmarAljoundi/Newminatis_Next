@@ -841,3 +841,16 @@ button {
 .grid-cols-7 {
   grid-template-columns: repeat(7, minmax(0, 1fr));
 }
+.globe_rotate {
+  animation: globe 5s linear infinite;
+  transition: all 0.2s linear;
+}
+@keyframes globe {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}

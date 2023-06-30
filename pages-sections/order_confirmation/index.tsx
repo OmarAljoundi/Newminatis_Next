@@ -11,16 +11,21 @@ import { usePathname, useRouter } from "next/navigation";
 import { createUrlWithSearch } from "@/helpers/Extensions";
 import { useSearchParams } from "next/navigation";
 import { ClearCart } from "@/store/CartItem/Cart-action";
+import Cookies from "js-cookie";
 
-export const OrderReviewClient: FC<{ secret: string }> = ({ secret }) => {
+export const OrderReviewClient = () => {
   const router = useRouter();
   const pathname = usePathname();
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const [order_confirm, setOrder_confirm] = useState<IOrderResponse | null>(
     () => {
-      var decrypted = DecryptData<IOrderResponse>(secret);
-      return decrypted;
+      var orderSecret = Cookies.get("Order_confirmed");
+      if (orderSecret) {
+        var decrypted = DecryptData<IOrderResponse>(orderSecret);
+        return decrypted;
+      }
+      return null;
     }
   );
 
@@ -28,14 +33,8 @@ export const OrderReviewClient: FC<{ secret: string }> = ({ secret }) => {
     if (order_confirm == null) {
       router.replace("/");
     } else {
+      Cookies.remove("Order_confirmed");
       dispatch(ClearCart());
-      const newUri = createUrlWithSearch(
-        "secret",
-        null,
-        searchParams,
-        pathname
-      );
-      router.replace(newUri);
     }
     return () => {
       setOrder_confirm(null);

@@ -261,7 +261,8 @@ export const ExpressCheckoutWithEmail: FC<IExpressCheckout> = ({
       }
 
       const orderIdEncrypted = EncryptData<IOrderResponse>(order_create);
-      route.push(`/order_confirmation?secret=${orderIdEncrypted}`);
+      Cookies.set("Order_confirmed", orderIdEncrypted);
+      route.push(`/order_confirmation`);
     }
   };
 
@@ -336,7 +337,8 @@ export const ExpressCheckoutWithEmail: FC<IExpressCheckout> = ({
       }
 
       const orderIdEncrypted = EncryptData<IOrderResponse>(order_create);
-      route.push(`/order_confirmation?secret=${orderIdEncrypted}`);
+      Cookies.set("Order_confirmed", orderIdEncrypted);
+      route.push(`/order_confirmation`);
     }
   };
 

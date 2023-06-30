@@ -28,6 +28,7 @@ import { TCheckoutRequest } from "@/types/TCheckoutRequest";
 import { IPaymentResponse } from "@/interface/IPaymentResponse";
 import { PurchaseEvent, grapUserData } from "@/helpers/FacebookEvent";
 import { EncryptData } from "@/helpers/Crypto";
+import Cookies from "js-cookie";
 
 export const ExpressCheckoutNoEmail = () => {
   const stripe = useStripe();
@@ -265,7 +266,8 @@ export const ExpressCheckoutNoEmail = () => {
       }
 
       const orderIdEncrypted = EncryptData<IOrderResponse>(order_create);
-      route.push(`/order_confirmation?secret=${orderIdEncrypted}`);
+      Cookies.set("Order_confirmed", orderIdEncrypted);
+      route.push(`/order_confirmation`);
     }
   };
   const getClientSecretGuest = async (

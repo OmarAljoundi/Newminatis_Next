@@ -278,7 +278,8 @@ export default function PaymentForm({ totalAfterDiscount, guestUser }) {
       }
 
       const orderIdEncrypted = EncryptData<IOrderResponse>(order_create);
-      route.push(`/order_confirmation?secret=${orderIdEncrypted}`);
+      Cookies.set("Order_confirmed", orderIdEncrypted);
+      route.push(`/order_confirmation`);
     }
   };
 
