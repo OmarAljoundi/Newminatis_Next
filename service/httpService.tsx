@@ -8,15 +8,10 @@ import Cookie from "js-cookie";
 
 const onRequest = (config: AxiosRequestConfig): any => {
   const token = Cookie.get("token");
-  //ref.current?.continuousStart()
 
-  const url =
-    process.env.NODE_ENV === "development"
-      ? process.env.NEXT_PUBLIC_URL_DEVELOPMENT
-      : process.env.NEXT_PUBLIC_URL_PRODUCTION;
   return {
     ...config,
-    baseURL: `${url}`,
+    baseURL: `${process.env.NEXT_PUBLIC_URL_PRODUCTION!}`,
     timeout: 500000,
     headers: {
       Accept: "application/json",
@@ -28,15 +23,10 @@ const onRequest = (config: AxiosRequestConfig): any => {
 
 const onRequestFormData = (config: AxiosRequestConfig): any => {
   const token = Cookie.get("token");
-  //ref.current?.continuousStart()
 
-  const url =
-    process.env.NODE_ENV === "development"
-      ? process.env.NEXT_PUBLIC_URL_DEVELOPMENT
-      : process.env.NEXT_PUBLIC_URL_PRODUCTION;
   return {
     ...config,
-    baseURL: `${url}`,
+    baseURL: `${process.env.NEXT_PUBLIC_URL_PRODUCTION!}`,
     timeout: 500000,
     headers: {
       Accept: "application/json",

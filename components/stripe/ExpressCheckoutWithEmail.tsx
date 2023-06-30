@@ -24,6 +24,7 @@ import { IOrderResponse } from "@/interface/IOrderResponse";
 import FacebookService from "@/service/FacebookService";
 import { PurchaseEvent, grapUserData } from "@/helpers/FacebookEvent";
 import { TOrderRequestGuest } from "@/types/TOrderRequestGuest";
+import { EncryptData } from "@/helpers/Crypto";
 
 export interface IExpressCheckout {
   clientSecret: string;
@@ -261,10 +262,8 @@ export const ExpressCheckoutWithEmail: FC<IExpressCheckout> = ({
 
       dispatch(ClearCart());
 
-      //   route("/review_order", {
-      //     state: order_create,
-      //   });
-      route.push("/review_order");
+      const orderIdEncrypted = EncryptData<IOrderResponse>(order_create);
+      route.push(`/payment/${orderIdEncrypted}`);
     }
   };
 
@@ -339,10 +338,8 @@ export const ExpressCheckoutWithEmail: FC<IExpressCheckout> = ({
       }
 
       dispatch(ClearCart());
-      //   route("/review_order", {
-      //     state: order_create,
-      //   });
-      route.push("/review_order");
+      const orderIdEncrypted = EncryptData<IOrderResponse>(order_create);
+      route.push(`/payment/${orderIdEncrypted}`);
     }
   };
 

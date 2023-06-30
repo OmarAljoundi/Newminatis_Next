@@ -27,6 +27,7 @@ import FacebookService from "@/service/FacebookService";
 import { TCheckoutRequest } from "@/types/TCheckoutRequest";
 import { IPaymentResponse } from "@/interface/IPaymentResponse";
 import { PurchaseEvent, grapUserData } from "@/helpers/FacebookEvent";
+import { EncryptData } from "@/helpers/Crypto";
 
 export const ExpressCheckoutNoEmail = () => {
   const stripe = useStripe();
@@ -264,12 +265,9 @@ export const ExpressCheckoutNoEmail = () => {
       }
 
       dispatch(ClearCart());
-      //   route.push("/review_order", {
-      //     state: order_create,
-      //   });
-      route.push("/review_order", {
-        state: order_create,
-      });
+
+      const orderIdEncrypted = EncryptData<IOrderResponse>(order_create);
+      route.push(`/payment/${orderIdEncrypted}`);
     }
   };
   const getClientSecretGuest = async (

@@ -27,6 +27,7 @@ import { TOrderRequestGuest } from "@/types/TOrderRequestGuest";
 import { Card } from "@mui/material";
 import { H6 } from "@/components/Typography";
 import { CartItem } from "@/store/Model/CartItem";
+import { EncryptData } from "@/helpers/Crypto";
 
 const Text =
   "We will contribute 1% of your purchase to removing CO₂ from the atmosphere.";
@@ -83,8 +84,6 @@ export default function PaymentForm({ totalAfterDiscount, guestUser }) {
         setIsLoading(false);
       } else {
         if (!stripe || !elements) {
-          // Stripe.js has not yet loaded.
-          // Make sure to disable form submission until Stripe.js has loaded.
           return;
         }
 
@@ -203,10 +202,9 @@ export default function PaymentForm({ totalAfterDiscount, guestUser }) {
         } catch (ex) {}
       }
       dispatch(ClearCart());
-      //   route("/review_order", {
-      //     state: order_create,
-      //   });
-      route.push("/review_order");
+
+      const orderIdEncrypted = EncryptData<IOrderResponse>(order_create);
+      route.push(`/payment/${orderIdEncrypted}`);
     }
   };
 
@@ -280,10 +278,9 @@ export default function PaymentForm({ totalAfterDiscount, guestUser }) {
       }
 
       dispatch(ClearCart());
-      //   route("/review_order", {
-      //     state: order_create,
-      //   });
-      route.push("/review_order");
+
+      const orderIdEncrypted = EncryptData<IOrderResponse>(order_create);
+      route.push(`/payment/${orderIdEncrypted}`);
     }
   };
 
