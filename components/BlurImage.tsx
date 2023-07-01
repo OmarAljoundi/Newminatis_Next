@@ -7,7 +7,7 @@ export const BlurImage: FC<{
   height?: number;
   customClass?: string;
   loading?: "lazy" | "eager";
-  priority?: "high" | "low";
+  priority?: "high" | "low" | "auto";
   q?: number;
   title?: string;
   aspect?: boolean;

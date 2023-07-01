@@ -39,10 +39,14 @@ const SocialButtons: FC<SocialButtonsProps> = ({ message, setLoad }) => {
 
   return (
     <Fragment>
-      <div className="grid gap-2 grid-cols-2 px-4 py-4">
+      <div className="grid gap-2 grid-cols-1 lg:grid-cols-2 px-4 py-4">
         <button
           onClick={() => handleFormSubmit("google")}
-          className="flex items-center bg-white border border-gray-300 rounded-lg shadow-md max-w-xs px-6 py-2 text-sm font-medium text-gray-800 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+          className="flex items-center
+           bg-white border border-gray-300 
+            shadow-md max-w-xs px-6 py-2 text-xs font-medium
+             text-gray-800 hover:bg-gray-200 focus:outline-none focus:ring-2 
+             focus:ring-offset-2 focus:ring-gray-500"
         >
           <svg
             className="h-6 w-6 mr-2"
@@ -97,7 +101,11 @@ const SocialButtons: FC<SocialButtonsProps> = ({ message, setLoad }) => {
 
         <button
           onClick={() => handleFormSubmit("facebook")}
-          className="flex items-center bg-white border border-gray-300 rounded-lg shadow-md max-w-xs px-6 py-2 text-sm font-medium text-gray-800 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+          className="flex items-center
+           bg-white border border-gray-300 
+            shadow-md max-w-xs px-6 py-2 text-xs font-medium text-gray-800
+             hover:bg-gray-200 focus:outline-none focus:ring-2 
+             focus:ring-offset-2 focus:ring-gray-500"
         >
           <svg
             className="h-6 w-6 mr-2"

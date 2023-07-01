@@ -67,54 +67,45 @@ const AboutSection: FC = () => {
               }}
             >
               <div data-aos="fade-right">
-                <H2
-                  className="title-sub-font text-2xl"
-                  sx={{ whiteSpace: "break-spaces" }}
-                >
+                <h1 className="title-sub-font text-xl md:text-2xl whitespace-break-spaces">
                   RADICAL SELF-EXPRESSION
-                </H2>
-                <H5 color={"black"} className="text-base md:text-lg">
+                </h1>
+                <p color={"black"} className="text-base md:text-lg">
                   The idea of expressing oneself authentically and creatively,
                   without fear of judgment or criticism from others. It
                   encourages you to push past your comfort zone and explore your
                   true identity through various forms of art, fashion, music,
                   and other creative outlets.
-                </H5>
+                </p>
               </div>
               <br />
               <br />
               <div data-aos="fade-right">
-                <H2
-                  className="title-sub-font text-2xl"
-                  sx={{ whiteSpace: "break-spaces" }}
-                >
+                <h1 className="title-sub-font text-xl md:text-2xl whitespace-break-spaces">
                   DECONSTRUCTED FASHION
-                </H2>
-                <H5 color={"black"} className="text-base md:text-lg">
+                </h1>
+                <p color={"black"} className="text-base md:text-lg">
                   A style of fashion where the traditional structure and
                   construction of clothing is intentionally altered or undone.
                   This style of fashion aims to challenge traditional notions of
                   what clothing should look like and how it should be
                   constructed.
-                </H5>
+                </p>
               </div>
               <br />
               <br />
               <div data-aos="fade-right">
-                <H2
-                  className="title-sub-font text-2xl"
-                  sx={{ whiteSpace: "break-spaces" }}
-                >
+                <h1 className="title-sub-font text-xl md:text-2xl whitespace-break-spaces">
                   AVANT-GARDE COMMUNITY
-                </H2>
-                <H5 color={"black"} className="text-base md:text-lg">
+                </h1>
+                <p className="text-base md:text-lg">
                   As an avant-garde community, Newminatis defies conventional
                   norms and pushes the limits of fashion by embracing
                   creativity, innovation, and individuality. Through
                   experimentation with diverse materials and techniques, we
                   redefine the fashion landscape, nurturing a vibrant and
                   supportive avant-garde community.
-                </H5>
+                </p>
               </div>
             </Box>
           </Grid>

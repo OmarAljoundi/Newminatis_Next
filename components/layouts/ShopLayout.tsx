@@ -85,7 +85,7 @@ const ShopLayout: FC<ShopLayoutProps> = ({ children }) => {
         <Header />
       </Sticky>
 
-      <div className="section-after-sticky">
+      <div className="section-after-sticky overflow-x-hidden">
         <FloatingWhatsApp
           phoneNumber="+14158181185"
           accountName="Newminatis"

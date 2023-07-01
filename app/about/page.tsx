@@ -6,7 +6,7 @@ import React from "react";
 
 export default function AboutPage() {
   return (
-    <article>
+    <article className="overflow-x-hidden">
       <div className="px-4 md:px-16 md:py-16 py-6">
         <div className="max-w-7xl mx-auto w-full">
           <div className="mb-8">

@@ -3,7 +3,10 @@ import { FC } from "react";
 import { Container } from "@mui/material";
 import Image from "next/image";
 
-const ValueSection: FC<{ mode?: "light" | "dark" }> = ({ mode = "dark" }) => {
+const ValueSection: FC<{ mode?: "light" | "dark"; extraClass?: string }> = ({
+  mode = "dark",
+  extraClass = "",
+}) => {
   return (
     <Container
       style={{
@@ -16,7 +19,7 @@ const ValueSection: FC<{ mode?: "light" | "dark" }> = ({ mode = "dark" }) => {
         zIndex: "1",
       }}
     >
-      <div className="max-w-7xl">
+      <div className={`max-w-7xl  ${extraClass}`}>
         <div className="grid grid-cols-1 justify-items-start md:grid-cols-4 md:justify-items-center gap-y-4 md:divide-x-2">
           {Icons.map((item) => (
             <div

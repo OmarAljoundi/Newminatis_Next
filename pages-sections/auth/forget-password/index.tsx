@@ -1,18 +1,14 @@
+"use client";
 import { Button, Step, StepLabel, Stepper, TextField } from "@mui/material";
-import { maxWidth } from "@mui/system";
 import { useFormik } from "formik";
 import { FC, useEffect, useState } from "react";
 import { useSpring, animated } from "react-spring";
-
-import ForgetPassword from "./ForgetPassword";
-import { Wrapper } from "./Login";
 import PasswordChange from "./PasswordChanged";
 import ResetPassword from "./ResetPassword";
 import VerifiyForgetPassword from "./VerifiyForgetPassword";
 import * as yup from "yup";
 import useUserService from "@/hooks/useUserService";
 import { IUserResponse } from "@/interface/IUserResponse";
-import BackdropLoading from "@/components/loading/BackdropLoading";
 import { H1 } from "@/components/Typography";
 import {
   ColorlibConnector,
@@ -20,20 +16,13 @@ import {
   Steps,
   labelStyle,
 } from "./PasswordStepperStyle";
-type Prop = {
-  onClose: () => void;
-  handleSetType: (type: string) => void;
-};
-const ResetPasswordStepper: FC<Prop> = ({ handleSetType, onClose }) => {
+import { Wrapper } from "../shared";
+import { LoadingButton } from "@mui/lab";
+
+const ForgetPasswordClient = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [code, setCode] = useState("");
   const { onResetPasswordRequest, userLoad } = useUserService();
-
-  useEffect(() => {
-    return () => {
-      handleSetType("LOGIN");
-    };
-  }, []);
 
   const containerStyle = useSpring({
     from: { opacity: 0 },
@@ -54,9 +43,11 @@ const ResetPasswordStepper: FC<Prop> = ({ handleSetType, onClose }) => {
       validationSchema: formSchema,
     });
   return (
-    <Wrapper elevation={3} role={"drawer"} sx={{ margin: "auto" }}>
-      <BackdropLoading open={userLoad} />
-
+    <Wrapper
+      elevation={3}
+      role={"drawer"}
+      sx={{ margin: "20px auto", paddingTop: "5px" }}
+    >
       <Stepper
         className="pt-5"
         alternativeLabel
@@ -76,12 +67,9 @@ const ResetPasswordStepper: FC<Prop> = ({ handleSetType, onClose }) => {
       {activeStep == 0 && (
         <animated.div
           style={containerStyle}
-          className="row flex-row-reverse m-auto"
+          className="row flex-row-reverse m-auto px-8"
         >
-          <H1 textAlign={"center"} my={2}>
-            {" "}
-            Reset Your Password
-          </H1>
+          <h1 className="mt-8 text-center text-2xl">Reset Your Password</h1>
 
           <form
             className="d-grid mt-3"
@@ -106,9 +94,15 @@ const ResetPasswordStepper: FC<Prop> = ({ handleSetType, onClose }) => {
               helperText={(touched.email && errors.email) as string}
             />
 
-            <Button type="submit" fullWidth>
+            <LoadingButton
+              type="submit"
+              fullWidth
+              color="primary"
+              loading={userLoad}
+              disabled={userLoad}
+            >
               Send Code
-            </Button>
+            </LoadingButton>
           </form>
         </animated.div>
       )}
@@ -126,14 +120,12 @@ const ResetPasswordStepper: FC<Prop> = ({ handleSetType, onClose }) => {
           setActiveStep={setActiveStep}
         />
       ) : null}
-      {activeStep == 3 ? (
-        <PasswordChange handleSetType={handleSetType} />
-      ) : null}
+      {activeStep == 3 ? <PasswordChange /> : null}
     </Wrapper>
   );
 };
 
-export default ResetPasswordStepper;
+export default ForgetPasswordClient;
 const initialValues = {
   email: "",
 };

@@ -1,48 +1,16 @@
 import { FC, useState } from "react";
-
-import {
-  Box,
-  Container,
-  Grid,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  MenuItem,
-  TextField,
-} from "@mui/material";
-import FiberSmartRecordIcon from "@mui/icons-material/FiberSmartRecord";
+import { TextField } from "@mui/material";
 import { AxiosResponse } from "axios";
 import EmailService from "@/service/EmailService";
-import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
 import { IBaseResponse } from "@/interface/IBaseResponse";
-import useSettingService from "@/hooks/useSettingService";
-import { TSetting } from "@/types/TSetting";
-import { SetSetting } from "@/store/Setting/Setting-action";
-import { H3, H6, Span } from "../Typography";
-import { isHTMLString } from "@/helpers/Extensions";
 import Link from "next/link";
 import { SocialMediaIcons } from "../SocialMediaIcons";
 import LoadingButton from "@mui/lab/LoadingButton";
-const styles = {
-  boxContainer: {
-    background: "black",
-    //backgroundImage: `url(${require('../../images/footer.jpg')})`,
-  },
-};
+import { toast } from "react-hot-toast";
+import Image from "next/image";
 
 const Footer: FC = () => {
-  const our_story_content = useAppSelector(
-    (x) => x.Store.ContentReducer.Content?.ourStory
-  );
-
-  const currentCurrency = useAppSelector(
-    (x) => x.Store.SettingReducer.setting?.currencyCode
-  );
-
   const [email, setEmail] = useState("");
-  // const { enqueueSnackbar } = useSnackbar()
 
   const [loading, setLoading] = useState(false);
   const handleSubmitForm = async (e: any) => {
@@ -52,9 +20,10 @@ const Footer: FC = () => {
       email
     )) as AxiosResponse<IBaseResponse>;
     if (result.data.success) {
-      // enqueueSnackbar(
-      //     'Congratulation! You have successfully subscribed to our newsletter'
-      // )
+      toast.success(
+        "Congratulation! You have successfully subscribed to our newsletter",
+        { duration: 8000 }
+      );
       window.scroll({
         behavior: "smooth",
         left: 0,
@@ -62,7 +31,9 @@ const Footer: FC = () => {
       });
       setEmail("");
     } else {
-      //enqueueSnackbar('You have already subscribed to our newsletter')
+      toast.error("You have already subscribed to our newsletter", {
+        duration: 8000,
+      });
     }
     setLoading(false);
   };
@@ -75,276 +46,137 @@ const Footer: FC = () => {
     return emailRegex.test(email);
   };
 
-  const dispatch = useAppDispatch();
-  const { onGetUserSetting, settingLoader } = useSettingService();
-  const handleCurrencyClick = async (item: any) => {
-    var result = (await onGetUserSetting(item)) as AxiosResponse<any>;
-
-    if (result.status == 200) {
-      var object: TSetting = result.data as TSetting;
-      dispatch(
-        SetSetting({
-          setting: {
-            currencyCode: object.currencyCode,
-            rate: object.rate,
-            onSale: object.onSale,
-            country: object.country,
-          },
-        })
-      );
-    }
-  };
   return (
-    <footer style={{ position: "relative" }}>
-      <Box sx={styles.boxContainer}>
-        <Container sx={{ p: "1rem", color: "white" }}>
-          <Box overflow="hidden">
-            <Grid container spacing={1}>
-              <Grid
-                item
-                lg={3}
-                md={6}
-                sm={6}
-                xs={12}
-                paddingRight={{
-                  xs: "24px!important",
-                  sm: "24px!important",
+    <footer className="pt-6 lg:pt-20 pb-4 lg:pb-8 bg-white">
+      <div className="max-w-7xl mx-auto px-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-12 gap-y-8 lg:gap-y-12 lg:justify-items-center ">
+          <div>
+            <div className="max-w-sm">
+              <a href="#" title="" className="inline-flex rounded-md">
+                <Image
+                  src="/assets/images/logos/newmanits.png"
+                  alt="Newmanits Logo"
+                  width={200}
+                  height={80}
+                />
+              </a>
+
+              <p className="mt-4 font-medium text-sm pl-2">
+                Newminatis is a creative company that combines fashion, art, and
+                music to foster diversity, inclusivity, and individual
+                expression. Their vision is to build a community-focused brand
+                that celebrates creativity and brings people together through
+                innovative designs and projects.
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <p className="uppercase font-semibold text-sm">Useful Links</p>
+            <ul className="mt-4 divide-y-2">
+              {importantLinks.map((item) => (
+                <li key={item.label} className="py-2">
+                  <Link
+                    href={item.link}
+                    title=""
+                    className="font-medium text-sm"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <p className="uppercase font-semibold text-sm">Contact Us</p>
+            <div className="mt-4 grid">
+              <span className="font-medium text-sm">Newminatis LLC</span>
+              <span className="font-medium text-sm">
+                3680 Wilshire Blvd Ste P04 <br /> 1716 Los Angeles, CA 90010
+              </span>
+
+              <span className="font-medium text-sm">
+                Email: support@newminatis.com
+              </span>
+              <span className="font-medium text-sm">
+                Phone: +1 415 818 1185
+              </span>
+              <div className="mt-2">
+                <SocialMediaIcons color="black" />
+              </div>
+            </div>
+          </div>
+
+          <div className="w-full">
+            <p className="uppercase font-semibold text-sm">Join The Tripe</p>
+            <form
+              onSubmit={handleSubmitForm}
+              className="d-flex mt-4"
+              style={{ columnGap: "5px" }}
+            >
+              <TextField
+                fullWidth
+                name="email"
+                value={email}
+                onChange={handleChange}
+                variant="outlined"
+                sx={{
+                  mb: 2,
+                  "& .MuiInputBase-root": {
+                    background: "white",
+                    borderRadius: "0",
+                  },
                 }}
-              >
-                <H3>Our Mission</H3>
+                placeholder="Email Address"
+              />
 
-                {isHTMLString(our_story_content?.ourMission || "") ? (
-                  <H6
-                    mb={2.5}
-                    dangerouslySetInnerHTML={{
-                      __html: our_story_content?.ourMission || "",
-                    }}
-                  />
-                ) : (
-                  <H6
-                    mb={2.5}
-                    pt={"8px"}
-                    display={"block"}
-                    color="grey.500"
-                    sx={{
-                      whiteSpace: "break-spaces",
-                    }}
-                    className="title-sub-font"
-                  >
-                    {our_story_content?.ourMission}
-                  </H6>
-                )}
-
-                <H3>Our Vision</H3>
-                {isHTMLString(our_story_content?.ourVision || "") ? (
-                  <H6
-                    mb={2.5}
-                    dangerouslySetInnerHTML={{
-                      __html: our_story_content?.ourVision || "",
-                    }}
-                  />
-                ) : (
-                  <H6
-                    pt={"8px"}
-                    mb={2.5}
-                    display={"block"}
-                    color="grey.500"
-                    sx={{
-                      whiteSpace: "break-spaces",
-                    }}
-                    className="title-sub-font"
-                  >
-                    {our_story_content?.ourVision}
-                  </H6>
-                )}
-              </Grid>
-
-              <Grid item lg={3} md={6} sm={6} xs={12}>
-                <H3>Useful Links</H3>
-
-                <Box mb={2}>
-                  <List>
-                    {importantLinks.map((item, ind) => (
-                      <Link href={item.link} key={ind}>
-                        <ListItem
-                          disablePadding
-                          sx={{
-                            padding: "0!important",
-                          }}
-                        >
-                          <ListItemButton sx={{ paddingY: "2px" }}>
-                            <ListItemIcon>
-                              <FiberSmartRecordIcon
-                                sx={{
-                                  color: "white",
-                                }}
-                              />
-                            </ListItemIcon>
-                            <ListItemText primary={item.label} />
-                          </ListItemButton>
-                        </ListItem>
-                      </Link>
-                    ))}
-                  </List>
-                </Box>
-              </Grid>
-
-              <Grid item lg={3} md={6} sm={6} xs={12}>
-                <Box mb={2}>
-                  <H3>Contact Us</H3>
-                  <Box
-                    py={0.6}
-                    color="white"
-                    fontFamily={"GlacialIndifference-Regular"}
-                    fontSize={"14px"}
-                  >
-                    Newminatis LLC
-                  </Box>
-                  <Box
-                    pb={0.6}
-                    color="white"
-                    fontSize={"14px"}
-                    fontFamily={"GlacialIndifference-Regular"}
-                  >
-                    3680 Wilshire Blvd Ste P04 <br /> 1716 Los Angeles, CA 90010
-                  </Box>
-
-                  <Box
-                    pb={0.6}
-                    fontSize={"14px"}
-                    color="white"
-                    fontFamily={"GlacialIndifference-Regular"}
-                  >
-                    Email: support@newminatis.com
-                  </Box>
-                  <Box
-                    pb={0.6}
-                    fontSize={"14px"}
-                    color="white"
-                    fontFamily={"GlacialIndifference-Regular"}
-                  >
-                    Phone: +1 415 818 1185
-                  </Box>
-
-                  <Box
-                    pb={0.6}
-                    fontSize={"14px"}
-                    mb={2}
-                    color="white"
-                    fontFamily={"GlacialIndifference-Regular"}
-                  >
-                    @2023 NEWMINATIS
-                  </Box>
-
-                  <SocialMediaIcons />
-                </Box>
-              </Grid>
-              <Grid item lg={3} md={6} sm={6} xs={12}>
-                <Box>
-                  <H3 mb={2}> Join The Tribe</H3>
-
-                  <form
-                    onSubmit={handleSubmitForm}
-                    className="d-flex"
-                    style={{ columnGap: "5px" }}
-                  >
-                    <TextField
-                      fullWidth
-                      name="email"
-                      value={email}
-                      onChange={handleChange}
-                      variant="outlined"
-                      sx={{
-                        mb: 2,
-                        "& .MuiInputBase-root": {
-                          background: "white",
-                          borderRadius: "0",
-                        },
-                      }}
-                      placeholder="Email Address"
-                    />
-
-                    <Box
-                      sx={{
-                        marginLeft: "auto",
-                        width: "fit-content",
-                      }}
-                    >
-                      <LoadingButton
-                        type="submit"
-                        loading={loading}
-                        disabled={!isValidEmail()}
-                        //color="marron"
-                        sx={{
-                          color: "black",
-                          background: "white",
-                          height: "40px",
-                          padding: "9.3px 30px",
-                          fontWeight: "bold",
-                          borderRadius: "0",
-                          "&.MuiLoadingButton-root:hover": {
-                            background: "white",
-                          },
-                          "& .MuiLoadingButton-loadingIndicator": {
-                            color: "black",
-                          },
-                          ":disabled": {
-                            color: "black",
-                            opacity: "0.75",
-                            background: "#f4f4f4",
-                          },
-                        }}
-                      >
-                        <Span
-                          style={
-                            loading
-                              ? {
-                                  visibility: "hidden",
-                                }
-                              : {
-                                  visibility: "visible",
-                                }
+              <div className="w-fit mr-auto">
+                <LoadingButton
+                  type="submit"
+                  loading={loading}
+                  disabled={!isValidEmail()}
+                  color="primary"
+                >
+                  <span
+                    style={
+                      loading
+                        ? {
+                            visibility: "hidden",
                           }
-                          sx={{
-                            textTransform: "uppercase",
-                          }}
-                        >
-                          Subscribe
-                        </Span>
-                      </LoadingButton>
-                    </Box>
-                  </form>
-                </Box>
-              </Grid>
-            </Grid>
-          </Box>
-        </Container>
-      </Box>
-      <Box
-        sx={{
-          height: {
-            xs: "80px",
-            sm: "80px",
-            md: "30px",
-            lg: "30px",
-          },
-          paddingBottom: "10px",
-          paddingTop: "3px",
-          background: "white",
-          display: "flex",
-          justifyContent: "center",
-          columnGap: "20px",
-        }}
-      >
-        {PaymentIcons.map((i) => (
-          <img
-            src={i.link}
-            alt={i.label}
-            key={i.label}
-            style={{ width: "30px", height: "30px" }}
-          />
-        ))}
-      </Box>
+                        : {
+                            visibility: "visible",
+                          }
+                    }
+                    className="uppercase text-xs"
+                  >
+                    Subscribe
+                  </span>
+                </LoadingButton>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <hr className="mt-6 md:mt-12" />
+
+        <div className="grid justify-items-center lg:flex mt-2 flex-row items-end lg:justify-between">
+          <p className="font-medium text-sm">
+            © Copyright 2023. All Rights Reserved
+          </p>
+
+          <div className="mt-2 lg:mt-6 sm:mt-0 flex gap-x-4">
+            {PaymentIcons.map((i) => (
+              <img
+                src={i.link}
+                alt={i.label}
+                key={i.label}
+                style={{ width: "30px", height: "30px" }}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
     </footer>
   );
 };
@@ -374,6 +206,11 @@ const importantLinks = [
     label: "FAQs",
     link: "/faqs",
   },
+];
+const contactUs = [
+  "Newminatis LLC",
+  "3680 Wilshire Blvd Ste P04 <br/> 1716 Los Angeles, CA 90010",
+  "",
 ];
 
 const PaymentIcons = [

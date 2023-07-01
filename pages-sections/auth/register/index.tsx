@@ -3,7 +3,7 @@ import React, { useCallback, useState } from "react";
 import { Wrapper } from "../shared";
 import Image from "next/image";
 import { Box, Checkbox, FormControlLabel, TextField } from "@mui/material";
-import EyeToggleButton from "@/pages-sections/sessions/EyeToggleButton";
+import EyeToggleButton from "@/pages-sections/auth/shared/EyeToggleButton";
 import { FlexBox, FlexRowCenter } from "@/components/flex-box";
 import { H6, Span } from "@/components/Typography";
 import { useFormik } from "formik";
@@ -14,7 +14,7 @@ import Link from "next/link";
 import { LoadingButton } from "@mui/lab";
 import { signIn } from "next-auth/react";
 import { toast } from "react-hot-toast";
-import SocialButtons from "@/pages-sections/sessions/SocialButtons";
+import SocialButtons from "@/pages-sections/auth/shared/SocialButtons";
 
 export default function RegisterClientPage() {
   const [loading, setLoading] = useState(false);

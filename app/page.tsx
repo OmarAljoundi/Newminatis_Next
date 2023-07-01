@@ -27,7 +27,7 @@ export default function Home() {
       </section>
 
       <section>
-        <ValueSection />
+        <ValueSection extraClass="py-7 md:py-14 mx-auto" mode="light" />
       </section>
       <section>
         <InstagramSection />
