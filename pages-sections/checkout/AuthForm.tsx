@@ -21,7 +21,6 @@ import { InitiateCheckoutEvent, grapUserData } from "@/helpers/FacebookEvent";
 import { getTotalPrice } from "@/helpers/Extensions";
 import { IBaseResponse } from "@/interface/IBaseResponse";
 import { toast } from "react-hot-toast";
-import { Auth } from "@/pages-sections/sessions/Auth";
 import { H2, H3, H5, H6, Span } from "@/components/Typography";
 import { FlexBetween, FlexBox } from "@/components/flex-box";
 import MuiPhoneNumber from "material-ui-phone-number-2";
@@ -199,12 +198,6 @@ const AuthForm: FC = () => {
 
   return (
     <>
-      <Auth
-        dialogOpen={dialogOpen}
-        isMobile={false}
-        toggleDialog={toggleDialog}
-      />
-
       <form onSubmit={handleSubmit}>
         <Card sx={{ mb: 4 }} elevation={1} role={"drawer"}>
           {selected === null && (
