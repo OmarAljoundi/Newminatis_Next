@@ -23,7 +23,7 @@ export const ProductCardLoading: FC<Prop> = ({ loop }) => {
               >
                 <Skeleton
                   variant="rectangular"
-                  className="aspect-[1/1.5]"
+                  className="aspect-[1/1]"
                   sx={{
                     borderRadius: "0",
                     width: "100%",
@@ -90,49 +90,72 @@ export const ProductCardLoading: FC<Prop> = ({ loop }) => {
       ) : (
         <Card
           sx={{
-            backgroundColor: "rgba(30,30,30,0.5)",
-            borderRadius: "4px",
+            backgroundColor: "rgba(200,200,200,0.5)",
+            borderRadius: "0",
+            padding: "0!important",
           }}
           elevation={6}
         >
           <Skeleton
             variant="rectangular"
-            height={downSm ? 357 : 440}
+            className="aspect-[1/1]"
             sx={{
-              borderRadius: "4px",
-
+              borderRadius: "0",
+              width: "100%",
+              height: "100%",
               minHeight: "100%",
             }}
           />
           <Box p={1}>
             <FlexBox justifyContent={"space-between"}>
-              <Skeleton width="45%" height={20} sx={{ bgcolor: "#c1c1c1" }} />
-              <Skeleton width="45%" height={20} sx={{ bgcolor: "#c1c1c1" }} />
+              <Skeleton
+                width="45%"
+                height={20}
+                sx={{ bgcolor: "#c1c1c1", borderRadius: "0" }}
+              />
+              <Skeleton
+                width="45%"
+                height={20}
+                sx={{ bgcolor: "#c1c1c1", borderRadius: "0" }}
+              />
             </FlexBox>
             <FlexBox justifyContent={"flex-start"} columnGap={1} my={2}>
               <Skeleton
                 variant="rectangular"
                 width="30px"
                 height={"30px"}
-                sx={{ bgcolor: "#c1c1c1", borderRadius: "8px" }}
+                sx={{
+                  bgcolor: "#c1c1c1",
+                  borderRadius: "0",
+                }}
               />
               <Skeleton
                 variant="rectangular"
                 width="30px"
                 height={"30px"}
-                sx={{ bgcolor: "#c1c1c1", borderRadius: "8px" }}
+                sx={{
+                  bgcolor: "#c1c1c1",
+                  borderRadius: "0",
+                }}
               />
               <Skeleton
                 variant="rectangular"
                 width="30px"
                 height={"30px"}
-                sx={{ bgcolor: "#c1c1c1", borderRadius: "8px" }}
+                sx={{
+                  bgcolor: "#c1c1c1",
+                  borderRadius: "0",
+                }}
               />
             </FlexBox>
             <Skeleton
               width="75%"
               height={40}
-              sx={{ margin: "10px auto", bgcolor: "#c1c1c1" }}
+              sx={{
+                margin: "10px auto",
+                bgcolor: "#c1c1c1",
+                borderRadius: "0",
+              }}
             />
           </Box>
         </Card>

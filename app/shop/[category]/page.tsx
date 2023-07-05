@@ -1,6 +1,4 @@
 import Breadcrumb from "@/pages-sections/shop/Breadcrumb";
-import ProductService from "@/service/ProductService";
-import { SearchQuery, eFilterOperator } from "@/types/TSearchQuery";
 import React from "react";
 
 type Params = {
@@ -8,8 +6,8 @@ type Params = {
     category: string;
   };
 };
-export default async function SingleProductPage({
+export default async function ShopCategoryPage({
   params: { category },
 }: Params) {
-  return <Breadcrumb link={category} title={category} />;
+  return <Breadcrumb link={[""]} title={[category]} />;
 }

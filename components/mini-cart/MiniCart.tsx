@@ -23,6 +23,9 @@ import { updateCart } from "@/store/CartItem/ThunkAPI";
 import { AddItem, RemoveItem, UpdateItem } from "@/store/CartItem/Cart-action";
 import { StyledChip } from "../product-card/StyledComponents";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import { ExpressCheckoutNoEmail } from "../stripe/ExpressCheckoutNoEmail";
+import { Elements } from "@stripe/react-stripe-js";
+import { stripePromise } from "../stripe/StripeScript";
 // =========================================================
 type MiniCartProps = { toggleSidenav: () => void; open: boolean };
 // =========================================================
@@ -116,7 +119,7 @@ const MiniCart: FC<MiniCartProps> = ({ toggleSidenav, open }) => {
                 leaveFrom="translate-x-0"
                 leaveTo="translate-x-full"
               >
-                <Dialog.Panel className="pointer-events-auto w-screen max-w-xs">
+                <Dialog.Panel className="pointer-events-auto w-screen max-w-xs md:max-w-md lg:max-w-lg">
                   <div className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
                     <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
                       <div className="flex items-start justify-between">
@@ -147,7 +150,6 @@ const MiniCart: FC<MiniCartProps> = ({ toggleSidenav, open }) => {
                                 px={2.5}
                                 key={item.id}
                                 alignItems="center"
-                                borderBottom={`1px solid gray`}
                               >
                                 <FlexBox
                                   alignItems="center"
@@ -306,6 +308,9 @@ const MiniCart: FC<MiniCartProps> = ({ toggleSidenav, open }) => {
                         >
                           Checkout
                         </Link>
+                        <Elements stripe={stripePromise}>
+                          <ExpressCheckoutNoEmail />
+                        </Elements>
                       </div>
                       <div className="mt-2 flex justify-center text-center text-sm text-gray-500">
                         <p>

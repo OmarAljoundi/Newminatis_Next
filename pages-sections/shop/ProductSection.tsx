@@ -1,5 +1,5 @@
 "use client";
-import { GrapQueries } from "@/helpers/Extensions";
+import { GrapQueries, getSubCategories } from "@/helpers/Extensions";
 import useProductService from "@/hooks/useProductService";
 import { IProductResponse } from "@/interface/IProductResponse";
 import { TProduct } from "@/types/TProduct";
@@ -58,6 +58,17 @@ export default function ProductSection() {
                 x.description.toLowerCase() ==
                 (params?.category as string).toLowerCase()
             )?.name,
+            FilterOperator: eFilterOperator.Equal,
+          });
+        }
+        if (params?.subCategory && isLoading == false) {
+          _SQ.FilterByOptions.push({
+            MemberName: "subcategory",
+            FilterFor: getSubCategories(
+              params!.category as string,
+              categories || []
+            )?.find((x) => x.description.toLowerCase() == params!.subCategory)
+              ?.id,
             FilterOperator: eFilterOperator.Equal,
           });
         }

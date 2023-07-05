@@ -65,22 +65,12 @@ const BestSellerSection: FC = () => {
     >
       {width > 0 && (
         <Box mb={3.5} sx={{ position: "relative" }}>
-          <Grid container spacing={1}>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-y-5 gap-x-2">
             {(CreateLoad ? Array.from(new Array(4)) : NewminatisOptions)?.map(
               (item, index) => (
-                <Grid
-                  sx={{
-                    height: "auto",
-                    paddingTop: "0!important",
-                  }}
-                  key={index}
-                  item
-                  xs={6}
-                  sm={4}
-                  md={3}
-                >
+                <div>
                   {item ? (
-                    <Box py={0.5} key={item.id} sx={{ height: "100%" }}>
+                    <Box py={0.5} sx={{ height: "100%" }}>
                       {!downSm ? (
                         <ShopCard
                           discount={(item.salePrice as unknown as number) ?? 0}
@@ -99,10 +89,10 @@ const BestSellerSection: FC = () => {
                   ) : (
                     <ProductCardLoading />
                   )}
-                </Grid>
+                </div>
               )
             )}
-          </Grid>
+          </div>
         </Box>
       )}
     </CategorySectionCreator>

@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 import { layoutConstant } from "@/utils/constants";
 import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
-import { calcualteQty } from "@/helpers/Extensions";
+import { calcualteQty, classNames } from "@/helpers/Extensions";
 import { ResetUser } from "@/store/Auth/Auth-action";
 import MiniCart from "../mini-cart/MiniCart";
 import { Fragment } from "react";
@@ -25,6 +25,7 @@ import Currency from "./Currency";
 import { FeaturedProducts } from "./FeaturedProducts";
 import { CategorySections } from "./CategorySections";
 import MiniWishList from "../mini-cart/MiniWishList";
+import UserMenu from "./UserMenu";
 
 export const HeaderWrapper = styled(Box)(({ theme }) => ({
   zIndex: 3,
@@ -37,9 +38,6 @@ export const HeaderWrapper = styled(Box)(({ theme }) => ({
   },
 }));
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
 const Header = () => {
   const { data: session, status } = useSession();
 
@@ -53,22 +51,11 @@ const Header = () => {
   const wishListLength = useAppSelector(
     (state) => state.Store.WishlistReducer?.wishlistItems.length
   );
-  const [dialogOpen, setDialogOpen] = useState(false);
   const [open, setOpen] = useState(false);
   const [sidenavOpen, setSidenavOpen] = useState(false);
   const [wishList, setWishList] = useState(false);
-  const auth = useAppSelector((x) => x.Store.AuthReducer.Auth);
   const toggleSidenav = () => setSidenavOpen(!sidenavOpen);
-  const dispatch = useAppDispatch();
   const toggleWishList = () => setWishList(!wishList);
-
-  const logout = () => {
-    Cookies.remove("token");
-    Cookies.remove("Session");
-    Cookies.remove("GUEST_EMAIL");
-    dispatch(ResetUser());
-    //enqueueSnackbar('Logged out successfully')
-  };
 
   useEffect(() => {
     if (status == "unauthenticated") {
@@ -286,7 +273,7 @@ const Header = () => {
                 <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
                   {status === "authenticated" ? (
                     <span className="title">
-                      Welcome back, {session.user.email}
+                      <UserMenu />
                     </span>
                   ) : (
                     <Link
@@ -297,9 +284,7 @@ const Header = () => {
                     </Link>
                   )}
                   <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
-                  {status === "authenticated" ? (
-                    <span onClick={() => signOut()}>Sign out</span>
-                  ) : (
+                  {status === "unauthenticated" && (
                     <Link
                       href="/auth/register"
                       className="title text-sm font-medium text-gray-700 hover:text-gray-800"

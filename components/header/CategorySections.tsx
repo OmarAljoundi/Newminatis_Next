@@ -1,5 +1,6 @@
 import { FC } from "react";
 import { BlurImage } from "../BlurImage";
+import Link from "next/link";
 
 export type CategorySectionsProp = {
   sections: any[];
@@ -17,9 +18,9 @@ export const CategorySections: FC<CategorySectionsProp> = ({ sections }) => {
           >
             {section.items.map((item) => (
               <li key={item.title} className="flex">
-                <a href={item.url} className="hover:text-gray-800">
+                <Link href={`/${item.url}`} className="hover:text-gray-800">
                   {item.title}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>

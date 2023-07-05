@@ -2,7 +2,10 @@
 import Link from "next/link";
 import React, { FC } from "react";
 
-const Breadcrumb: FC<{ title?: string; link?: string }> = ({ title, link }) => {
+const Breadcrumb: FC<{ title?: string[]; link?: string[] }> = ({
+  title,
+  link,
+}) => {
   return (
     <nav aria-label="Breadcrumb">
       <ol
@@ -37,7 +40,7 @@ const Breadcrumb: FC<{ title?: string; link?: string }> = ({ title, link }) => {
             >
               Shop
             </Link>
-            {title && link && (
+            {title && title.length > 0 && (
               <svg
                 width={16}
                 height={20}
@@ -51,17 +54,35 @@ const Breadcrumb: FC<{ title?: string; link?: string }> = ({ title, link }) => {
             )}
           </div>
         </li>
-        {title && link && (
-          <li className="text-sm">
-            <Link
-              href={link}
-              aria-current="page"
-              className="capitalize  font-medium text-gray-500 hover:text-gray-600"
-            >
-              {title}
-            </Link>
+        {title?.map((i, index) => (
+          <li className="text-sm" key={index}>
+            <div className="flex items-center">
+              <Link
+                href={link![index]}
+                aria-current={index == title.length - 1 ? "true" : "false"}
+                className={`capitalize font-medium text-sm ${
+                  index != title.length - 1
+                    ? "mr-2 text-sm font-medium text-gray-900 title"
+                    : "text-gray-500 hover:text-gray-600"
+                }`}
+              >
+                {i}
+              </Link>
+              {index != title.length - 1 && (
+                <svg
+                  width={16}
+                  height={20}
+                  viewBox="0 0 16 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                  className="h-5 w-4 text-gray-300"
+                >
+                  <path d="M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z" />
+                </svg>
+              )}
+            </div>
           </li>
-        )}
+        ))}
       </ol>
     </nav>
   );

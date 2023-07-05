@@ -4,6 +4,7 @@ import FacebookProvider from "next-auth/providers/facebook";
 import GoogleProvider from "next-auth/providers/google";
 import UserService from "@/service/UserService";
 import { RegisterType, Role, TUser } from "@/types/TUser";
+import { TUserAddress } from "@/types/TUserAddress";
 export const authOptions: AuthOptions = {
   providers: [
     CredentialsProvider({
@@ -120,10 +121,16 @@ export const authOptions: AuthOptions = {
     maxAge: 604800,
   },
   callbacks: {
-    jwt({ user, token }) {
-      if (user) {
+    jwt({ user, token, trigger, session }) {
+      if (user && trigger !== "update") {
         token.role = (user as any as TUser).role;
         token.access_token = (user as any).access_token;
+        token.id = (user as any as TUser).id;
+        token.userAddress = (user as any as TUser).userAddress || [];
+        token.selectedAddress = 0;
+      } else if (trigger == "update") {
+        token.userAddress = session?.userAddress;
+        token.selectedAddress = session?.selectedAddress || 0;
       }
       return token;
     },
@@ -131,6 +138,9 @@ export const authOptions: AuthOptions = {
       //@ts-ignore
       session.user.role = token.role;
       session.user.access_token = token.access_token as string;
+      session.user.id = token.id as number;
+      session.user.selectedAddress = token.selectedAddress as number;
+      session.user.userAddress = token.userAddress as TUserAddress[];
       return session;
     },
   },

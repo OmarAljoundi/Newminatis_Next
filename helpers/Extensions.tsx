@@ -1,6 +1,7 @@
 import { calculateDiscountAsNumber } from "@/lib";
 import { CartItem } from "@/store/Model/CartItem";
 import { eOrderStatus } from "@/types/TOrder";
+import { TProductCategory } from "@/types/TProductCategory";
 import { TProductReview, eReviewStatus } from "@/types/TProductReview";
 import { TProductVariant } from "@/types/TProductVariant";
 import { Order, SearchQuery, eFilterOperator } from "@/types/TSearchQuery";
@@ -311,4 +312,15 @@ export const isStockAvailable = (qty: number, stock: number) => {
     return false;
   }
   return true;
+};
+
+export const getSubCategories = (
+  categorySlug: string,
+  categories: TProductCategory[]
+) => {
+  var subs = categories.find(
+    (x) => x.description.toLowerCase() == categorySlug?.toLowerCase()
+  )?.productSubCategory;
+
+  return subs || [];
 };

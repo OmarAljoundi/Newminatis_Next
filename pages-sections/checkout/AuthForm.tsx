@@ -10,11 +10,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
 import useUserService from "@/hooks/useUserService";
 import { TUserAddress } from "@/types/TUserAddress";
-import {
-  AddUserAddress,
-  DeleteUserAddress,
-  SelectUserAddress,
-} from "@/store/Auth/Auth-action";
 import { IUserResponse } from "@/interface/IUserResponse";
 import FacebookService from "@/service/FacebookService";
 import { InitiateCheckoutEvent, grapUserData } from "@/helpers/FacebookEvent";
@@ -30,20 +25,20 @@ import { ex_countries } from "@/utils/constants";
 import { AddressValidationSchema } from "@/utils/schema";
 import NewAddressForm from "@/components/address/NewAddressForm";
 import EditAddressForm from "@/components/address/EditAddressForm";
+import { useSession } from "next-auth/react";
 
 const AuthForm: FC = () => {
   const router = useRouter();
-  const auth = useAppSelector((state) => state.Store.AuthReducer.Auth);
   const cart = useAppSelector((state) => state.Store.CartReducer?.CartItems);
-  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const { data: authedSession, status, update } = useSession();
   const [selected, setSelected] = useState<number | null>(
-    auth?.selectedAddress &&
-      auth?.userAddress != null &&
-      auth?.userAddress.length > 0
-      ? auth?.selectedAddress
-      : auth?.userAddress != null && auth?.userAddress.length > 0
+    authedSession?.user?.selectedAddress &&
+      authedSession?.user?.userAddress != null &&
+      authedSession?.user?.userAddress.length > 0
+      ? authedSession?.user?.selectedAddress
+      : authedSession?.user?.userAddress != null &&
+        authedSession?.user?.userAddress.length > 0
       ? 0
       : 0
   );
@@ -51,48 +46,61 @@ const AuthForm: FC = () => {
   const { onPostAddress, onDeleteAddress } = useUserService();
   const dispatch = useAppDispatch();
 
-  const toggleDialog = () => setDialogOpen(!dialogOpen);
   const handleFormSubmit = async (values: TUserAddress) => {
     setLoading(true);
     values.city = values.state!;
     const result = (await onPostAddress(values)) as IUserResponse;
     if (result.success) {
-      dispatch(AddUserAddress(result.userAddress));
+      if (authedSession)
+        await update({
+          userAddress: [...authedSession.user.userAddress, result.userAddress],
+        });
+      //dispatch(AddUserAddress(result.userAddress));
       if (process.env.NODE_ENV != "development") {
-        await pushFacebookEvent();
+        // await pushFacebookEvent();
       }
       setLoading(false);
       router.push("/payment");
     }
   };
 
-  const pushFacebookEvent = async () => {
-    var items = cart?.map((i) => ({
-      id: i.sku,
-      quantity: i.qty,
-      item_price: i.price,
-    }));
-    await FacebookService.pushEvent({
-      data: [
-        {
-          event_name: InitiateCheckoutEvent,
-          user_data: grapUserData(auth),
-          event_source_url: window.location.href,
-          custom_data: {
-            content_category: "product",
-            currency: "USD",
-            value: getTotalPrice(cart).toString(),
-            contents: items,
-          },
-        },
-      ],
-    });
-  };
+  // const pushFacebookEvent = async () => {
+  //   var items = cart?.map((i) => ({
+  //     id: i.sku,
+  //     quantity: i.qty,
+  //     item_price: i.price,
+  //   }));
+  //   await FacebookService.pushEvent({
+  //     data: [
+  //       {
+  //         event_name: InitiateCheckoutEvent,
+  //         user_data: grapUserData(auth),
+  //         event_source_url: window.location.href,
+  //         custom_data: {
+  //           content_category: "product",
+  //           currency: "USD",
+  //           value: getTotalPrice(cart).toString(),
+  //           contents: items,
+  //         },
+  //       },
+  //     ],
+  //   });
+  // };
 
   const deleteAddress = async (id: number) => {
     const result = (await onDeleteAddress(id)) as IBaseResponse;
     if (result.success) {
-      dispatch(DeleteUserAddress(id));
+      let userAddress = [...(authedSession?.user.userAddress || [])];
+      userAddress.map((i) => {
+        if (i.id == id) {
+          i.active = false;
+        }
+      });
+      update({
+        userAddress: userAddress,
+      });
+
+      //dispatch(DeleteUserAddress(id));
       toast.success("Address Deleted Successfully", {
         duration: 5000,
       });
@@ -100,26 +108,23 @@ const AuthForm: FC = () => {
   };
 
   useEffect(() => {
-    if (auth?.userAddress == null || auth?.userAddress.length == 0) {
+    if (authedSession?.user?.userAddress.length == 0) {
       setSelected(null);
     } else {
-      setSelected(auth.selectedAddress ?? 0);
+      setSelected(authedSession?.user?.selectedAddress ?? 0);
     }
-  }, [auth?.userAddress]);
-
-  useEffect(() => {
-    if (auth) {
-      setFieldValue("email", auth?.email);
-    } else {
-      setFieldValue("email", null);
-    }
-  }, [auth]);
+    setFieldValue("email", authedSession?.user.email ?? null);
+  }, [status]);
 
   const handleProceedPayment = async () => {
     setLoading(true);
-    dispatch(SelectUserAddress(selected || 0));
+    update({
+      selectedAddress: selected || 0,
+      userAddress: authedSession?.user.userAddress,
+    });
+    //dispatch(SelectUserAddress(selected || 0));
     if (process.env.NODE_ENV != "development") {
-      await pushFacebookEvent();
+      //await pushFacebookEvent();
     }
     setLoading(false);
     router.push("/payment");
@@ -127,55 +132,75 @@ const AuthForm: FC = () => {
 
   useEffect(() => {
     resetForm();
-  }, [selected, auth?.selectedAddress]);
+  }, [selected, authedSession?.user.selectedAddress]);
 
   const initialValues: TUserAddress = {
     addressLine:
-      selected != null && auth?.userAddress && auth.userAddress.length > 0
-        ? auth.userAddress[selected].addressLine
+      selected != null &&
+      authedSession?.user?.userAddress &&
+      authedSession?.user.userAddress.length > 0
+        ? authedSession?.user.userAddress[selected].addressLine
         : "",
 
     deliveryInstructions:
-      selected != null && auth?.userAddress && auth.userAddress.length > 0
-        ? auth.userAddress[selected].deliveryInstructions
+      selected != null &&
+      authedSession?.user?.userAddress &&
+      authedSession?.user.userAddress.length > 0
+        ? authedSession?.user.userAddress[selected].deliveryInstructions
         : "",
     firstName:
-      selected != null && auth?.userAddress && auth.userAddress.length > 0
-        ? auth.userAddress[selected].firstName
+      selected != null &&
+      authedSession?.user?.userAddress &&
+      authedSession?.user.userAddress.length > 0
+        ? authedSession?.user.userAddress[selected].firstName
         : "",
     lastName:
-      selected != null && auth?.userAddress && auth.userAddress.length > 0
-        ? auth.userAddress[selected].lastName
+      selected != null &&
+      authedSession?.user?.userAddress &&
+      authedSession?.user.userAddress.length > 0
+        ? authedSession?.user.userAddress[selected].lastName
         : "",
     city:
-      selected != null && auth?.userAddress && auth.userAddress.length > 0
-        ? auth.userAddress[selected].city
+      selected != null &&
+      authedSession?.user?.userAddress &&
+      authedSession?.user.userAddress.length > 0
+        ? authedSession?.user.userAddress[selected].city
         : "",
     country:
-      selected != null && auth?.userAddress && auth.userAddress.length > 0
-        ? auth.userAddress[selected].country
+      selected != null &&
+      authedSession?.user?.userAddress &&
+      authedSession?.user.userAddress.length > 0
+        ? authedSession?.user.userAddress[selected].country
         : "",
     createdDate:
-      selected != null && auth?.userAddress && auth.userAddress.length > 0
-        ? auth.userAddress[selected].createdDate
+      selected != null &&
+      authedSession?.user?.userAddress &&
+      authedSession?.user.userAddress.length > 0
+        ? authedSession?.user.userAddress[selected].createdDate
         : null,
     id:
-      selected != null && auth?.userAddress && auth.userAddress.length > 0
-        ? auth.userAddress[selected].id
+      selected != null &&
+      authedSession?.user?.userAddress &&
+      authedSession?.user.userAddress.length > 0
+        ? authedSession?.user.userAddress[selected].id
         : 0,
     modifiedDate: null,
     phoneNumber:
-      selected != null && auth?.userAddress && auth.userAddress.length > 0
-        ? auth.userAddress[selected].phoneNumber
+      selected != null &&
+      authedSession?.user?.userAddress &&
+      authedSession?.user.userAddress.length > 0
+        ? authedSession?.user.userAddress[selected].phoneNumber
         : "",
     postalCode:
-      selected != null && auth?.userAddress && auth.userAddress.length > 0
-        ? auth.userAddress[selected].postalCode
+      selected != null &&
+      authedSession?.user?.userAddress &&
+      authedSession?.user.userAddress.length > 0
+        ? authedSession?.user.userAddress[selected].postalCode
         : "",
 
-    userId: auth?.id || 0,
+    userId: authedSession?.user?.id || 0,
     active: true,
-    email: auth?.email ?? "",
+    email: authedSession?.user?.email ?? "",
   };
 
   const {
@@ -196,6 +221,13 @@ const AuthForm: FC = () => {
     onSubmit: handleFormSubmit,
   });
 
+  const updateSelectedAddress = async (selectDefaultAddress: number) => {
+    await update({
+      selectedAddress: selectDefaultAddress,
+      userAddress: authedSession?.user.userAddress,
+    });
+  };
+
   return (
     <>
       <form onSubmit={handleSubmit}>
@@ -210,7 +242,7 @@ const AuthForm: FC = () => {
                     sx={{ mb: 3 }}
                     size="small"
                     onBlur={handleBlur}
-                    disabled={auth != null}
+                    disabled={status === "authenticated"}
                     label="Email Address"
                     onChange={handleChange}
                     name="email"
@@ -399,74 +431,69 @@ const AuthForm: FC = () => {
             </>
           )}
 
-          {auth?.userAddress && auth?.userAddress.length > 0 && (
-            <>
-              <FlexBetween mb={2} columnGap={2}>
-                <Box>
-                  <H3>Shipping Address</H3>
-                </Box>
-                <NewAddressForm />
-              </FlexBetween>
-              <Grid container spacing={3}>
-                {auth.userAddress?.map((item, ind) => (
-                  <Grid item md={4} sm={6} xs={12} key={ind}>
-                    <Card
-                      sx={{
-                        boxShadow:
-                          item.id === initialValues.id
-                            ? "0px 3px 5px -1px rgb(0 0 0 / 20%), 0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%)"
-                            : "none",
-                        cursor: "pointer",
-                        border: "1px solid black",
-                        position: "relative",
-                        opacity: item.id === initialValues.id ? "1" : "0.5",
-                      }}
-                      onClick={() => setSelected(ind)}
+          {status == "authenticated" &&
+            authedSession!.user.userAddress.length > 0 && (
+              <>
+                <FlexBetween mb={2} columnGap={2}>
+                  <Box>
+                    <H3>Shipping Address</H3>
+                  </Box>
+                  <NewAddressForm />
+                </FlexBetween>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-3">
+                  {authedSession!.user.userAddress?.map((item, ind) => (
+                    <div
+                      key={ind}
+                      onClick={() => updateSelectedAddress(ind)}
+                      className={`cursor-pointer border border-gray-300 relative pt-1 pb-3 px-3 ${
+                        item.id === initialValues.id
+                          ? "shadow-lg opacity-100"
+                          : "opacity-50"
+                      }`}
                     >
-                      <FlexBox
-                        justifyContent="flex-end"
-                        sx={{
-                          position: "absolute",
-                          top: 5,
-                          right: 5,
-                        }}
-                      >
-                        <EditAddressForm initialValues={item} />
+                      <div className="flex gap-x-2 items-baseline">
+                        <div className="grid w-3/4">
+                          <span className="font-medium truncate">
+                            {item.firstName} {item.lastName}
+                          </span>
 
-                        <IconButton
-                          size="small"
-                          color="error"
-                          onClick={() => deleteAddress(item.id)}
-                        >
-                          <DeleteOutline
-                            sx={{
-                              fontSize: 20,
-                            }}
-                          />
-                        </IconButton>
-                      </FlexBox>
-                      <H5 mb={0.5} color={"black"}>
-                        {item.firstName} {item.lastName}
-                      </H5>
+                          <span className="font-medium truncate">
+                            {item.country}
+                            {item.city && (
+                              <span>
+                                {", "}
+                                {item.city}
+                              </span>
+                            )}
+                          </span>
+                          <span className="font-medium">
+                            {item.phoneNumber}
+                          </span>
+                          <span className="font-medium truncate">
+                            {item.addressLine}
+                          </span>
+                        </div>
+                        <div className="flex justify-end w-1/4">
+                          <EditAddressForm initialValues={item} />
 
-                      <H6>{item.addressLine}</H6>
-
-                      <H6>
-                        {item.country}
-                        {item.city && (
-                          <Span>
-                            {", "}
-                            {item.city}
-                          </Span>
-                        )}
-                      </H6>
-                      <Span>{item.phoneNumber}</Span>
-                    </Card>
-                  </Grid>
-                ))}
-              </Grid>
-            </>
-          )}
+                          <IconButton
+                            size="small"
+                            color="error"
+                            onClick={() => deleteAddress(item.id)}
+                          >
+                            <DeleteOutline
+                              sx={{
+                                fontSize: 20,
+                              }}
+                            />
+                          </IconButton>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
         </Card>
 
         <Grid container spacing={4}>

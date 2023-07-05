@@ -14,7 +14,7 @@ import CheckoutSummary, {
 import { updateCart } from "@/store/CartItem/ThunkAPI";
 import { TShoppingSession } from "@/types/TCheckoutSessionRequest";
 import { TUserGuest } from "@/types/TUserGuest";
-import { Grid } from "@mui/material";
+import { Card, Grid, Skeleton, TextField, Typography } from "@mui/material";
 import { Elements } from "@stripe/react-stripe-js";
 import Cookies from "js-cookie";
 import { usePathname } from "next/navigation";
@@ -23,13 +23,15 @@ import React, { useState, useEffect, useCallback } from "react";
 import AuthForm from "./AuthForm";
 import GuestForm from "./GuestForm";
 import { stripePromise } from "@/components/stripe/StripeScript";
+import { useSession } from "next-auth/react";
+import { FlexBox } from "@/components/flex-box";
 
 export default function CheckoutClientPage() {
   const pathname = usePathname();
-  const auth = useAppSelector((x) => x.Store.AuthReducer.Auth);
   const cart = useAppSelector((x) => x.Store.CartReducer?.CartItems);
   const route = useRouter();
   const dispatch = useAppDispatch();
+  const { data: authedSession, status } = useSession();
   const [checkoutSummary, setCheckoutSummary] =
     useState<CheckoutSummaryProps | null>(null);
 
@@ -51,7 +53,7 @@ export default function CheckoutClientPage() {
     };
     let _userGuest: TUserGuest | null = null;
     var userType: "GUEST" | "Authed" | "None" = "None";
-    if (auth && auth.email) {
+    if (authedSession && authedSession?.user?.email) {
       userType = "Authed";
     } else if (Cookies.get("GUEST_EMAIL")) {
       var x = Cookies.get("GUEST_EMAIL");
@@ -63,11 +65,11 @@ export default function CheckoutClientPage() {
         userType = "None";
       }
     }
+    console.log("authedSession", authedSession);
 
     switch (userType) {
       case "Authed":
-        //@ts-ignore
-        session.userId = auth?.id;
+        session.userId = authedSession?.user?.id || 0;
         break;
       case "GUEST":
         //@ts-ignore
@@ -94,6 +96,8 @@ export default function CheckoutClientPage() {
     }
   };
 
+  console.log("authedSession", authedSession);
+
   useEffect(() => {
     onLoadSession();
   }, [cart]);
@@ -119,7 +123,37 @@ export default function CheckoutClientPage() {
               <ExpressCheckoutNoEmail />
             </Elements>
 
-            {auth ? <AuthForm /> : <GuestForm />}
+            {status == "loading" && (
+              <Card elevation={5} role={"drawer"}>
+                <FlexBox justifyContent={"space-between"} columnGap={"10px"}>
+                  <Skeleton width="50%" height={"70px"}>
+                    <TextField />
+                  </Skeleton>
+                  <Skeleton width="25%" height={"70px"}>
+                    <TextField />
+                  </Skeleton>
+                  <Skeleton width="25%" height={"70px"}>
+                    <TextField />
+                  </Skeleton>
+                </FlexBox>
+                <Skeleton width="100%" height={"70px"}>
+                  <TextField />
+                </Skeleton>
+                <Skeleton width="100%">
+                  <Typography>.</Typography>
+                </Skeleton>
+
+                <Skeleton width="100%" height={"70px"}>
+                  <TextField />
+                </Skeleton>
+              </Card>
+            )}
+
+            {status == "authenticated" ? (
+              <AuthForm />
+            ) : status == "unauthenticated" ? (
+              <GuestForm />
+            ) : null}
           </Grid>
 
           <Grid item lg={4} md={4} xs={12}>

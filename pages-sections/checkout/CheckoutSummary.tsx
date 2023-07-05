@@ -329,7 +329,7 @@ const CheckoutSummary: FC<Props> = ({
               color="primary"
               variant="contained"
             >
-              <span className="text-xs font-medium"> Voucher</span>
+              <span className="text-xs font-medium">Apply Voucher</span>
             </LoadingButton>
           </div>
         </>

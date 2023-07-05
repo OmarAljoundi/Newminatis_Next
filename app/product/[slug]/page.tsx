@@ -46,10 +46,12 @@ export default async function SingleProductPage({ params: { slug } }: Params) {
 
       <div>
         <Breadcrumb
-          link={`${_response?.data?.product?.name.toLowerCase()}-${
-            _response?.data?.product?.color
-          }`}
-          title={_response?.data?.product?.friendlyName}
+          link={[
+            `${_response?.data?.product?.name.toLowerCase()}-${
+              _response?.data?.product?.color
+            }`,
+          ]}
+          title={[_response?.data?.product?.friendlyName]}
         />
       </div>
       <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-2  lg:grid-cols-2 xl:gap-x-8">
