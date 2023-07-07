@@ -80,9 +80,6 @@ const BestSellerSection: FC = () => {
                         <ShopMobileCard
                           discount={(item.salePrice as unknown as number) ?? 0}
                           product={item}
-                          fadeType={
-                            (index + 1) % 2 == 0 ? "fade-left" : "fade-right"
-                          }
                         />
                       )}
                     </Box>
