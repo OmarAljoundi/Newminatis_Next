@@ -93,7 +93,7 @@ export const ExpressCheckoutNoEmail = () => {
       }
     });
 
-    pr.on("shippingaddresschange", (ev) => {
+    pr.on("shippingaddresschange", async (ev) => {
       ev.updateWith({
         status: "success",
         shippingOptions: [
@@ -108,9 +108,7 @@ export const ExpressCheckoutNoEmail = () => {
     });
 
     pr.on("paymentmethod", async (e) => {
-      toast.success("Check stock");
       const isStocked = await handleStockabaliablity(items);
-      toast.success("Check stock " + JSON.stringify(isStocked));
       var newGuestUser: TUserGuest = {
         id: 0,
         firstName: e.payerName || "",
@@ -127,7 +125,10 @@ export const ExpressCheckoutNoEmail = () => {
         createdDate: null,
         modifiedDate: null,
       };
-      const { guest } = (await onCreateGuest(newGuestUser)) as IUserResponse;
+      const { guest, message } = (await onCreateGuest(
+        newGuestUser
+      )) as IUserResponse;
+      toast.success(message || "Success");
       const clientSecret = await getClientSecretGuest(
         e.payerEmail || "",
         calculateCart(cart || []) * 100,
