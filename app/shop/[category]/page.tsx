@@ -9,5 +9,10 @@ type Params = {
 export default async function ShopCategoryPage({
   params: { category },
 }: Params) {
-  return <Breadcrumb link={[""]} title={[category]} />;
+  return (
+    <Breadcrumb
+      link={["/", "/shop", `/shop/${category}`]}
+      title={["Home", "Shop", category]}
+    />
+  );
 }

@@ -148,7 +148,6 @@ const FilterSection: FC = () => {
     handleFilterChange("color", color.toString());
   };
 
-  console.log(params);
   return (
     <Card sx={{ p: "18px 27px", overflow: "auto" }} elevation={5}>
       <H6 mb={1.25}>Categories</H6>

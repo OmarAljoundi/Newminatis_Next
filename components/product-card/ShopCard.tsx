@@ -216,17 +216,9 @@ const ShopCard: FC<ProductCardProps> = ({
       }
     };
 
-  const handleAddToWishlist = () => {
-    if (wishList) {
-      toast.success("Item removed from Wishlist");
-    } else {
-      toast.success("Item added to Wishlist");
-    }
-    dispatch(AddItemWish(product));
-  };
-
   useEffect(() => {
     if (size !== "") {
+      handleToolClose();
       var _Stock = valueVsQuantity.find(
         (x) => x.variable == GetSKU(product?.name, product?.color, size)
       )?.quantity;
@@ -241,15 +233,17 @@ const ShopCard: FC<ProductCardProps> = ({
     }
   }, [size]);
 
-  useEffect(() => {
-    if (size != "") {
-      handleToolClose();
-    }
-  }, [size]);
-
   const isDisable = (value) => {
     return valueVsQuantity?.find((x) => x.variable == value)?.quantity == 0;
   };
+
+  useEffect(() => {
+    if (openTool) {
+      setTimeout(() => {
+        setOpenTool(false);
+      }, 3500);
+    }
+  }, [openTool]);
 
   return (
     <ShopCardLayout
@@ -262,21 +256,42 @@ const ShopCard: FC<ProductCardProps> = ({
           {valueVsQuantity.filter((x) => x.quantity > 0).length != 0 && (
             <>
               {qty == null ? (
-                <button
-                  onClick={() => {
-                    if (size == "") {
-                      handleToolOpen();
-                    } else {
-                      handleCartAmountChange(1);
-                    }
+                <TooltipError
+                  arrow
+                  disableHoverListener
+                  disableTouchListener
+                  placement="left"
+                  componentsProps={{
+                    tooltip: {
+                      sx: {
+                        color: "white",
+                        backgroundColor: "#E53935",
+                        "& .MuiTooltip-arrow": {
+                          color: "#E53935",
+                        },
+                      },
+                    },
                   }}
-                  className="title rounded-none 
+                  title="Please Select a size"
+                  open={openTool}
+                  TransitionComponent={Zoom}
+                >
+                  <button
+                    onClick={() => {
+                      if (size == "") {
+                        handleToolOpen();
+                      } else {
+                        handleCartAmountChange(1);
+                      }
+                    }}
+                    className="title rounded-none 
                             text-xs uppercase flex 
                             items-center justify-center  border border-transparent
                              bg-black px-2 py-1  text-white shadow-sm hover:bg-slate-700"
-                >
-                  ADD TO CART
-                </button>
+                  >
+                    ADD TO CART
+                  </button>
+                </TooltipError>
               ) : (
                 <FlexBox alignItems="center" justifyContent={"center"}>
                   <IconButton

@@ -46,8 +46,8 @@ export default function SubCategorySection({ subCategory, category }) {
                 </RadioGroup.Label>
                 <span
                   className={classNames(
-                    active ? "border" : "border-2",
-                    checked ? "border-indigo-500" : "border-transparent",
+                    param?.subCategory ? "border" : "border-2",
+
                     "pointer-events-none absolute -inset-px rounded-md"
                   )}
                   aria-hidden="true"

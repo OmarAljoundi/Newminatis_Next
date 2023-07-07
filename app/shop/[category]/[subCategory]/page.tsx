@@ -14,8 +14,13 @@ export default async function ShopSubCategoryPage({
 }: Params) {
   return (
     <Breadcrumb
-      link={[`/shop/${category}`, subCategory]}
-      title={[category, subCategory]}
+      link={[
+        "/",
+        "/shop",
+        `/shop/${category}`,
+        `/shop/${category}/${subCategory}`,
+      ]}
+      title={["Home", "Shop", category, subCategory]}
     />
   );
 }

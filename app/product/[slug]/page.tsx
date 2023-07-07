@@ -47,11 +47,13 @@ export default async function SingleProductPage({ params: { slug } }: Params) {
       <div>
         <Breadcrumb
           link={[
+            "/",
+            "/shop",
             `${_response?.data?.product?.name.toLowerCase()}-${
               _response?.data?.product?.color
             }`,
           ]}
-          title={[_response?.data?.product?.friendlyName]}
+          title={["Home", "Shop", _response?.data?.product?.friendlyName]}
         />
       </div>
       <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-2  lg:grid-cols-2 xl:gap-x-8">
@@ -67,21 +69,21 @@ export default async function SingleProductPage({ params: { slug } }: Params) {
   );
 }
 
-export async function generateStaticParams() {
-  const SearchQuery: SearchQuery = {
-    FilterByOptions: [],
-    OrderByOptions: [],
-    PageIndex: 0,
-    PageSize: 0,
-  };
-  SearchQuery.FilterByOptions.push({
-    FilterFor: 1,
-    MemberName: "Status",
-    FilterOperator: eFilterOperator.Equal,
-  });
-  const products = await ProductService.searchShop(SearchQuery);
+// export async function generateStaticParams() {
+//   const SearchQuery: SearchQuery = {
+//     FilterByOptions: [],
+//     OrderByOptions: [],
+//     PageIndex: 0,
+//     PageSize: 0,
+//   };
+//   SearchQuery.FilterByOptions.push({
+//     FilterFor: 1,
+//     MemberName: "Status",
+//     FilterOperator: eFilterOperator.Equal,
+//   });
+//   const products = await ProductService.searchShop(SearchQuery);
 
-  return products?.data?.products.map((product) => ({
-    slug: `${product.name.toLowerCase()}-${product.color.toString()}`,
-  }));
-}
+//   return products?.data?.products.map((product) => ({
+//     slug: `${product.name.toLowerCase()}-${product.color.toString()}`,
+//   }));
+// }
