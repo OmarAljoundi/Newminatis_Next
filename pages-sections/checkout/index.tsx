@@ -25,6 +25,7 @@ import GuestForm from "./GuestForm";
 import { stripePromise } from "@/components/stripe/StripeScript";
 import { useSession } from "next-auth/react";
 import { FlexBox } from "@/components/flex-box";
+import AddressFormSkeleton from "./AddressFormSkeleton";
 
 export default function CheckoutClientPage() {
   const pathname = usePathname();
@@ -123,31 +124,7 @@ export default function CheckoutClientPage() {
               <ExpressCheckoutNoEmail />
             </Elements>
 
-            {status == "loading" && (
-              <Card elevation={5} role={"drawer"}>
-                <FlexBox justifyContent={"space-between"} columnGap={"10px"}>
-                  <Skeleton width="50%" height={"70px"}>
-                    <TextField />
-                  </Skeleton>
-                  <Skeleton width="25%" height={"70px"}>
-                    <TextField />
-                  </Skeleton>
-                  <Skeleton width="25%" height={"70px"}>
-                    <TextField />
-                  </Skeleton>
-                </FlexBox>
-                <Skeleton width="100%" height={"70px"}>
-                  <TextField />
-                </Skeleton>
-                <Skeleton width="100%">
-                  <Typography>.</Typography>
-                </Skeleton>
-
-                <Skeleton width="100%" height={"70px"}>
-                  <TextField />
-                </Skeleton>
-              </Card>
-            )}
+            {status == "loading" && <AddressFormSkeleton />}
 
             {status == "authenticated" ? (
               <AuthForm />

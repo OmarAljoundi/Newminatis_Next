@@ -18,6 +18,7 @@ export const AddressValidationSchema = yup.object().shape({
   country: yup.string().required("Field is required"),
   state: yup.string().nullable().required("Field is required"),
   addressLine: yup.string().required("Field is required"),
+  postalCode: yup.string().required("Field is required"),
 });
 
 export const loginSchema = yup.object().shape({

@@ -71,15 +71,11 @@ export default function UserMenu() {
 
 export const UserMenuItems = [
   {
-    label: "My Profile",
+    label: "Profile & Address",
     link: "/my-profile",
   },
   {
     label: "Track your orders",
     link: "/my-profile/track-orders",
-  },
-  {
-    label: "Change your address",
-    link: "/my-profile/change-address",
   },
 ];

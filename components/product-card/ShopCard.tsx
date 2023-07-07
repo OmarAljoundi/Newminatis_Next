@@ -77,16 +77,12 @@ const ShopCard: FC<ProductCardProps> = ({
   const handleToolOpen = () => {
     setOpenTool(true);
   };
-  const disableChip = (value) =>
-    valueVsQuantity?.find((x) => x.variable == value)?.quantity == 0;
-  const downSm = useMediaQuery((theme: Theme) => theme.breakpoints.down("sm"));
+
+  const downMd = useMediaQuery((theme: Theme) => theme.breakpoints.down("md"));
   const cartItem = useAppSelector((x) =>
     x.Store.CartReducer?.CartItems?.filter((x) => x.id == product.id)
   );
   const _setting = useAppSelector((x) => x.Store.SettingReducer.setting);
-  const wishList = useAppSelector((x) =>
-    x.Store.WishlistReducer?.wishlistItems?.find((x) => x.id == product.id)
-  );
 
   const dispatch = useAppDispatch();
 
@@ -149,19 +145,18 @@ const ShopCard: FC<ProductCardProps> = ({
 
     if (!cartItem?.find((x) => x.sku == GetSKU(name, color, size))) {
       dispatch(AddItem(cart));
-      toasterSuccess(currency(getTotalPrice(), _setting));
+      toasterSuccess(
+        currency(getTotalPrice(), _setting),
+        downMd ? "bottom-center" : "top-center"
+      );
     } else if (amount != 0) {
       var qttyy =
         valueVsQuantity.find((x) => x.variable == GetSKU(name, color, size))
           ?.quantity ?? 0;
       if (amount > qttyy) {
-        //enqueueSnackbar(`Only avaliable ${qttyy} pieces you can't add more`);
         return;
       }
       dispatch(UpdateItem(cart));
-      const oldCartItem = cartItem.find(
-        (x) => x.sku == GetSKU(name, color, size)
-      );
       toasterSuccess(currency(getTotalPrice(), _setting));
     } else {
       dispatch(RemoveItem(cart));

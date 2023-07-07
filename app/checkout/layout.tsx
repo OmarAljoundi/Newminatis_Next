@@ -19,7 +19,7 @@ const CheckoutLayout: FC<RootLayoutProp> = ({ children }) => {
         </h1>
       </div>
 
-      <section aria-labelledby="products-heading" className="px-2 lg:px-0">
+      <section aria-labelledby="products-heading" className="px-2 lg:px-0 pt-4">
         {children}
       </section>
     </main>

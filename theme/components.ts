@@ -34,14 +34,8 @@ export const components: Components = {
   MuiFormHelperText: {
     styleOverrides: {
       root: ({ ownerState }) => ({
-        position: "absolute",
-        right: 0,
-        top: "40px",
-        fontWeight: "100",
-        marginRight: "4px",
-        "@media (max-width: 600px)": {
-          top: "36px",
-        },
+        position: "relative",
+        marginBottom: "20px",
       }),
     },
   },
@@ -145,7 +139,16 @@ export const components: Components = {
           borderColor: "#e53935!important",
         },
         "& .MuiFormHelperText-root.Mui-error": {
-          color: "#e53935!important",
+          width: "100%",
+          background: "#ffe7e7",
+          borderBottomLeftRadius: "7px",
+          color: "red",
+          borderBottomRightRadius: "7px",
+          padding: " 5px 10px",
+          boxShadow: " inset rgb(255 0 0 / 30%) 2px -2px 15px 0px",
+          fontWeight: "800",
+          margin: "0px",
+          position: "relative",
         },
         ...(ownerState.color == "secondary" && {
           "& .MuiInputBase-root": {

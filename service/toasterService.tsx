@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { toast } from "react-hot-toast";
 import { IoBagCheck } from "react-icons/io5";
-const toasterSuccess = (total?: any) => {
+const toasterSuccess = (
+  total?: any,
+  position: "bottom-center" | "top-center" = "bottom-center"
+) => {
   toast(
     (t) => (
       <div
@@ -45,10 +48,10 @@ const toasterSuccess = (total?: any) => {
       </div>
     ),
     {
-      position: "bottom-center",
-      duration: 8000,
+      position: position,
+      duration: 1500000,
       style: {
-        minWidth: "100%",
+        minWidth: position == "top-center" ? "400px" : "100%",
         background: "transparent",
         boxShadow: "none",
       },

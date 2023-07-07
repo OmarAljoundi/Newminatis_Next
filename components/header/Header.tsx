@@ -58,12 +58,14 @@ const Header = () => {
   const toggleWishList = () => setWishList(!wishList);
 
   useEffect(() => {
-    if (status == "unauthenticated") {
-      Cookies.remove("token");
-    } else if (status == "authenticated") {
-      Cookies.set("token", session.user?.access_token);
-      if (pathname?.includes("auth")) {
-        route.push(searchParams?.get("_nextUrl") ?? "/");
+    if (status != "loading") {
+      if (session!.user.name === "UNAUTHORIZED") {
+        signOut();
+      } else if (status == "unauthenticated") {
+      } else if (status == "authenticated") {
+        if (pathname?.includes("auth")) {
+          route.push(searchParams?.get("_nextUrl") ?? "/");
+        }
       }
     }
   }, [session]);

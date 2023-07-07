@@ -129,243 +129,232 @@ const GuestForm: FC = () => {
     <>
       <form onSubmit={handleSubmit}>
         <Card sx={{ mb: 4 }} elevation={1} role={"drawer"}>
-          <>
-            <FlexBetween alignItems={"flex-start"} mb={2}>
-              <H3 mb={2}>Shipping Address</H3>
-            </FlexBetween>
-            <Grid item xs={12}>
-              <FlexBetween>
-                <TextField
-                  fullWidth
-                  sx={{ mb: 3 }}
-                  size="small"
-                  onBlur={handleBlur}
-                  disabled={auth != null}
-                  label="Email Address *"
-                  onChange={handleChange}
-                  name="email"
-                  value={values.email}
-                  error={!!touched.email && !!errors.email}
-                  helperText={(touched.email && errors.email) as string}
-                />
-              </FlexBetween>
-            </Grid>
+          <FlexBetween alignItems={"flex-start"} mb={2}>
+            <H3 mb={2}>Shipping Address</H3>
+          </FlexBetween>
+          <div className="grid ">
+            <div className="grid">
+              <TextField
+                fullWidth
+                sx={{ mb: 3 }}
+                size="small"
+                onBlur={handleBlur}
+                disabled={auth != null}
+                label="Email Address *"
+                onChange={handleChange}
+                name="email"
+                value={values.email}
+                error={!!touched.email && !!errors.email}
+                helperText={(touched.email && errors.email) as string}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-x-3">
+              <TextField
+                fullWidth
+                sx={{ mb: 3 }}
+                size="small"
+                onBlur={handleBlur}
+                label="First Name *"
+                onChange={handleChange}
+                name="firstName"
+                value={values.firstName}
+                error={!!touched.firstName && !!errors.firstName}
+                helperText={(touched.firstName && errors.firstName) as string}
+              />
+              <TextField
+                fullWidth
+                sx={{ mb: 3 }}
+                size="small"
+                label="Last Name *"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                name="lastName"
+                value={values.lastName}
+                error={!!touched.lastName && !!errors.lastName}
+                helperText={(touched.lastName && errors.lastName) as string}
+              />
+            </div>
 
-            <Grid container spacing={1}>
-              <Grid item sm={6} xs={6}>
-                <TextField
-                  fullWidth
-                  sx={{ mb: 3 }}
-                  size="small"
-                  onBlur={handleBlur}
-                  label="First Name *"
-                  onChange={handleChange}
-                  name="firstName"
-                  value={values.firstName}
-                  error={!!touched.firstName && !!errors.firstName}
-                  helperText={(touched.firstName && errors.firstName) as string}
-                />
+            <div className="grid grid-cols-2 gap-x-3">
+              <Autocomplete
+                fullWidth
+                autoComplete={false}
+                sx={{ mb: 3 }}
+                options={Country.getAllCountries().filter(
+                  (x) => !ex_countries.includes(x.isoCode.toLowerCase())
+                )}
+                //@ts-ignore
+                value={
+                  values.country
+                    ? (Country.getCountryByCode(
+                        values.country
+                      ) as unknown as ICountry[])
+                    : null
+                }
+                onBlur={handleBlur}
+                getOptionLabel={(option: ICountry) => option.name}
+                onChange={(_, value: any) => {
+                  if (value) setFieldValue("country", value.isoCode);
+                  setFieldValue("state", null);
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    label="Country *"
+                    //@ts-ignore
+                    size="small"
+                    variant="outlined"
+                    placeholder="Select Country"
+                    error={!!touched.country && !!errors.country}
+                    helperText={(touched.country && errors.country) as string}
+                    {...params}
+                  />
+                )}
+              />
+              <MuiPhoneNumber
+                id="contactPhoneNumber"
+                label="Phone Number *"
+                defaultCountry={
+                  values.country ? values.country.toLowerCase() : "us"
+                }
+                onChange={handleChange("phoneNumber")}
+                onBlur={handleBlur}
+                variant="outlined"
+                fullWidth
+                value={values.phoneNumber}
+                disableDropdown={true}
+                error={!!touched.phoneNumber && !!errors.phoneNumber}
+                helperText={
+                  (touched.phoneNumber && errors.phoneNumber) as string
+                }
+              />
+            </div>
 
-                <Autocomplete
-                  fullWidth
-                  autoComplete={false}
-                  sx={{ mb: 3 }}
-                  options={Country.getAllCountries().filter(
-                    (x) => !ex_countries.includes(x.isoCode.toLowerCase())
-                  )}
-                  //@ts-ignore
-                  value={
-                    values.country
-                      ? (Country.getCountryByCode(
-                          values.country
-                        ) as unknown as ICountry[])
-                      : null
-                  }
-                  onBlur={handleBlur}
-                  getOptionLabel={(option: ICountry) => option.name}
-                  onChange={(_, value: any) => {
-                    if (value) setFieldValue("country", value.isoCode);
-                    setFieldValue("state", null);
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      label="Country *"
-                      //@ts-ignore
-                      size="small"
-                      variant="outlined"
-                      placeholder="Select Country"
-                      error={!!touched.country && !!errors.country}
-                      helperText={(touched.country && errors.country) as string}
-                      {...params}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item sm={6} xs={6}>
-                <TextField
-                  fullWidth
-                  sx={{ mb: 3 }}
-                  size="small"
-                  label="Last Name *"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  name="lastName"
-                  value={values.lastName}
-                  error={!!touched.lastName && !!errors.lastName}
-                  helperText={(touched.lastName && errors.lastName) as string}
-                />
-                <MuiPhoneNumber
-                  id="contactPhoneNumber"
-                  label="Phone Number *"
-                  defaultCountry={
-                    values.country ? values.country.toLowerCase() : "us"
-                  }
-                  onChange={handleChange("phoneNumber")}
-                  onBlur={handleBlur}
-                  variant="outlined"
-                  fullWidth
-                  value={values.phoneNumber}
-                  disableDropdown={true}
-                  error={!!touched.phoneNumber && !!errors.phoneNumber}
-                  helperText={
-                    (touched.phoneNumber && errors.phoneNumber) as string
-                  }
-                />
-              </Grid>
+            <div className="grid grid-cols-2 gap-x-3">
+              <Autocomplete
+                autoComplete={false}
+                fullWidth
+                disabled={values.country == "" || values.country == null}
+                sx={{ mb: 3 }}
+                //@ts-ignore
+                options={State.getStatesOfCountry(values.country)}
+                getOptionLabel={(option: IState) => option.name}
+                onChange={(_, value: any) => setFieldValue("state", value.name)}
+                onBlur={handleBlur}
+                //@ts-ignore
+                value={
+                  values.state
+                    ? //@ts-ignore
+                      (State.getStatesOfCountry(values.country).find(
+                        (x) => x.name == values.state
+                      ) as unknown as IState[])
+                    : null
+                }
+                renderInput={(params) => (
+                  <TextField
+                    label="State/City *"
+                    //@ts-ignore
+                    size="small"
+                    variant="outlined"
+                    placeholder="State/City"
+                    error={!!touched.state && !!errors.state}
+                    helperText={(touched.state && errors.state) as string}
+                    {...params}
+                  />
+                )}
+              />
 
-              <Grid item sm={6} xs={6}>
-                <Autocomplete
-                  autoComplete={false}
-                  fullWidth
-                  disabled={values.country == "" || values.country == null}
-                  sx={{ mb: 3 }}
-                  //@ts-ignore
-                  options={State.getStatesOfCountry(values.country)}
-                  getOptionLabel={(option: IState) => option.name}
-                  onChange={(_, value: any) =>
-                    setFieldValue("state", value.name)
-                  }
-                  onBlur={handleBlur}
-                  //@ts-ignore
-                  value={
-                    values.state
-                      ? //@ts-ignore
-                        (State.getStatesOfCountry(values.country).find(
-                          (x) => x.name == values.state
-                        ) as unknown as IState[])
-                      : null
-                  }
-                  renderInput={(params) => (
-                    <TextField
-                      label="State/City *"
-                      //@ts-ignore
-                      size="small"
-                      variant="outlined"
-                      placeholder="State/City"
-                      error={!!touched.state && !!errors.state}
-                      helperText={(touched.state && errors.state) as string}
-                      {...params}
-                    />
-                  )}
-                />
-              </Grid>
+              <TextField
+                fullWidth
+                size="small"
+                sx={{ mb: 3 }}
+                type="number"
+                label="PostalCode *"
+                name="postalCode"
+                defaultValue={values.postalCode}
+                inputProps={{
+                  inputMode: "numeric",
+                }}
+                inputMode={"numeric"}
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.postalCode ?? ""}
+                error={!!touched.postalCode && !!errors.postalCode}
+                helperText={(touched.postalCode && errors.postalCode) as string}
+              />
+            </div>
 
-              <Grid item sm={6} xs={6}>
-                <TextField
-                  fullWidth
-                  size="small"
-                  sx={{ mb: 3 }}
-                  type="number"
-                  label="PostalCode (optional)"
-                  name="postalCode"
-                  defaultValue={values.postalCode}
-                  inputProps={{
-                    inputMode: "numeric",
-                  }}
-                  inputMode={"numeric"}
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  value={values.postalCode ?? ""}
-                  error={!!touched.postalCode && !!errors.postalCode}
-                  helperText={
-                    (touched.postalCode && errors.postalCode) as string
-                  }
-                />
-              </Grid>
-
-              <Grid item sm={12} xs={12}>
-                <TextField
-                  fullWidth
-                  label="Address Line *"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  sx={{ mb: 3 }}
-                  size="small"
-                  name="addressLine"
-                  value={values.addressLine}
-                  error={!!touched.addressLine && !!errors.addressLine}
-                  helperText={
-                    (touched.addressLine && errors.addressLine) as string
-                  }
-                />
-                <TextField
-                  fullWidth
-                  label="Delivery Instruction"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  sx={{ mb: 3 }}
-                  size="small"
-                  name="deliveryInstructions"
-                  value={values.deliveryInstructions}
-                  error={
-                    !!touched.deliveryInstructions &&
-                    !!errors.deliveryInstructions
-                  }
-                  helperText={
-                    (touched.deliveryInstructions &&
-                      errors.deliveryInstructions) as string
-                  }
-                />
-              </Grid>
-              <Grid item sm={12} xs={12}>
-                <FormControlLabel
-                  name="newsletter"
-                  className="newsletter"
-                  sx={{
-                    margin: "0 0 20px 0",
-                    alignItems: "flex-start",
-                  }}
-                  onChange={handleChange}
-                  control={
-                    <Checkbox
-                      size="small"
-                      color="primary"
-                      checked={values.newsletter || false}
-                      sx={{ padding: "0px 10px 0 0" }}
-                    />
-                  }
-                  label={
-                    <FlexBox
-                      flexWrap="wrap"
-                      alignItems="center"
-                      justifyContent="flex-start"
-                      position={"relative"}
+            <div className="grid grid-cols-1">
+              <TextField
+                fullWidth
+                label="Address Line *"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                sx={{ mb: 3 }}
+                size="small"
+                name="addressLine"
+                value={values.addressLine}
+                error={!!touched.addressLine && !!errors.addressLine}
+                helperText={
+                  (touched.addressLine && errors.addressLine) as string
+                }
+              />
+              <TextField
+                fullWidth
+                label="Delivery Instruction"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                sx={{ mb: 3 }}
+                size="small"
+                name="deliveryInstructions"
+                value={values.deliveryInstructions}
+                error={
+                  !!touched.deliveryInstructions &&
+                  !!errors.deliveryInstructions
+                }
+                helperText={
+                  (touched.deliveryInstructions &&
+                    errors.deliveryInstructions) as string
+                }
+              />
+            </div>
+            <div className="grid">
+              <FormControlLabel
+                name="newsletter"
+                className="newsletter"
+                sx={{
+                  margin: "0 0 20px 0",
+                  alignItems: "flex-start",
+                }}
+                onChange={handleChange}
+                control={
+                  <Checkbox
+                    size="small"
+                    color="primary"
+                    checked={values.newsletter || false}
+                    sx={{ padding: "0px 10px 0 0" }}
+                  />
+                }
+                label={
+                  <FlexBox
+                    flexWrap="wrap"
+                    alignItems="center"
+                    justifyContent="flex-start"
+                    position={"relative"}
+                  >
+                    <H6
+                      sx={{
+                        color: "black",
+                        fontSize: "12px",
+                      }}
                     >
-                      <H6
-                        sx={{
-                          color: "black",
-                          fontSize: "12px",
-                        }}
-                      >
-                        I'm excited to stay up-to-date with all your latest news
-                        and updates!
-                      </H6>
-                    </FlexBox>
-                  }
-                />
-              </Grid>
-            </Grid>
-          </>
+                      I'm excited to stay up-to-date with all your latest news
+                      and updates!
+                    </H6>
+                  </FlexBox>
+                }
+              />
+            </div>
+          </div>
         </Card>
 
         <Grid container spacing={4}>

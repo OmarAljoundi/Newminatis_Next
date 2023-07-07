@@ -5,6 +5,7 @@ import GoogleProvider from "next-auth/providers/google";
 import UserService from "@/service/UserService";
 import { RegisterType, Role, TUser } from "@/types/TUser";
 import { TUserAddress } from "@/types/TUserAddress";
+import axios, { Axios } from "axios";
 export const authOptions: AuthOptions = {
   providers: [
     CredentialsProvider({
@@ -113,7 +114,7 @@ export const authOptions: AuthOptions = {
   ],
   pages: {
     signIn: "/",
-    error: "/login",
+    error: "auth/login",
   },
   debug: process.env.NODE_ENV === "development",
   session: {
@@ -121,7 +122,7 @@ export const authOptions: AuthOptions = {
     maxAge: 604800,
   },
   callbacks: {
-    jwt({ user, token, trigger, session }) {
+    async jwt({ user, token, trigger, session }) {
       if (user && trigger !== "update") {
         token.role = (user as any as TUser).role;
         token.access_token = (user as any).access_token;
@@ -132,6 +133,24 @@ export const authOptions: AuthOptions = {
         token.userAddress = session?.userAddress;
         token.selectedAddress = session?.selectedAddress || 0;
       }
+
+      const { status } = await axios({
+        baseURL: `${process.env
+          .NEXT_PUBLIC_URL_PRODUCTION!}/User/IsUserStillAlive`,
+        timeout: 50000,
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token.access_token}`,
+        },
+      });
+      if (status == 401) {
+        return {
+          ...token,
+          name: "UNAUTHORIZED",
+        };
+      }
+
       return token;
     },
     session({ session, token }) {

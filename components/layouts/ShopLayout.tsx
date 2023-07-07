@@ -1,6 +1,7 @@
 "use client";
 import { calcualteQty } from "@/helpers/Extensions";
 import { useAppSelector } from "@/hooks/useRedux";
+import { usePathname } from "next/navigation";
 import {
   FC,
   Fragment,
@@ -18,6 +19,7 @@ import Footer from "../footer/Footer";
 import { Router } from "next/router";
 import FacebookService from "@/service/FacebookService";
 import { ViewContentEvent, grapUserData } from "@/helpers/FacebookEvent";
+import ProviderRouteChange from "../analytics/ProviderRouteChange";
 
 // ===================================================
 type ShopLayoutProps = {
@@ -31,51 +33,6 @@ const ShopLayout: FC<ShopLayoutProps> = ({ children }) => {
   const cartItems = useAppSelector((state) =>
     calcualteQty(state.Store.CartReducer?.CartItems || [])
   );
-  const auth = useAppSelector((x) => x.Store.AuthReducer.Auth);
-
-  useEffect(() => {
-    if (process.env.NODE_ENV != "development") {
-      //@ts-ignore
-      import("react-facebook-pixel")
-        .then((x) => x.default)
-        .then((ReactPixel) => {
-          ReactPixel.init("742516630254065");
-          ReactPixel.pageView();
-
-          Router.events.on("routeChangeComplete", () => {
-            ReactPixel.pageView();
-            FacebookService.pushEvent({
-              data: [
-                {
-                  event_name: ViewContentEvent,
-                  event_source_url: window.location.href,
-                  user_data: grapUserData(auth),
-                },
-              ],
-            }).then((response) => {
-              ReactPixel.fbq("track", ViewContentEvent, {
-                event_id: response.data.data[0].event_id,
-                event_time: response.data.data[0].event_time,
-                user_data: grapUserData(auth),
-              });
-            });
-          });
-        });
-
-      import("react-ga4")
-        .then((x) => x.default)
-        .then((ReactGA) => {
-          ReactGA.initialize("G-0JQFPNSRS1");
-          Router.events.on("routeChangeComplete", () => {
-            ReactGA._gaCommandSendPageview(location.pathname, {
-              title: document.title,
-              hostname: window.location.hostname,
-              referrer: document.referrer,
-            });
-          });
-        });
-    }
-  });
 
   return (
     <Fragment>
@@ -106,6 +63,7 @@ const ShopLayout: FC<ShopLayoutProps> = ({ children }) => {
             display: "none",
           }}
         />
+        <ProviderRouteChange />
         {cartItems > 0 && <CartSticky />}
         {children}
       </div>

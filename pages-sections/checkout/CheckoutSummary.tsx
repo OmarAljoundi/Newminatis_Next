@@ -31,6 +31,7 @@ import { calculateDiscount, calculateDiscountAsNumber, currency } from "@/lib";
 import CheckVoucherIcon from "@/components/CheckVoucherIcon";
 import { useSession } from "next-auth/react";
 import AddressInfo from "./AddressInfo";
+import { BlurImage } from "@/components/BlurImage";
 
 export type CheckoutSummaryProps = {
   Discount?: number;
@@ -138,24 +139,31 @@ const CheckoutSummary: FC<Props> = ({
     <Card elevation={1} role={"drawer"}>
       <div className="border-b-2 pb-3 border-gray-400 grid gap-y-3">
         {state?.map((item) => (
-          <div key={item.id} className="grid grid-cols-4 gap-4 items-center">
+          <div
+            key={item.id}
+            className="grid grid-cols-4 gap-4 items-center rounded-lg"
+          >
             <div className="grid">
               <Link
                 href={`/product/${item.name.toLowerCase()}-${item.color.toString()}`}
               >
-                <Avatar
-                  src={item.imgUrl}
-                  sx={{ width: "75px", height: "75px" }}
+                <BlurImage
+                  image={item.imgUrl || ""}
+                  width={75}
+                  height={80}
+                  customAspect=" rounded-lg"
+                  q={100}
+                  loading="eager"
+                  priority="high"
                 />
               </Link>
             </div>
-            <div className="grid ">
+            <div className="grid col-span-2 gap-y-1">
               <span className="text-xs font-medium">{item.name}</span>
               <span className="text-xs font-medium"> Size: {item.size}</span>
               <span className="text-xs font-medium"> Quantity: {item.qty}</span>
-            </div>
-            <div className="grid justify-items-center">
-              <span className="text-sm font-bold">
+              <span className="text-xs font-medium">
+                Price:
                 {currency(
                   calculateDiscountAsNumber(item.price, item.salePrice) *
                     item.qty,
@@ -171,6 +179,7 @@ const CheckoutSummary: FC<Props> = ({
                 )}
               </span>
             </div>
+
             <div>
               <Tooltip title="Remove Item">
                 <IconButton

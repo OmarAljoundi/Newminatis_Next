@@ -20,6 +20,7 @@ import { forwardRef } from "react";
 import { Theme, useMediaQuery } from "@mui/material";
 import ShopMobileCard from "@/components/product-card/ShopMobileCard";
 import ShopCard from "@/components/product-card/ShopCard";
+import { ExclamationCircleIcon } from "@heroicons/react/20/solid";
 
 export default function ProductSection() {
   const { ref, inView } = useInView();
@@ -85,6 +86,7 @@ export default function ProductSection() {
     isFetchingNextPage,
     isFetching,
     isRefetching,
+    isLoading,
     refetch,
   } = useInfiniteQuery(
     "products",
@@ -123,10 +125,29 @@ export default function ProductSection() {
       })
     );
 
-  if (isRefetching && !isFetchingNextPage) {
+  if ((isRefetching && !isFetchingNextPage) || isLoading) {
     return <ProductCardLoading loop={6} />;
   }
 
+  console.log("isLoading", isLoading);
+  if (
+    ((isFetched && data?.pages.map((x) => x.length)[0]) || 0) == 0 &&
+    !isLoading
+  ) {
+    return (
+      <div className="grid mx-auto justify-items-center">
+        <ExclamationCircleIcon color="black" className="text-normal w-12" />
+        <div className="mt-4 grid justify-items-center">
+          <span className="text-normal font-bold">
+            Your search returend no result
+          </span>
+          <span className="text-xs font-bold">
+            Try clear some filters or change the collection
+          </span>
+        </div>
+      </div>
+    );
+  }
   return (
     <>
       <div className="grid  md:grid-cols-3 grid-cols-2 gap-3">{content}</div>
@@ -161,11 +182,9 @@ const ProductCard = forwardRef<HTMLDivElement, ProductProps>(
     );
 
     const content = ref ? (
-      <article className="article" ref={ref}>
-        {productContent}
-      </article>
+      <article ref={ref}>{productContent}</article>
     ) : (
-      <article className="article">{productContent}</article>
+      <article>{productContent}</article>
     );
 
     return content;

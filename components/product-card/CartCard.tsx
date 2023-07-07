@@ -150,49 +150,24 @@ const CartCard: FC<ProductCardProps> = ({
         flexDirection="column"
         position={"relative"}
       >
-        <Link
-          href={`/product/${name.toLowerCase()}-${color.toString()}`}
-          style={{ color: "black" }}
-        >
-          <Span
-            ellipsis
-            color={"black"}
-            className="text-xs"
-            sx={{ textTransform: "uppercase" }}
-          >
+        <div className="grid gap-y-1">
+          <span className="text-xs font-medium">
             {name}
             {"      "} ({size})
-          </Span>
-        </Link>
-
-        <Span
-          color="black"
-          className="text-xs"
-          mb={0.3}
-          sx={{ textTransform: "uppercase" }}
-        >
-          COLOR:
-          {"      "} ({MapColors(color)})
-        </Span>
-
-        {!!salePrice && (
-          <Span color="black" className="text-xs">
-            Original Price <del>{currency(price, _setting)}</del>
-          </Span>
-        )}
-
-        <span className="text-xs">
-          {calculateDiscount(price, salePrice, _setting)} x {qty}
-        </span>
-
-        <Box className="text-xs" color="black" mt={0.3}>
-          TOTAL:{" "}
-          {currency(
-            calculateDiscountAsNumber(price, salePrice) * qty,
-            _setting
+          </span>
+          <span className="text-xs font-medium">
+            COLOR:
+            {"      "} ({MapColors(color)})
+          </span>
+          {!!salePrice && (
+            <span className="text-xs font-medium">
+              Original Price <del>{currency(price, _setting)}</del>
+            </span>
           )}
-        </Box>
-
+          <span className="text-xs font-medium">
+            {calculateDiscount(price, salePrice, _setting)} x {qty}
+          </span>
+        </div>
         <FlexBox alignItems="center" mt={1}>
           <TooltipError
             arrow
