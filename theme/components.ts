@@ -164,7 +164,7 @@ export const components: Components = {
           fontSize: "14px",
 
           "@media (max-width: 600px)": {
-            fontSize: "14px",
+            fontSize: "16px",
           },
         },
 

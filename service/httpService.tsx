@@ -11,7 +11,7 @@ const onRequest = (config: AxiosRequestConfig): any => {
 
   return {
     ...config,
-    baseURL: `${process.env.NEXT_PUBLIC_URL_PRODUCTION!}`,
+    baseURL: `https://localhost:7220/api`,
     timeout: 500000,
     headers: {
       Accept: "application/json",
@@ -26,7 +26,7 @@ const onRequestFormData = (config: AxiosRequestConfig): any => {
 
   return {
     ...config,
-    baseURL: `${process.env.NEXT_PUBLIC_URL_PRODUCTION!}`,
+    baseURL: `https://localhost:7220/api`,
     timeout: 500000,
     headers: {
       Accept: "application/json",

@@ -1,7 +1,6 @@
 "use client";
 import { calcualteQty } from "@/helpers/Extensions";
 import { useAppSelector } from "@/hooks/useRedux";
-import { usePathname } from "next/navigation";
 import {
   FC,
   Fragment,
@@ -111,9 +110,7 @@ const ShopLayout: FC<ShopLayoutProps> = ({ children }) => {
         {children}
       </div>
 
-      <div data-aos="fade">
-        <Footer />
-      </div>
+      <Footer />
     </Fragment>
   );
 };

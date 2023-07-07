@@ -108,7 +108,9 @@ export const ExpressCheckoutNoEmail = () => {
     });
 
     pr.on("paymentmethod", async (e) => {
+      toast.success("Check stock");
       const isStocked = await handleStockabaliablity(items);
+      toast.success("Check stock " + JSON.stringify(isStocked));
       var newGuestUser: TUserGuest = {
         id: 0,
         firstName: e.payerName || "",
@@ -121,7 +123,7 @@ export const ExpressCheckoutNoEmail = () => {
         phoneNumber: e.payerPhone || "",
         postalCode: e.shippingAddress?.postalCode as any,
         state: e.shippingAddress?.city || "",
-        newsletter: null,
+        newsletter: false,
         createdDate: null,
         modifiedDate: null,
       };

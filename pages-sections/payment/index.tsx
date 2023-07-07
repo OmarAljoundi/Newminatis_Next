@@ -2,7 +2,6 @@
 import { Box, Checkbox, Grid, StepContext } from "@mui/material";
 import { FC, useEffect, useState } from "react";
 import { Elements, PaymentElement } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
 import Cookies from "js-cookie";
 import useStripePayment from "@/hooks/useStripePayment";
 import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
@@ -19,16 +18,16 @@ import { IUserResponse } from "@/interface/IUserResponse";
 import { IShoppingSessionResponse } from "@/interface/IShoppingSessionResponse";
 import { TCheckoutRequest } from "@/types/TCheckoutRequest";
 import { IPaymentResponse } from "@/interface/IPaymentResponse";
-import { SetUserPayment } from "@/store/Auth/Auth-action";
 import { updateCart } from "@/store/CartItem/ThunkAPI";
 import { ExpressCheckoutWithEmail } from "@/components/stripe/ExpressCheckoutWithEmail";
 import { stripePromise } from "@/components/stripe/StripeScript";
 import { CreditCardSkeleton } from "@/components/loading/CreditCardSkeleton";
 import PaymentForm from "./PaymentForm";
+import { useSession } from "next-auth/react";
 
-const PaymentClientPage = () => {
+const PaymentClientPage: FC = () => {
   const { onCreateSession, paymentLoad } = useStripePayment();
-  const auth = useAppSelector((x) => x.Store.AuthReducer.Auth);
+  const { data: authedSession } = useSession();
   const [guestAddress, setGuestAddress] = useState<TUserGuest>();
   const cart = useAppSelector((x) => x.Store.CartReducer?.CartItems);
   const [clientSecret, setClientSecret] = useState("");
@@ -57,7 +56,7 @@ const PaymentClientPage = () => {
     //@ts-ignore
     let _userGuest: TUserGuest = null;
     var userType: "GUEST" | "Authed" | "None" = "None";
-    if (auth && auth.email) {
+    if (authedSession?.user && authedSession.user.email) {
       userType = "Authed";
     } else if (Cookies.get("GUEST_EMAIL")) {
       var x = Cookies.get("GUEST_EMAIL");
@@ -73,7 +72,7 @@ const PaymentClientPage = () => {
     switch (userType) {
       case "Authed":
         //@ts-ignore
-        session.userId = auth?.id;
+        session.userId = authedSession?.user.id;
         break;
       case "GUEST":
         session.userId = _userGuest.id;
@@ -108,15 +107,14 @@ const PaymentClientPage = () => {
         //@ts-ignore
         email: null,
       };
-      if (auth && auth.email) {
-        checkoutSession.email = auth.email;
+      if (authedSession?.user && authedSession.user.email) {
+        checkoutSession.email = authedSession.user.email;
         //@ts-ignore
-        checkoutSession.id = auth.id;
+        checkoutSession.id = authedSession.user.id;
         const result = (await onCreateSession(
           checkoutSession
         )) as IPaymentResponse;
         setClientSecret(result.clientSecret);
-        dispatch(SetUserPayment(result.paymentMethodModel));
       } else if (Cookies.get("GUEST_EMAIL")) {
         var x = Cookies.get("GUEST_EMAIL");
         const response = (await onGetGuest(x!)) as IUserResponse;

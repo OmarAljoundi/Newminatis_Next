@@ -29,6 +29,8 @@ import Link from "next/link";
 import { H6, ShortSpan, Span, Tiny } from "@/components/Typography";
 import { calculateDiscount, calculateDiscountAsNumber, currency } from "@/lib";
 import CheckVoucherIcon from "@/components/CheckVoucherIcon";
+import { useSession } from "next-auth/react";
+import AddressInfo from "./AddressInfo";
 
 export type CheckoutSummaryProps = {
   Discount?: number;
@@ -57,7 +59,7 @@ const CheckoutSummary: FC<Props> = ({
   Total,
 }) => {
   const state = useAppSelector((state) => state.Store.CartReducer?.CartItems);
-  const auth = useAppSelector((state) => state.Store.AuthReducer.Auth);
+  const { data: authedSession } = useSession();
   const [onError, setOnError] = useState<boolean>(false);
   const [show, setShow] = useState<boolean>(false);
   const [onSuccess, setOnSuccess] = useState<boolean>(false);
@@ -82,7 +84,7 @@ const CheckoutSummary: FC<Props> = ({
       discount: 0.0,
       expired: new Date(),
       total: getTotalPrice(state),
-      userId: (auth?.id ?? guestAddress?.id) || 0,
+      userId: (authedSession?.user?.id ?? guestAddress?.id) || 0,
       voucher: _Voucher,
       voucherType: "",
     };
@@ -219,82 +221,13 @@ const CheckoutSummary: FC<Props> = ({
       </div>
 
       {pathname!.includes("payment") && (
-        <div className="grid grid-cols-2 border-t-2 border-gray-400 py-3  gap-y-2">
-          <div className="grid gap-y-1">
-            <span className="text-sm font-medium">Name:</span>
-            <span className="text-sm font-medium">Address Line:</span>
-            <span className="text-sm font-medium"> Delievry Instructions:</span>
-            <span className="text-sm font-medium">Country/City:</span>
-            <span className="text-sm font-medium">Postal Code:</span>
-            <span className="text-sm font-medium">Contact Number:</span>
-          </div>
-          <div className="grid justify-items-end gap-y-1">
-            <span className="text-sm font-medium">
-              {
-                //@ts-ignore
-                auth?.userAddress[auth.selectedAddress]?.firstName ??
-                  guestAddress?.firstName
-              }
-              {
-                //@ts-ignore
-                auth?.userAddress[auth.selectedAddress]?.lastName ??
-                  guestAddress?.lastName
-              }
-            </span>
-            <span className="text-sm font-medium">
-              {
-                //@ts-ignore
-                auth?.userAddress[auth.selectedAddress]?.addressLine ??
-                  guestAddress?.addressLine
-              }
-            </span>
-            <span className="text-sm font-medium">
-              {
-                //@ts-ignore
-                auth?.userAddress[auth.selectedAddress]?.deliveryInstructions ??
-                  guestAddress?.deliveryInstructions
-              }
-            </span>
-            <span className="text-sm font-medium">
-              {
-                //@ts-ignore
-                auth?.userAddress[auth.selectedAddress]?.country ??
-                  guestAddress?.country
-              }
-              {", "}
-              {
-                //@ts-ignore
-                auth?.userAddress[auth.selectedAddress]?.state ??
-                  guestAddress?.state
-              }
-            </span>
-            <span className="text-sm font-medium">
-              {
-                //@ts-ignore
-                auth?.userAddress[auth.selectedAddress]?.postalCode ??
-                  guestAddress?.postalCode
-              }
-            </span>
-            <span className="text-sm font-medium">
-              {
-                //@ts-ignore
-                auth?.userAddress[auth.selectedAddress]?.phoneNumber ??
-                  guestAddress?.phoneNumber
-              }
-            </span>
-          </div>
-          <Link href="/checkout" className="col-span-2">
-            <Button color="secondary" fullWidth variant="text">
-              Change my shipping location
-            </Button>
-          </Link>
-        </div>
+        <AddressInfo guestAddress={guestAddress} />
       )}
 
       {pathname!.includes("payment") && (
         <>
-          <div className="grid grid-cols-3 border-t-2 border-gray-400 pt-3 gap-x-4">
-            <div className="col-span-2">
+          <div className="grid grid-cols-2 border-t-2 border-gray-400 pt-3 gap-x-2">
+            <div className="min-w-[65%]">
               <TextField
                 placeholder="Voucher"
                 variant="outlined"

@@ -440,7 +440,7 @@ const AuthForm: FC = () => {
                   </Box>
                   <NewAddressForm />
                 </FlexBetween>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-2">
                   {authedSession!.user.userAddress?.map((item, ind) => (
                     <div
                       key={ind}
@@ -496,33 +496,35 @@ const AuthForm: FC = () => {
             )}
         </Card>
 
-        <Grid container spacing={4}>
-          <Grid item sm={6} xs={6}>
+        <div className="grid grid-cols-2 gap-x-2">
+          <div>
             <Link href="payment" passHref>
               <Button
                 variant="outlined"
                 color="secondary"
                 type="button"
+                sx={{ fontSize: "12px" }}
                 fullWidth
               >
                 Back to Cart
               </Button>
             </Link>
-          </Grid>
+          </div>
 
-          <Grid item sm={6} xs={6}>
+          <div>
             <LoadingButton
               variant="contained"
               color="primary"
               loading={loading}
+              sx={{ fontSize: "12px" }}
               type={selected != null ? "button" : "submit"}
               onClick={() => (selected != null ? handleProceedPayment() : {})}
               fullWidth
             >
               Proceed to Payment
             </LoadingButton>
-          </Grid>
-        </Grid>
+          </div>
+        </div>
       </form>
     </>
   );
