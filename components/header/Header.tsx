@@ -59,7 +59,7 @@ const Header = () => {
 
   useEffect(() => {
     if (status != "loading") {
-      if (session!.user.name === "UNAUTHORIZED") {
+      if (session?.user.name === "UNAUTHORIZED") {
         signOut();
       } else if (status == "unauthenticated") {
       } else if (status == "authenticated") {
