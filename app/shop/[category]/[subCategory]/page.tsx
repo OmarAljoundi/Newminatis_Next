@@ -1,6 +1,4 @@
 import Breadcrumb from "@/pages-sections/shop/Breadcrumb";
-import ProductService from "@/service/ProductService";
-import { SearchQuery, eFilterOperator } from "@/types/TSearchQuery";
 import React from "react";
 
 type Params = {
