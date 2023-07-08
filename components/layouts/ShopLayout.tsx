@@ -42,29 +42,7 @@ const ShopLayout: FC<ShopLayoutProps> = ({ children }) => {
       </Sticky>
 
       <div className="section-after-sticky overflow-x-hidden">
-        <FloatingWhatsApp
-          phoneNumber="+14158181185"
-          accountName="Newminatis"
-          allowEsc
-          allowClickAway
-          notification
-          notificationSound
-          avatar="https://newminatis.s3.eu-central-1.amazonaws.com/Logos/logo_light.png"
-          statusMessage="Instance response"
-          darkMode
-          buttonClassName="whats-newminatis hide"
-          onClick={() =>
-            window.open(
-              "https://api.whatsapp.com/send/?phone=14158181185&text=Hello%2C+i+have+a+question+regarding+my+order.&type=phone_number&app_absent=0",
-              "_blank"
-            )
-          }
-          chatboxStyle={{
-            display: "none",
-          }}
-        />
         <ProviderRouteChange />
-        {cartItems > 0 && <CartSticky />}
         {children}
       </div>
 

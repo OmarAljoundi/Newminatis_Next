@@ -1,7 +1,6 @@
 import * as yup from "yup";
 
 const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-const phoneRegExp = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
 
 export const AddressValidationSchema = yup.object().shape({
   email: yup
@@ -9,11 +8,7 @@ export const AddressValidationSchema = yup.object().shape({
     .matches(regex, "Invalid Email")
     .required("Field is required"),
   firstName: yup.string().required("Field is required"),
-  phoneNumber: yup
-    .string()
-    .nullable()
-    .matches(phoneRegExp, "Invalid Phone Number")
-    .required("Field is required"),
+  phoneNumber: yup.string().nullable().required("Field is required"),
   lastName: yup.string().required("Field is required"),
   country: yup.string().required("Field is required"),
   state: yup.string().nullable().required("Field is required"),

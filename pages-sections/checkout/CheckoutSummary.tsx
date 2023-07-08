@@ -22,7 +22,11 @@ import { CartItem } from "@/store/Model/CartItem";
 import { RemoveItem } from "@/store/CartItem/Cart-action";
 import { toast } from "react-hot-toast";
 import { TShoppingSession } from "@/types/TCheckoutSessionRequest";
-import { getTotalPrice } from "@/helpers/Extensions";
+import {
+  calcualteQty,
+  calculateCart,
+  getTotalPrice,
+} from "@/helpers/Extensions";
 import { IShoppingSessionResponse } from "@/interface/IShoppingSessionResponse";
 import { FlexBetween } from "@/components/flex-box";
 import Link from "next/link";
@@ -32,12 +36,14 @@ import CheckVoucherIcon from "@/components/CheckVoucherIcon";
 import { useSession } from "next-auth/react";
 import AddressInfo from "./AddressInfo";
 import { BlurImage } from "@/components/BlurImage";
+import { CheckCircleIcon, TruckIcon } from "@heroicons/react/20/solid";
 
 export type CheckoutSummaryProps = {
   Discount?: number;
   Voucher?: string;
   Total: number;
   Type: string;
+  ShippingCost?: number | null;
 };
 
 export type Props = {
@@ -45,6 +51,7 @@ export type Props = {
   Voucher?: string;
   Type: string;
   Total: number;
+  ShippingCost?: number | null;
   setCheckoutSummary: React.Dispatch<
     React.SetStateAction<CheckoutSummaryProps>
   >;
@@ -54,6 +61,7 @@ export type Props = {
 const CheckoutSummary: FC<Props> = ({
   Voucher,
   Discount = 0,
+  ShippingCost,
   setCheckoutSummary,
   guestAddress,
   Type,
@@ -88,6 +96,13 @@ const CheckoutSummary: FC<Props> = ({
       userId: (authedSession?.user?.id ?? guestAddress?.id) || 0,
       voucher: _Voucher,
       voucherType: "",
+      countryCode:
+        (authedSession?.user?.userAddress[authedSession?.user?.selectedAddress]
+          .country ??
+          guestAddress?.country) ||
+        null,
+      shippingCost: 0,
+      weight: calcualteQty(state || []) * 0.5 + 0.5,
     };
     const result = (await CreateCheckoutSession(
       session
@@ -99,6 +114,7 @@ const CheckoutSummary: FC<Props> = ({
         Total: result.shoppingSession.total,
         Voucher: result.shoppingSession.voucher || "",
         Type: result.shoppingSession.voucherType || "",
+        ShippingCost: result.shoppingSession.shippingCost,
       });
       setOnSuccess(true);
       setOnError(false);
@@ -135,6 +151,45 @@ const CheckoutSummary: FC<Props> = ({
     }
   };
 
+  const getShippingMessage = () => {
+    if (ShippingCost != null) {
+      if (ShippingCost > 0) {
+        return (
+          <div className="mt-2">
+            <div className="flex justify-between items-center">
+              <div className="mb-1 text-[10px] font-bold uppercase">
+                Add {currency(200 - calculateCart(state || []), _setting)} to be
+                Eligible for free shipping
+              </div>
+              <div className="mb-1 text-xs font-bold">
+                <TruckIcon width={20} />
+              </div>
+            </div>
+            <div className="w-full bg-gray-200 rounded-sm h-2.5 mb-4 dark:bg-gray-700">
+              <div className="bg-gray-600 h-2.5 rounded-sm dark:bg-gray-300 w-2/4"></div>
+            </div>
+          </div>
+        );
+      } else {
+        return (
+          <div className="mt-2">
+            <div className="flex justify-between items-center">
+              <div className="mb-1 text-[10px] font-bold uppercase">
+                Awesome, You Are EligabEligiblele For Free Shipping!
+              </div>
+              <div className="mb-1 text-xs font-medium">
+                <CheckCircleIcon width={20} color="green" />
+              </div>
+            </div>
+            <div className="w-full bg-gray-200 rounded-sm h-2.5 mb-4 dark:bg-gray-700">
+              <div className="bg-gray-600 h-2.5 rounded-sm dark:bg-gray-300 w-full"></div>
+            </div>
+          </div>
+        );
+      }
+    }
+    return <span></span>;
+  };
   return (
     <Card elevation={1} role={"drawer"}>
       <div className="border-b-2 pb-3 border-gray-400 grid gap-y-3">
@@ -193,38 +248,46 @@ const CheckoutSummary: FC<Props> = ({
             </div>
           </div>
         ))}
+        {getShippingMessage()}
       </div>
 
       <div className="py-3 grid grid-cols-2">
         <div className="grid gap-y-1">
-          <span className="text-sm font-medium">SubTotal:</span>
-          <span className="text-sm font-medium">Shipping:</span>
+          <span className="text-xs font-medium">SubTotal:</span>
+          <span className="text-xs font-medium">Shipping and handling:</span>
+
           {Discount > 0 && (
-            <span className="text-sm font-medium">Discount:</span>
+            <span className="text-xs font-medium text-red-500">Discount:</span>
           )}
           {Discount > 0 && (
-            <span className="text-sm font-medium">Voucher Applied:</span>
+            <span className="text-xs font-medium text-red-500">
+              Voucher Applied:
+            </span>
           )}
-          {<span className="text-sm font-medium">Total:</span>}
+          {<span className="text-xs font-medium">Total:</span>}
         </div>
         <div className="grid justify-items-end gap-y-1">
-          <span className="text-sm font-medium">
+          <span className="text-xs font-medium">
             {currency(getTotalPrice(state), _setting)}
           </span>
-          <span className="text-sm font-medium">FREE</span>
+          <span className="text-xs font-medium">
+            {pathname!.includes("payment")
+              ? ShippingCost
+                ? currency(ShippingCost, _setting)
+                : "FREE"
+              : "Calculated In Payment Step"}
+          </span>
           {Discount > 0 && (
-            <span className="text-sm font-medium">
+            <span className="text-xs font-medium text-red-500">
               -{Type == "Fixed" ? "$" : "%"}
               {Discount}
             </span>
           )}
           {Discount > 0 && (
-            <span className="text-sm font-medium"> {Voucher}</span>
+            <span className="text-xs font-medium text-red-500"> {Voucher}</span>
           )}
-          <span className="text-sm font-medium">
-            {Discount > 0
-              ? currency(Total, _setting)
-              : currency(getTotalPrice(state), _setting)}
+          <span className="text-xs font-medium">
+            {currency(Total, _setting)}
           </span>
         </div>
       </div>

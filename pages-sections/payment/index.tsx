@@ -13,7 +13,11 @@ import CheckoutSummary, {
 import useOrderService from "@/hooks/useOrderService";
 import useUserService from "@/hooks/useUserService";
 import { TShoppingSession } from "@/types/TCheckoutSessionRequest";
-import { calculateCart, getTotalPrice } from "@/helpers/Extensions";
+import {
+  calcualteQty,
+  calculateCart,
+  getTotalPrice,
+} from "@/helpers/Extensions";
 import { IUserResponse } from "@/interface/IUserResponse";
 import { IShoppingSessionResponse } from "@/interface/IShoppingSessionResponse";
 import { TCheckoutRequest } from "@/types/TCheckoutRequest";
@@ -26,6 +30,7 @@ import PaymentForm from "./PaymentForm";
 import { useSession } from "next-auth/react";
 
 const PaymentClientPage: FC = () => {
+  const [loading, setLoading] = useState(false);
   const { onCreateSession, paymentLoad } = useStripePayment();
   const { data: authedSession } = useSession();
   const [guestAddress, setGuestAddress] = useState<TUserGuest>();
@@ -73,9 +78,17 @@ const PaymentClientPage: FC = () => {
       case "Authed":
         //@ts-ignore
         session.userId = authedSession?.user.id;
+        session.countryCode =
+          authedSession!.user.userAddress[authedSession!.user.selectedAddress]
+            .country || null;
+        session.weight = calcualteQty(cart || []);
+        session.shippingCost = 0;
         break;
       case "GUEST":
         session.userId = _userGuest.id;
+        session.countryCode = _userGuest?.country || null;
+        session.weight = calcualteQty(cart || []);
+        session.shippingCost = 0;
         break;
       case "None":
         route.push("/checkout");
@@ -95,8 +108,16 @@ const PaymentClientPage: FC = () => {
       Type: result.shoppingSession.voucherType,
       //@ts-ignore
       Voucher: result.shoppingSession.voucher,
+      ShippingCost: result.shoppingSession.shippingCost,
     });
   };
+
+  useEffect(() => {
+    setLoading(true);
+    Promise.all([onLoadSession(), getClientSecret()]).then((r) => {
+      setLoading(false);
+    });
+  }, [cart, checkoutSummary?.Total]);
 
   const getClientSecret = async () => {
     if (checkoutSummary) {
@@ -136,14 +157,14 @@ const PaymentClientPage: FC = () => {
     }
   };
 
-  useEffect(() => {
-    onLoadSession();
-  }, [cart]);
+  // useEffect(() => {
+  //   onLoadSession();
+  // }, [cart]);
 
-  useEffect(() => {
-    window.scroll(0, 0);
-    getClientSecret();
-  }, [checkoutSummary?.Total]);
+  // useEffect(() => {
+  //   window.scroll(0, 0);
+  //   getClientSecret();
+  // }, [checkoutSummary?.Total]);
 
   useEffect(() => {
     if (calculateCart(cart!) == 0) {
@@ -153,11 +174,13 @@ const PaymentClientPage: FC = () => {
     dispatch(updateCart(cart!));
   }, [cart]);
 
+  console.log("orderLoad", orderLoad);
+  console.log("paymentLoad", paymentLoad);
   return (
     <div>
-      {(orderLoad || paymentLoad) && <CreditCardSkeleton />}
+      {loading && <CreditCardSkeleton />}
 
-      {!paymentLoad && !orderLoad && (
+      {!loading && (
         <Grid container flexWrap="wrap-reverse" spacing={3}>
           <Grid item lg={8} md={8} xs={12}>
             {clientSecret && (
@@ -188,6 +211,7 @@ const PaymentClientPage: FC = () => {
               //@ts-ignore
               Type={checkoutSummary?.Type}
               setCheckoutSummary={setCheckoutSummary}
+              ShippingCost={checkoutSummary?.ShippingCost}
               Discount={checkoutSummary?.Discount}
               Voucher={checkoutSummary?.Voucher}
               guestAddress={guestAddress}

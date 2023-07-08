@@ -25,36 +25,6 @@ const sortOptions = [
   { name: "Price: Low to High", href: "low", current: false },
   { name: "Price: High to Low", href: "high", current: false },
 ];
-const categories = [
-  { name: "Men", href: "Men" },
-  { name: "Women", href: "Women" },
-  { name: "Unisex", href: "Unisex" },
-];
-const filters = [
-  {
-    id: "color",
-    name: "Color",
-    options: [
-      { value: "white", label: "White", checked: false },
-      { value: "beige", label: "Beige", checked: false },
-      { value: "blue", label: "Blue", checked: true },
-      { value: "brown", label: "Brown", checked: false },
-      { value: "green", label: "Green", checked: false },
-      { value: "purple", label: "Purple", checked: false },
-    ],
-  },
-  {
-    id: "size",
-    name: "Size",
-    options: [
-      { value: "S", label: "S", checked: false },
-      { value: "M", label: "M", checked: false },
-      { value: "L", label: "L", checked: false },
-      { value: "XL", label: "XL", checked: false },
-      { value: "XXL", label: "XXL", checked: false },
-    ],
-  },
-];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -63,7 +33,6 @@ function classNames(...classes) {
 const ShopRootLayout: FC<ShopRootLayoutProp> = ({ children }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const pathname = usePathname();
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const createQueryString = useCallback((name: string, value: string) => {
     const params = new URLSearchParams();

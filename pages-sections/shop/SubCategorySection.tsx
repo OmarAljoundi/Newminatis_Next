@@ -23,6 +23,10 @@ export default function SubCategorySection({ subCategory, category }) {
           <RadioGroup.Option
             key={item.name}
             value={item.name}
+            as={Link}
+            href={`/shop/${category}${
+              item.description ? `/${item.description}` : ""
+            }`}
             className={({ active }) =>
               classNames(
                 param?.subCategory == item.description &&
@@ -35,13 +39,7 @@ export default function SubCategorySection({ subCategory, category }) {
           >
             {({ active, checked }) => (
               <>
-                <RadioGroup.Label
-                  as={Link}
-                  href={`/shop/${category}${
-                    item.description ? `/${item.description}` : ""
-                  }`}
-                  className={"text-xs truncate"}
-                >
+                <RadioGroup.Label className={"text-xs truncate"}>
                   {item.name}
                 </RadioGroup.Label>
                 <span

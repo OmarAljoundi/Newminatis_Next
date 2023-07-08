@@ -94,7 +94,9 @@ const AddToCardModel: FC<CartModelProps> = ({
 
     if (!cartItem?.find((x) => x.sku == GetSKU(name, color, size))) {
       dispatch(AddItem(cart));
-      toasterSuccess(currency(getTotalPrice() + __price * qty, _setting));
+      toasterSuccess(
+        currency(getTotalPrice(cartItem || []) + __price * 1, _setting)
+      );
       toggleDrawer();
     } else if (qty != 0) {
       var qttyy =
@@ -105,7 +107,9 @@ const AddToCardModel: FC<CartModelProps> = ({
         return;
       }
       dispatch(UpdateItem(cart));
-      toasterSuccess(currency(getTotalPrice() + __price * qty, _setting));
+      toasterSuccess(
+        currency(getTotalPrice(cartItem || []) + __price * qty, _setting)
+      );
       toggleDrawer();
     } else {
       dispatch(RemoveItem(cart));
@@ -302,8 +306,8 @@ const AddToCardModel: FC<CartModelProps> = ({
                   <button
                     className="title rounded-none 
                             text-xs uppercase  flex 
-                            items-center justify-center rounded-md border border-transparent
-                             bg-black px-2 py-1 text-base  text-white shadow-sm hover:bg-slate-700"
+                            items-center justify-center  border border-transparent
+                             bg-black px-2 py-1   text-white shadow-sm hover:bg-slate-700"
                     onClick={() => {
                       if (size == "") {
                         handleToolOpen();

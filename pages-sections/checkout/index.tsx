@@ -1,7 +1,11 @@
 "use client";
 import { CreditCardSkeleton } from "@/components/loading/CreditCardSkeleton";
 import { ExpressCheckoutNoEmail } from "@/components/stripe/ExpressCheckoutNoEmail";
-import { calculateCart, getTotalPrice } from "@/helpers/Extensions";
+import {
+  calcualteQty,
+  calculateCart,
+  getTotalPrice,
+} from "@/helpers/Extensions";
 import useOrderService from "@/hooks/useOrderService";
 import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
 import useStripePayment from "@/hooks/useStripePayment";
@@ -71,10 +75,18 @@ export default function CheckoutClientPage() {
     switch (userType) {
       case "Authed":
         session.userId = authedSession?.user?.id || 0;
+        session.countryCode =
+          authedSession!.user.userAddress[authedSession!.user.selectedAddress]
+            .country || null;
+        session.weight = calcualteQty(cart || []);
+        session.shippingCost = 0;
         break;
       case "GUEST":
         //@ts-ignore
         session.userId = _userGuest.id;
+        session.countryCode = _userGuest?.country || null;
+        session.weight = calcualteQty(cart || []);
+        session.shippingCost = 0;
         break;
       case "None":
         if (pathname!.includes("payment")) route.push("cart/checkout");
@@ -93,11 +105,10 @@ export default function CheckoutClientPage() {
         Total: result.shoppingSession.total,
         Type: result.shoppingSession.voucherType || "",
         Voucher: result.shoppingSession.voucher || "",
+        ShippingCost: result.shoppingSession.shippingCost,
       });
     }
   };
-
-  console.log("authedSession", authedSession);
 
   useEffect(() => {
     onLoadSession();

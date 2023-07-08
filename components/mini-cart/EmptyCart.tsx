@@ -1,46 +1,20 @@
-import { Box, Button, Chip, Container } from "@mui/material";
-import LocalMallIcon from "@mui/icons-material/LocalMall";
-import { H2, Paragraph } from "../Typography";
+import { Button } from "@mui/material";
 import Link from "next/link";
+import { BuildingStorefrontIcon } from "@heroicons/react/20/solid";
 
 export const EmptyCart = () => {
   return (
-    <Container>
-      <Box
-        py={6}
-        justifyContent={"center"}
-        display={"grid"}
-        justifyItems={"center"}
-        maxWidth={"600px"}
-        m={"auto"}
-      >
-        <Chip
-          sx={{
-            width: "96px",
-            height: "96px",
-            borderRadius: "47px",
-            backgroundColor: "#646f79",
-          }}
-          icon={
-            <LocalMallIcon
-              sx={{
-                width: "42px",
-                height: "37px",
-                marginRight: "-20px!important",
-                color: "white",
-              }}
-              color="action"
-            />
-          }
-        />
-        <H2>Your cart is currently empty</H2>
-        <Paragraph textAlign={"center"} sx={{ my: "15px" }}>
+    <div className="max-w-7xl">
+      <div className="py-12 grid justify-center items-center  justify-items-center max-w-xl px-4 mx-auto">
+        <BuildingStorefrontIcon width={50} color="black" />
+        <span className="text-2xl">Your cart is currently empty</span>
+        <p className="text-center my-4 text-lg">
           Before proceed to checkout you must add some products to your shopping
           cart. You will find a lot of interesting products on our Shop page.
-        </Paragraph>
+        </p>
         <Link href={"/shop"}>
           <Button
-            color="marron"
+            color="primary"
             variant="contained"
             sx={{
               marginTop: "15px",
@@ -51,7 +25,7 @@ export const EmptyCart = () => {
             Start Shopping
           </Button>
         </Link>
-      </Box>
-    </Container>
+      </div>
+    </div>
   );
 };
