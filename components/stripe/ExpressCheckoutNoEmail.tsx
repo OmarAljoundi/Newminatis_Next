@@ -72,14 +72,7 @@ export const ExpressCheckoutNoEmail = () => {
       requestPayerName: true,
       requestPayerPhone: true,
       requestShipping: true,
-      shippingOptions: [
-        {
-          id: "free-shipping",
-          label: "Free shipping",
-          detail: "",
-          amount: 0,
-        },
-      ],
+      shippingOptions: [],
 
       total: {
         amount:
@@ -91,6 +84,13 @@ export const ExpressCheckoutNoEmail = () => {
       if (res) {
         setPaymentRequest(pr);
       }
+    });
+
+    pr.on("source", (e) => {
+      alert("Source");
+      alert(e.payerEmail);
+      alert(e.payerName);
+      alert(e.payerPhone);
     });
 
     pr.on("shippingaddresschange", async (ev) => {
@@ -108,6 +108,7 @@ export const ExpressCheckoutNoEmail = () => {
     });
 
     pr.on("paymentmethod", async (e) => {
+      alert(e.payerEmail);
       const isStocked = await handleStockabaliablity(items);
       var newGuestUser: TUserGuest = {
         id: 0,

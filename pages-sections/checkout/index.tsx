@@ -70,7 +70,6 @@ export default function CheckoutClientPage() {
         userType = "None";
       }
     }
-    console.log("authedSession", authedSession);
 
     switch (userType) {
       case "Authed":
@@ -85,11 +84,11 @@ export default function CheckoutClientPage() {
         //@ts-ignore
         session.userId = _userGuest.id;
         session.countryCode = _userGuest?.country || null;
-        session.weight = calcualteQty(cart || []);
+        session.weight = calcualteQty(cart || []) * 0.5;
         session.shippingCost = 0;
         break;
       case "None":
-        if (pathname!.includes("payment")) route.push("cart/checkout");
+        if (pathname!.includes("payment")) route.push("/checkout");
         break;
     }
 
@@ -151,6 +150,8 @@ export default function CheckoutClientPage() {
               Discount={checkoutSummary?.Discount}
               Voucher={checkoutSummary?.Voucher}
               setCheckoutSummary={setCheckoutSummary}
+              ShippingCost={checkoutSummary?.ShippingCost}
+              TaxCost={checkoutSummary?.TaxCost}
             />
           </Grid>
         </Grid>

@@ -285,3 +285,34 @@ export const Our_story_6 = `NEWMINATIS is a high-end unique fashion brand create
 A US based company which was established in San Francisco in 2022.`;
 export const contribution = `Our concern for a sustainable environment sets a high value for Newminatis in the industry.
 Our community is helping counteract climate change by directing a fraction of Newminatis's revenue towards initiative which removes carbon dioxide from the atmosphere.`;
+
+export const countryVsProvider = [
+  {
+    country: "SA",
+    Provider: "Aramex",
+  },
+  {
+    country: "BH",
+    Provider: "Aramex",
+  },
+  {
+    country: "KW",
+    Provider: "Aramex",
+  },
+  {
+    country: "OM",
+    Provider: "Aramex",
+  },
+  {
+    country: "QA",
+    Provider: "Aramex",
+  },
+  {
+    country: "AE",
+    Provider: "Us",
+  },
+  {
+    country: "*",
+    Provider: "DHL",
+  },
+];

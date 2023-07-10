@@ -44,6 +44,7 @@ export type CheckoutSummaryProps = {
   Total: number;
   Type: string;
   ShippingCost?: number | null;
+  TaxCost?: number | null;
 };
 
 export type Props = {
@@ -52,6 +53,7 @@ export type Props = {
   Type: string;
   Total: number;
   ShippingCost?: number | null;
+  TaxCost?: number | null;
   setCheckoutSummary: React.Dispatch<
     React.SetStateAction<CheckoutSummaryProps>
   >;
@@ -64,6 +66,7 @@ const CheckoutSummary: FC<Props> = ({
   ShippingCost,
   setCheckoutSummary,
   guestAddress,
+  TaxCost,
   Type,
   Total,
 }) => {
@@ -102,7 +105,7 @@ const CheckoutSummary: FC<Props> = ({
           guestAddress?.country) ||
         null,
       shippingCost: 0,
-      weight: calcualteQty(state || []) * 0.5 + 0.5,
+      weight: calcualteQty(state || []) * 0.5,
     };
     const result = (await CreateCheckoutSession(
       session
@@ -115,6 +118,7 @@ const CheckoutSummary: FC<Props> = ({
         Voucher: result.shoppingSession.voucher || "",
         Type: result.shoppingSession.voucherType || "",
         ShippingCost: result.shoppingSession.shippingCost,
+        TaxCost: result.shoppingSession.taxAmount,
       });
       setOnSuccess(true);
       setOnError(false);
@@ -152,43 +156,58 @@ const CheckoutSummary: FC<Props> = ({
   };
 
   const getShippingMessage = () => {
-    if (ShippingCost != null) {
-      if (ShippingCost > 0) {
-        return (
-          <div className="mt-2">
-            <div className="flex justify-between items-center">
-              <div className="mb-1 text-[10px] font-bold uppercase">
-                Add {currency(200 - calculateCart(state || []), _setting)} to be
-                Eligible for free shipping
-              </div>
-              <div className="mb-1 text-xs font-bold">
-                <TruckIcon width={20} />
-              </div>
+    if (!isEligableForFreeShipping()) {
+      const percentage = `${((300 - calculateCart(state || [])) / 3).toFixed(
+        0
+      )}%`;
+      return (
+        <div className="mt-2">
+          <div className="flex justify-between items-center">
+            <div className="mb-1 text-[10px] font-bold uppercase">
+              Add {currency(300 - calculateCart(state || []), _setting)} to be
+              Eligible for free shipping
             </div>
-            <div className="w-full bg-gray-200 rounded-sm h-2.5 mb-4 dark:bg-gray-700">
-              <div className="bg-gray-600 h-2.5 rounded-sm dark:bg-gray-300 w-2/4"></div>
+            <div className="mb-1 text-xs font-bold">
+              <TruckIcon width={20} />
             </div>
           </div>
-        );
-      } else {
-        return (
-          <div className="mt-2">
-            <div className="flex justify-between items-center">
-              <div className="mb-1 text-[10px] font-bold uppercase">
-                Awesome, You Are EligabEligiblele For Free Shipping!
-              </div>
-              <div className="mb-1 text-xs font-medium">
-                <CheckCircleIcon width={20} color="green" />
-              </div>
+          <div className="w-full bg-gray-200 rounded-sm h-2.5 mb-4 dark:bg-gray-700">
+            <div
+              className={`bg-gray-600 h-2.5 rounded-sm dark:bg-gray-300 w-[${percentage}]`}
+            ></div>
+          </div>
+        </div>
+      );
+    } else {
+      return (
+        <div className="mt-2">
+          <div className="flex justify-between items-center">
+            <div className="mb-1 text-[10px] font-bold uppercase">
+              Awesome, You Are EligabEligiblele For Free Shipping!
             </div>
-            <div className="w-full bg-gray-200 rounded-sm h-2.5 mb-4 dark:bg-gray-700">
-              <div className="bg-gray-600 h-2.5 rounded-sm dark:bg-gray-300 w-full"></div>
+            <div className="mb-1 text-xs font-medium">
+              <CheckCircleIcon width={20} color="green" />
             </div>
           </div>
-        );
-      }
+          <div className="w-full bg-gray-200 rounded-sm h-2.5 mb-4 dark:bg-gray-700">
+            <div className="bg-gray-600 h-2.5 rounded-sm dark:bg-gray-300 w-full"></div>
+          </div>
+        </div>
+      );
     }
-    return <span></span>;
+  };
+
+  const isEligableForFreeShipping = () => {
+    return getTotalPrice(state) > 300;
+  };
+
+  const getShippingLabel = () => {
+    if (isEligableForFreeShipping()) {
+      return "Free Shipping!";
+    }
+    if (pathname!.includes("payment")) return currency(ShippingCost!, _setting);
+
+    return "Calculate at payment";
   };
   return (
     <Card elevation={1} role={"drawer"}>
@@ -254,8 +273,10 @@ const CheckoutSummary: FC<Props> = ({
       <div className="py-3 grid grid-cols-2">
         <div className="grid gap-y-1">
           <span className="text-xs font-medium">SubTotal:</span>
-          <span className="text-xs font-medium">Shipping and handling:</span>
-
+          <span className="text-xs font-medium">Shipping & handling:</span>
+          {!!TaxCost && (
+            <span className="text-xs font-medium">Duties & Tax:</span>
+          )}
           {Discount > 0 && (
             <span className="text-xs font-medium text-red-500">Discount:</span>
           )}
@@ -264,19 +285,18 @@ const CheckoutSummary: FC<Props> = ({
               Voucher Applied:
             </span>
           )}
-          {<span className="text-xs font-medium">Total:</span>}
+          {!!Total && <span className="text-xs font-medium">Total:</span>}
         </div>
         <div className="grid justify-items-end gap-y-1">
           <span className="text-xs font-medium">
             {currency(getTotalPrice(state), _setting)}
           </span>
-          <span className="text-xs font-medium">
-            {pathname!.includes("payment")
-              ? ShippingCost
-                ? currency(ShippingCost, _setting)
-                : "FREE"
-              : "Calculated In Payment Step"}
-          </span>
+          <span className="text-xs font-medium">{getShippingLabel()}</span>
+          {!!TaxCost && (
+            <span className="text-xs font-medium">
+              {currency(TaxCost, _setting)}
+            </span>
+          )}
           {Discount > 0 && (
             <span className="text-xs font-medium text-red-500">
               -{Type == "Fixed" ? "$" : "%"}
@@ -287,7 +307,7 @@ const CheckoutSummary: FC<Props> = ({
             <span className="text-xs font-medium text-red-500"> {Voucher}</span>
           )}
           <span className="text-xs font-medium">
-            {currency(Total, _setting)}
+            {!!Total && currency(Total, _setting)}
           </span>
         </div>
       </div>

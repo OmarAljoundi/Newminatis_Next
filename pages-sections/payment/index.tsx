@@ -87,7 +87,7 @@ const PaymentClientPage: FC = () => {
       case "GUEST":
         session.userId = _userGuest.id;
         session.countryCode = _userGuest?.country || null;
-        session.weight = calcualteQty(cart || []);
+        session.weight = calcualteQty(cart || []) * 0.5;
         session.shippingCost = 0;
         break;
       case "None":
@@ -109,6 +109,7 @@ const PaymentClientPage: FC = () => {
       //@ts-ignore
       Voucher: result.shoppingSession.voucher,
       ShippingCost: result.shoppingSession.shippingCost,
+      TaxCost: result.shoppingSession.taxAmount,
     });
   };
 
@@ -215,6 +216,7 @@ const PaymentClientPage: FC = () => {
               Discount={checkoutSummary?.Discount}
               Voucher={checkoutSummary?.Voucher}
               guestAddress={guestAddress}
+              TaxCost={checkoutSummary?.TaxCost}
             />
           </Grid>
         </Grid>

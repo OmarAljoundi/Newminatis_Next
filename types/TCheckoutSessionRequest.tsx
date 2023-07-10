@@ -9,6 +9,7 @@ export type TShoppingSession = {
   countryCode?: string | null;
   weight?: number | null;
   shippingCost?: number | null;
+  taxAmount?: number | null;
   expired: Date;
   createdDate: Date | null;
 };
