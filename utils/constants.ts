@@ -311,8 +311,4 @@ export const countryVsProvider = [
     country: "AE",
     Provider: "Us",
   },
-  {
-    country: "*",
-    Provider: "DHL",
-  },
 ];

@@ -5,6 +5,7 @@ import { TProductCategory } from "@/types/TProductCategory";
 import { TProductReview, eReviewStatus } from "@/types/TProductReview";
 import { TProductVariant } from "@/types/TProductVariant";
 import { Order, SearchQuery, eFilterOperator } from "@/types/TSearchQuery";
+import { countryVsProvider } from "@/utils/constants";
 import { ReadonlyURLSearchParams } from "next/navigation";
 
 export const findDuplicates = (arr: TProductVariant[]) => {
@@ -190,6 +191,70 @@ export const getDatesBetween = (
   } else {
     return `between <strong>${_minEdd.toDateString()}</strong> and <strong>${_maxEdd.toDateString()}</strong>`;
   }
+};
+
+export function getEstimatedDuration(
+  currentDate: Date,
+  futureDate: Date
+): string {
+  var currentDate = new Date(currentDate);
+  var futureDate = new Date(futureDate);
+  const diffInMilliseconds = futureDate.getTime() - currentDate.getTime();
+  const diffInDays = Math.ceil(diffInMilliseconds / (1000 * 60 * 60 * 24));
+
+  if (diffInDays === 1) {
+    return "Next day";
+  } else if (diffInDays < 1) {
+    return "Same day";
+  } else {
+    const workingDays = diffInDays - Math.floor(diffInDays / 7) * 2;
+    return `${diffInDays} - ${workingDays} working days`;
+  }
+}
+
+export const getShippingObject = (
+  shippingCost: number,
+  currentDate: Date,
+  futureDate: Date,
+  country: string
+) => {
+  const EstimatedDuration = getEstimatedDuration(currentDate, futureDate);
+  const _countryVsProvider = countryVsProvider.find(
+    (x) => x.country == country
+  );
+  if (shippingCost == 0) {
+    return {
+      id: "free-shipping",
+      label: `Free Express Shipping (${EstimatedDuration})`,
+      detail: "",
+      amount: 0,
+    };
+  }
+  return {
+    id: "shipping",
+    label: `${
+      _countryVsProvider?.Provider ?? "DHL"
+    } Express Shipping (${EstimatedDuration})`,
+    detail: "",
+    amount: shippingCost,
+  };
+};
+
+export const getShippingLabel = (
+  shippingCost: number,
+  currentDate: Date,
+  futureDate: Date,
+  country: string
+) => {
+  const _countryVsProvider = countryVsProvider.find(
+    (x) => x.country == country
+  );
+  const EstimatedDuration = getEstimatedDuration(currentDate, futureDate);
+  if (shippingCost == 0) return `Free Express Shipping (${EstimatedDuration})`;
+
+  return `${
+    _countryVsProvider?.Provider ?? "DHL"
+  } Express Shipping (${EstimatedDuration})`;
 };
 
 export const MapStatus = (n: number) => {
