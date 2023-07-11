@@ -225,17 +225,15 @@ export const getShippingObject = (
   if (shippingCost == 0) {
     return {
       id: "free-shipping",
-      label: `Free Express Shipping (${EstimatedDuration})`,
-      detail: "",
+      label: `Free Express Shipping`,
+      detail: EstimatedDuration,
       amount: 0,
     };
   }
   return {
     id: "shipping",
-    label: `${
-      _countryVsProvider?.Provider ?? "DHL"
-    } Express Shipping (${EstimatedDuration})`,
-    detail: "",
+    label: `${_countryVsProvider?.Provider ?? "DHL"} Express Shipping`,
+    detail: EstimatedDuration,
     amount: shippingCost,
   };
 };

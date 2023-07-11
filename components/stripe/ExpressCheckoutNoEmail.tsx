@@ -138,12 +138,15 @@ export const ExpressCheckoutNoEmail = () => {
                 data.delievryDate,
                 ev.shippingAddress.country || ""
               ),
-              amount: data.shippingCost,
+              amount: (data.shippingCost.toFixed(2) as unknown as number) * 100,
               pending: false,
             },
             {
               label: "Estimated VAT & DUTY",
-              amount: data.dutyAmount + data.vatAmount,
+              amount:
+                ((data.dutyAmount + data.vatAmount).toFixed(
+                  2
+                ) as unknown as number) * 100,
               pending: false,
             },
           ],
