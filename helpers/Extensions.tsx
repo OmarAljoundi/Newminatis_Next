@@ -207,8 +207,7 @@ export function getEstimatedDuration(
   } else if (diffInDays < 1) {
     return "Same day";
   } else {
-    const workingDays = diffInDays - Math.floor(diffInDays / 7) * 2;
-    return `${diffInDays} - ${workingDays} working days`;
+    return `${diffInDays} - ${diffInDays - 2} working days`;
   }
 }
 
@@ -234,7 +233,7 @@ export const getShippingObject = (
     id: "shipping",
     label: `${_countryVsProvider?.Provider ?? "DHL"} Express Shipping`,
     detail: EstimatedDuration,
-    amount: shippingCost,
+    amount: (shippingCost.toFixed(2) as unknown as number) * 100,
   };
 };
 
