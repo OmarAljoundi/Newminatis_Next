@@ -72,7 +72,14 @@ export const ExpressCheckoutNoEmail = () => {
       requestPayerName: true,
       requestPayerPhone: true,
       requestShipping: true,
-      shippingOptions: [],
+      shippingOptions: [
+        {
+          id: "free-shipping",
+          label: "Free shipping",
+          detail: "",
+          amount: 0,
+        },
+      ],
       displayItems: [
         {
           label: "Subtotal",
@@ -82,11 +89,6 @@ export const ExpressCheckoutNoEmail = () => {
         },
         {
           label: "Express Delivery",
-          amount: 0,
-          pending: true,
-        },
-        {
-          label: "Estimited Vat",
           amount: 0,
           pending: true,
         },
@@ -106,18 +108,28 @@ export const ExpressCheckoutNoEmail = () => {
       }
     });
 
-    pr.isShowing();
-
     pr.on("shippingaddresschange", async (ev) => {
       ev.updateWith({
         status: "success",
-
+        displayItems: [
+          {
+            label: "Subtotal",
+            amount:
+              (calculateCart(cart || []).toFixed(2) as unknown as number) * 100,
+            pending: false,
+          },
+          {
+            label: "Express Delivery",
+            amount: 0,
+            pending: false,
+          },
+        ],
         shippingOptions: [
           {
             id: "free-shipping",
             label: "Free shipping",
             detail: "",
-            amount: 0,
+            amount: 25,
           },
         ],
       });
