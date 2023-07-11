@@ -124,6 +124,12 @@ export const ExpressCheckoutNoEmail = () => {
             pending: false,
           },
         ],
+        total: {
+          amount:
+            (calculateCart(cart || []).toFixed(2) as unknown as number) * 100,
+          label: "Checkout Newminatis",
+          pending: false,
+        },
         shippingOptions: [
           {
             id: "free-shipping",
