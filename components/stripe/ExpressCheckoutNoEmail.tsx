@@ -73,29 +73,45 @@ export const ExpressCheckoutNoEmail = () => {
       requestPayerPhone: true,
       requestShipping: true,
       shippingOptions: [],
+      displayItems: [
+        {
+          label: "Subtotal",
+          amount:
+            (calculateCart(cart || []).toFixed(2) as unknown as number) * 100,
+          pending: false,
+        },
+        {
+          label: "Express Delivery",
+          amount: 0,
+          pending: true,
+        },
+        {
+          label: "Estimited Vat",
+          amount: 0,
+          pending: true,
+        },
+      ],
 
       total: {
         amount:
           (calculateCart(cart || []).toFixed(2) as unknown as number) * 100,
         label: "Checkout Newminatis",
+        pending: true,
       },
     });
+
     pr.canMakePayment().then((res) => {
       if (res) {
         setPaymentRequest(pr);
       }
     });
 
-    pr.on("source", (e) => {
-      alert("Source");
-      alert(e.payerEmail);
-      alert(e.payerName);
-      alert(e.payerPhone);
-    });
+    pr.isShowing();
 
     pr.on("shippingaddresschange", async (ev) => {
       ev.updateWith({
         status: "success",
+
         shippingOptions: [
           {
             id: "free-shipping",
@@ -108,7 +124,6 @@ export const ExpressCheckoutNoEmail = () => {
     });
 
     pr.on("paymentmethod", async (e) => {
-      alert(e.payerEmail);
       const isStocked = await handleStockabaliablity(items);
       var newGuestUser: TUserGuest = {
         id: 0,
