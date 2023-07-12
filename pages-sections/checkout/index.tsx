@@ -128,7 +128,7 @@ export default function CheckoutClientPage() {
   return (
     <div>
       {userLoad == false && orderLoad == false ? (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-4 ">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-4 gap-y-2">
           <div>
             <CheckoutSummary
               Total={checkoutSummary?.Total || 0}
@@ -140,7 +140,7 @@ export default function CheckoutClientPage() {
               TaxCost={checkoutSummary?.TaxCost}
             />
           </div>
-          <div className="col-span-2">
+          <div className="col-span-1 lg:col-span-2">
             <Elements stripe={stripePromise}>
               <ExpressCheckoutNoEmail />
             </Elements>

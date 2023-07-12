@@ -10,8 +10,50 @@ import { FlexBox } from "../flex-box";
 
 export const CreditCardSkeleton = () => {
   return (
-    <Grid container flexWrap="wrap-reverse" spacing={3}>
-      <Grid item lg={8} md={8} xs={12}>
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-4 gap-y-2">
+      <div>
+        <Card elevation={5} role={"drawer"}>
+          {Array.from(new Array(2)).map((i) => (
+            <div className="flex mt-2 gap-x-3">
+              <Skeleton width="60px" height={"60px"} variant="rounded">
+                <TextField />
+              </Skeleton>
+              <div className="grid w-full content-center h-fit">
+                <Skeleton width="100%" height={"10px"}>
+                  <TextField />
+                </Skeleton>
+                <Skeleton width="80%" height={"10px"}>
+                  <TextField />
+                </Skeleton>
+                <Skeleton width="60%" height={"10px"}>
+                  <TextField />
+                </Skeleton>
+                <Skeleton width="40%" height={"10px"}>
+                  <TextField />
+                </Skeleton>
+              </div>
+            </div>
+          ))}
+
+          <div className="my-4 grid gap-y-1">
+            {Array.from(new Array(6)).map((i) => (
+              <div className="flex justify-between">
+                <Skeleton width="40%" height={"20px"}>
+                  <TextField />
+                </Skeleton>
+                <Skeleton width="40%" height={"20px"}>
+                  <TextField />
+                </Skeleton>
+              </div>
+            ))}
+          </div>
+
+          <Skeleton width="100%" height={"50px"}>
+            <Button>Pay Now</Button>
+          </Skeleton>
+        </Card>
+      </div>
+      <div className="col-span-1 lg:col-span-2">
         <Card elevation={5} role={"drawer"}>
           <FlexBox justifyContent={"space-between"} columnGap={"10px"}>
             <Skeleton width="50%" height={"70px"}>
@@ -27,59 +69,12 @@ export const CreditCardSkeleton = () => {
           <Skeleton width="100%" height={"70px"}>
             <TextField />
           </Skeleton>
-          <Skeleton width="100%">
-            <Typography>.</Typography>
-          </Skeleton>
 
           <Skeleton width="100%" height={"70px"}>
             <TextField />
           </Skeleton>
         </Card>
-      </Grid>
-
-      <Grid item lg={4} md={4} xs={12}>
-        <Card elevation={5} role={"drawer"}>
-          <FlexBox justifyContent={"space-between"}>
-            <Skeleton width="40%">
-              <TextField />
-            </Skeleton>
-            <Skeleton width="40%">
-              <TextField />
-            </Skeleton>
-          </FlexBox>
-
-          <FlexBox justifyContent={"space-between"}>
-            <Skeleton width="40%">
-              <TextField />
-            </Skeleton>
-            <Skeleton width="40%">
-              <TextField />
-            </Skeleton>
-          </FlexBox>
-
-          <FlexBox justifyContent={"space-between"}>
-            <Skeleton width="40%">
-              <TextField />
-            </Skeleton>
-            <Skeleton width="40%">
-              <TextField />
-            </Skeleton>
-          </FlexBox>
-
-          <FlexBox justifyContent={"space-between"}>
-            <Skeleton width="40%">
-              <TextField />
-            </Skeleton>
-            <Skeleton width="40%">
-              <TextField />
-            </Skeleton>
-          </FlexBox>
-
-          <Skeleton width="100%" height={"50px"}>
-            <Button>Pay Now</Button>
-          </Skeleton>
-        </Card>
-      </Grid>
-    </Grid>
+      </div>
+    </div>
   );
 };

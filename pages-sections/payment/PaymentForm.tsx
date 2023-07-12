@@ -289,15 +289,6 @@ export default function PaymentForm({ totalAfterDiscount, guestUser }) {
             className="payment-form-new"
           />
           <H6 sx={{ display: "inline-block" }} my={1.5}>
-            {/* <img
-              src={require("../../images/earth.png")}
-              width={20}
-              style={{
-                display: "inline-block",
-                marginRight: 10,
-                verticalAlign: "bottom",
-              }}
-            /> */}
             {Text}
           </H6>
         </>

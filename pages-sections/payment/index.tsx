@@ -158,15 +158,6 @@ const PaymentClientPage: FC = () => {
     }
   };
 
-  // useEffect(() => {
-  //   onLoadSession();
-  // }, [cart]);
-
-  // useEffect(() => {
-  //   window.scroll(0, 0);
-  //   getClientSecret();
-  // }, [checkoutSummary?.Total]);
-
   useEffect(() => {
     if (calculateCart(cart!) == 0) {
       route.push("/cart");
@@ -175,14 +166,12 @@ const PaymentClientPage: FC = () => {
     dispatch(updateCart(cart!));
   }, [cart]);
 
-  console.log("orderLoad", orderLoad);
-  console.log("paymentLoad", paymentLoad);
   return (
     <div>
       {loading && <CreditCardSkeleton />}
 
       {!loading && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-4 ">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-4 gap-y-2 ">
           <div>
             <CheckoutSummary
               //@ts-ignore
@@ -197,7 +186,7 @@ const PaymentClientPage: FC = () => {
               TaxCost={checkoutSummary?.TaxCost}
             />
           </div>
-          <div className="col-span-2">
+          <div className="col-span-1 lg:col-span-2">
             {clientSecret && (
               <Elements
                 stripe={stripePromise}

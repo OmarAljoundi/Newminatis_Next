@@ -157,9 +157,8 @@ const CheckoutSummary: FC<Props> = ({
 
   const getShippingMessage = () => {
     if (!isEligableForFreeShipping()) {
-      const percentage = `${((300 - calculateCart(state || [])) / 3).toFixed(
-        0
-      )}%`;
+      const percentage = 100 - ((300 - calculateCart(state || [])) / 300) * 100;
+
       return (
         <div className="mt-2">
           <div className="flex justify-between items-center">
@@ -173,7 +172,8 @@ const CheckoutSummary: FC<Props> = ({
           </div>
           <div className="w-full bg-gray-200 rounded-sm h-2.5 mb-4 dark:bg-gray-700">
             <div
-              className={`bg-gray-600 h-2.5 rounded-sm dark:bg-gray-300 w-[${percentage}]`}
+              className={`bg-gray-600 h-2.5 rounded-sm dark:bg-gray-300`}
+              style={{ width: `${percentage}%` }}
             ></div>
           </div>
         </div>
@@ -285,7 +285,9 @@ const CheckoutSummary: FC<Props> = ({
               Voucher Applied:
             </span>
           )}
-          {!!Total && <span className="text-xs font-medium">Total:</span>}
+          {pathname?.includes("payment") && (
+            <span className="text-xs font-medium">Total:</span>
+          )}
         </div>
         <div className="grid justify-items-end gap-y-1">
           <span className="text-xs font-medium">
@@ -307,7 +309,7 @@ const CheckoutSummary: FC<Props> = ({
             <span className="text-xs font-medium text-red-500"> {Voucher}</span>
           )}
           <span className="text-xs font-medium">
-            {!!Total && currency(Total, _setting)}
+            {pathname?.includes("payment") && currency(Total, _setting)}
           </span>
         </div>
       </div>
