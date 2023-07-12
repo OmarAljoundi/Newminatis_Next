@@ -182,8 +182,22 @@ const PaymentClientPage: FC = () => {
       {loading && <CreditCardSkeleton />}
 
       {!loading && (
-        <Grid container flexWrap="wrap-reverse" spacing={3}>
-          <Grid item lg={8} md={8} xs={12}>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-4 ">
+          <div>
+            <CheckoutSummary
+              //@ts-ignore
+              Total={checkoutSummary?.Total}
+              //@ts-ignore
+              Type={checkoutSummary?.Type}
+              setCheckoutSummary={setCheckoutSummary}
+              ShippingCost={checkoutSummary?.ShippingCost}
+              Discount={checkoutSummary?.Discount}
+              Voucher={checkoutSummary?.Voucher}
+              guestAddress={guestAddress}
+              TaxCost={checkoutSummary?.TaxCost}
+            />
+          </div>
+          <div className="col-span-2">
             {clientSecret && (
               <Elements
                 stripe={stripePromise}
@@ -203,23 +217,8 @@ const PaymentClientPage: FC = () => {
                 />
               </Elements>
             )}
-          </Grid>
-
-          <Grid item lg={4} md={4} xs={12}>
-            <CheckoutSummary
-              //@ts-ignore
-              Total={checkoutSummary?.Total}
-              //@ts-ignore
-              Type={checkoutSummary?.Type}
-              setCheckoutSummary={setCheckoutSummary}
-              ShippingCost={checkoutSummary?.ShippingCost}
-              Discount={checkoutSummary?.Discount}
-              Voucher={checkoutSummary?.Voucher}
-              guestAddress={guestAddress}
-              TaxCost={checkoutSummary?.TaxCost}
-            />
-          </Grid>
-        </Grid>
+          </div>
+        </div>
       )}
     </div>
   );

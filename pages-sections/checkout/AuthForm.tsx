@@ -516,7 +516,15 @@ const AuthForm: FC = () => {
               variant="contained"
               color="primary"
               loading={loading}
-              sx={{ fontSize: "12px" }}
+              sx={{
+                fontSize: "12px",
+                paddingX: {
+                  xs: "0",
+                  sm: "0",
+                  md: "0",
+                  lg: "5px",
+                },
+              }}
               type={selected != null ? "button" : "submit"}
               onClick={() => (selected != null ? handleProceedPayment() : {})}
               fullWidth

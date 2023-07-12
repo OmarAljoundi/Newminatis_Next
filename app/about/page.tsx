@@ -73,11 +73,11 @@ export default function AboutPage() {
             </div>
             <div className="border-4 border-gray-600 shadow-md shadow-gray-600 p-5 md:p-10">
               <div className="font-semibold">
-                <p className="text-sm md:text-lg text-center">
+                <p className="text-sm md:text-lg text-left">
                   At NEWMINATIS, we prioritize environmental sustainability and
                   are committed to counteracting climate change.{" "}
                 </p>
-                <p className="text-sm md:text-lg  text-center">
+                <p className="text-sm md:text-lg  text-left">
                   A part of our revenue goes towards initiatives that remove
                   carbon dioxide from the atmosphere, and we strive to promote
                   sustainable practices within the industry.
@@ -86,9 +86,6 @@ export default function AboutPage() {
             </div>
           </div>
           <div>
-            <p className="mb-10 text-left md:text-center font-bold text-2xl lg:text-4xl">
-              Our Key Values
-            </p>
             <ValueSection mode="light" />
           </div>
         </div>

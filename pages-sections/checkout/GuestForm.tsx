@@ -62,7 +62,7 @@ const GuestForm: FC = () => {
       router.push("/payment");
     } else {
       setLoading(false);
-      toast.success(result.message);
+      setFieldError("email", result.message);
     }
   };
 
@@ -115,6 +115,7 @@ const GuestForm: FC = () => {
     handleBlur,
     handleSubmit,
     setFieldValue,
+    setFieldError,
     resetForm,
   } = useFormik({
     initialValues: initialValues,
@@ -388,6 +389,12 @@ const GuestForm: FC = () => {
                 fontSize: {
                   xs: "11px",
                   sm: "14px",
+                },
+                paddingX: {
+                  xs: "0",
+                  sm: "0",
+                  md: "0",
+                  lg: "5px",
                 },
                 ":disabled": {
                   opacity: "0.95",

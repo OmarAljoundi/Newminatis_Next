@@ -6,12 +6,16 @@ import {
 } from "axios";
 import Cookie from "js-cookie";
 
-const onRequest = (config: AxiosRequestConfig): any => {
+const onRequest = (config: AxiosRequestConfig, forceLive?: boolean): any => {
   const token = Cookie.get("token");
 
   return {
     ...config,
-    baseURL: `${process.env.NEXT_PUBLIC_URL_PRODUCTION!}`,
+    baseURL: `${
+      forceLive
+        ? process.env.NEXT_PUBLIC_URL_PRODUCTION!
+        : process.env.NEXT_PUBLIC_URL_STAGING!
+    }`,
     timeout: 500000,
     headers: {
       Accept: "application/json",
@@ -21,12 +25,19 @@ const onRequest = (config: AxiosRequestConfig): any => {
   };
 };
 
-const onRequestFormData = (config: AxiosRequestConfig): any => {
+const onRequestFormData = (
+  config: AxiosRequestConfig,
+  forceLive?: boolean
+): any => {
   const token = Cookie.get("token");
 
   return {
     ...config,
-    baseURL: `${process.env.NEXT_PUBLIC_URL_PRODUCTION!}`,
+    baseURL: `${
+      forceLive
+        ? process.env.NEXT_PUBLIC_URL_PRODUCTION!
+        : process.env.NEXT_PUBLIC_URL_STAGING!
+    }`,
     timeout: 500000,
     headers: {
       Accept: "application/json",
@@ -36,29 +47,38 @@ const onRequestFormData = (config: AxiosRequestConfig): any => {
 };
 
 const onRequestError = (error: AxiosError): Promise<AxiosError> => {
-  // ref.current?.continuousStart()
   return Promise.reject(error);
 };
 
 const onResponse = (response: AxiosResponse): AxiosResponse => {
-  //ref.current?.complete()
   return response;
 };
 
 const onResponseError = (error: AxiosError): Promise<AxiosError> => {
-  //ref.current?.complete()
   return Promise.reject(error);
 };
 
-export function http(axiosInstance: AxiosInstance): AxiosInstance {
-  axiosInstance.interceptors.request.use(onRequest, onRequestError);
+export function http(
+  axiosInstance: AxiosInstance,
+  forceLive?: boolean
+): AxiosInstance {
+  axiosInstance.interceptors.request.use(
+    (config) => onRequest(config, forceLive),
+    onRequestError
+  );
   axiosInstance.interceptors.response.use(onResponse, onResponseError);
 
   return axiosInstance;
 }
 
-export function httpFormData(axiosInstance: AxiosInstance): AxiosInstance {
-  axiosInstance.interceptors.request.use(onRequestFormData, onRequestError);
+export function httpFormData(
+  axiosInstance: AxiosInstance,
+  forceLive?: boolean
+): AxiosInstance {
+  axiosInstance.interceptors.request.use(
+    (config) => onRequestFormData(config, forceLive),
+    onRequestError
+  );
   axiosInstance.interceptors.response.use(onResponse, onResponseError);
 
   return axiosInstance;

@@ -39,23 +39,28 @@ class ProductService {
   }
 
   getVariants() {
-    return http(axios.create()).get<TProductInventory[]>(`/Product/Variants`);
+    return http(axios.create(), true).get<TProductInventory[]>(
+      `/Product/Variants`
+    );
   }
   search() {
-    return http(axios.create()).get<IProductResponse>(`/Product/Search`);
+    return http(axios.create(), true).get<IProductResponse>(`/Product/Search`);
   }
   searchShop(search: SearchQuery) {
-    return http(axios.create()).post<IProductResponse>(
+    return http(axios.create(), true).post<IProductResponse>(
       `/Product/SearchShop`,
       search
     );
   }
   getById(id: number) {
-    return http(axios.create()).get<IProductResponse>(`/Product/${id}`);
+    return http(axios.create(), true).get<IProductResponse>(`/Product/${id}`);
   }
 
   getQuantity(stock: TStockRequest) {
-    return http(axios.create()).post<IStockResponse>("/External/Stock", stock);
+    return http(axios.create(), true).post<IStockResponse>(
+      "/External/Stock",
+      stock
+    );
   }
   submitReview(data: TProductReview) {
     return http(axios.create()).post<IProductReviewResponse>(
@@ -64,13 +69,13 @@ class ProductService {
     );
   }
   searchOne(search: SearchQuery) {
-    return http(axios.create()).post<IProductResponse>(
+    return http(axios.create(), true).post<IProductResponse>(
       `/Product/GetOne`,
       search
     );
   }
   getProductForReview(cipher: Crypt) {
-    return http(axios.create()).post<IProductReviewResponse>(
+    return http(axios.create(), true).post<IProductReviewResponse>(
       `/Review/Decrypt`,
       cipher
     );

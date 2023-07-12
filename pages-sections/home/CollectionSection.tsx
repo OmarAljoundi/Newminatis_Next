@@ -49,10 +49,10 @@ const CollectionSection = () => {
     >
       <section className="">
         <div className="max-w-7xl mx-auto ">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-2">
             {images.map((item, index) => (
               <div
-                className="relative overflow-hidden h-40 md:h-96"
+                className="relative overflow-hidden h-56 md:h-96"
                 key={index}
               >
                 <div className="absolute top-0 left-0 right-0 bottom-0">

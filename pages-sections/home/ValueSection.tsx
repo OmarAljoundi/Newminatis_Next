@@ -38,9 +38,9 @@ const ValueSection: FC<{ mode?: "light" | "dark"; extraClass?: string }> = ({
                   style={{ height: "auto" }}
                 />
               </div>
-              <div className="mt-2 grid justify-items-start md:justify-items-center ">
+              <div className="mt-2 grid justify-items-start md:justify-items-center content-center ">
                 <span
-                  className={`text-sm font-bold ${
+                  className={`text-xs font-bold ${
                     mode == "light" ? "text-black" : "text-white"
                   } text-left md:text-center`}
                 >
@@ -68,21 +68,21 @@ const Icons = [
   {
     title: "COMMUNITY MEMBERSHIP",
     description: "Deals and Discounts",
-    image: "/assets/images/discount-04.svg",
+    image: "/assets/images/blackicons/discount-04.svg",
   },
   {
     title: "UNIQUE DESIGNS",
     description: "Artistic Designs",
-    image: "/assets/images/high-quality-02.svg",
+    image: "/assets/images/blackicons/high-quality-02.svg",
   },
   {
     title: "SECURE PAYMENT",
     description: "Apple Pay and Google Pay Accepted",
-    image: "/assets/images/secure-payement-03.svg",
+    image: "/assets/images/blackicons/secure-payement-03.svg",
   },
   {
     title: "FREE DELIVERY",
     description: "Free Express Shipping Worldwide",
-    image: "/assets/images/free-delivery-01.svg",
+    image: "/assets/images/blackicons/free-delivery-01.svg",
   },
 ];

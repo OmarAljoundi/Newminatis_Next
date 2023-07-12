@@ -128,8 +128,19 @@ export default function CheckoutClientPage() {
   return (
     <div>
       {userLoad == false && orderLoad == false ? (
-        <Grid container flexWrap="wrap-reverse" spacing={3}>
-          <Grid item md={8} xs={12}>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-4 ">
+          <div>
+            <CheckoutSummary
+              Total={checkoutSummary?.Total || 0}
+              Type={checkoutSummary?.Type || ""}
+              Discount={checkoutSummary?.Discount}
+              Voucher={checkoutSummary?.Voucher}
+              setCheckoutSummary={setCheckoutSummary}
+              ShippingCost={checkoutSummary?.ShippingCost}
+              TaxCost={checkoutSummary?.TaxCost}
+            />
+          </div>
+          <div className="col-span-2">
             <Elements stripe={stripePromise}>
               <ExpressCheckoutNoEmail />
             </Elements>
@@ -141,20 +152,8 @@ export default function CheckoutClientPage() {
             ) : status == "unauthenticated" ? (
               <GuestForm />
             ) : null}
-          </Grid>
-
-          <Grid item lg={4} md={4} xs={12}>
-            <CheckoutSummary
-              Total={checkoutSummary?.Total || 0}
-              Type={checkoutSummary?.Type || ""}
-              Discount={checkoutSummary?.Discount}
-              Voucher={checkoutSummary?.Voucher}
-              setCheckoutSummary={setCheckoutSummary}
-              ShippingCost={checkoutSummary?.ShippingCost}
-              TaxCost={checkoutSummary?.TaxCost}
-            />
-          </Grid>
-        </Grid>
+          </div>
+        </div>
       ) : (
         <CreditCardSkeleton />
       )}

@@ -109,7 +109,7 @@ const Footer: FC = () => {
           </div>
 
           <div className="w-full">
-            <p className="uppercase font-semibold text-sm">Join The Tripe</p>
+            <p className="uppercase font-semibold text-sm">Join The Tribe</p>
             <form
               onSubmit={handleSubmitForm}
               className="d-flex mt-4"
