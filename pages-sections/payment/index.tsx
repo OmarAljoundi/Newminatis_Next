@@ -2,7 +2,6 @@
 import { Box, Checkbox, Grid, StepContext } from "@mui/material";
 import { FC, useEffect, useState } from "react";
 import { Elements, PaymentElement } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
 import Cookies from "js-cookie";
 import useStripePayment from "@/hooks/useStripePayment";
 import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
@@ -14,21 +13,26 @@ import CheckoutSummary, {
 import useOrderService from "@/hooks/useOrderService";
 import useUserService from "@/hooks/useUserService";
 import { TShoppingSession } from "@/types/TCheckoutSessionRequest";
-import { calculateCart, getTotalPrice } from "@/helpers/Extensions";
+import {
+  calcualteQty,
+  calculateCart,
+  getTotalPrice,
+} from "@/helpers/Extensions";
 import { IUserResponse } from "@/interface/IUserResponse";
 import { IShoppingSessionResponse } from "@/interface/IShoppingSessionResponse";
 import { TCheckoutRequest } from "@/types/TCheckoutRequest";
 import { IPaymentResponse } from "@/interface/IPaymentResponse";
-import { SetUserPayment } from "@/store/Auth/Auth-action";
 import { updateCart } from "@/store/CartItem/ThunkAPI";
 import { ExpressCheckoutWithEmail } from "@/components/stripe/ExpressCheckoutWithEmail";
 import { stripePromise } from "@/components/stripe/StripeScript";
 import { CreditCardSkeleton } from "@/components/loading/CreditCardSkeleton";
 import PaymentForm from "./PaymentForm";
+import { useSession } from "next-auth/react";
 
-const PaymentClientPage = () => {
+const PaymentClientPage: FC = () => {
+  const [loading, setLoading] = useState(false);
   const { onCreateSession, paymentLoad } = useStripePayment();
-  const auth = useAppSelector((x) => x.Store.AuthReducer.Auth);
+  const { data: authedSession } = useSession();
   const [guestAddress, setGuestAddress] = useState<TUserGuest>();
   const cart = useAppSelector((x) => x.Store.CartReducer?.CartItems);
   const [clientSecret, setClientSecret] = useState("");
@@ -57,7 +61,7 @@ const PaymentClientPage = () => {
     //@ts-ignore
     let _userGuest: TUserGuest = null;
     var userType: "GUEST" | "Authed" | "None" = "None";
-    if (auth && auth.email) {
+    if (authedSession?.user && authedSession.user.email) {
       userType = "Authed";
     } else if (Cookies.get("GUEST_EMAIL")) {
       var x = Cookies.get("GUEST_EMAIL");
@@ -73,10 +77,18 @@ const PaymentClientPage = () => {
     switch (userType) {
       case "Authed":
         //@ts-ignore
-        session.userId = auth?.id;
+        session.userId = authedSession?.user.id;
+        session.countryCode =
+          authedSession!.user.userAddress[authedSession!.user.selectedAddress]
+            .country || null;
+        session.weight = calcualteQty(cart || []);
+        session.shippingCost = 0;
         break;
       case "GUEST":
         session.userId = _userGuest.id;
+        session.countryCode = _userGuest?.country || null;
+        session.weight = calcualteQty(cart || []) * 0.5;
+        session.shippingCost = 0;
         break;
       case "None":
         route.push("/checkout");
@@ -96,8 +108,17 @@ const PaymentClientPage = () => {
       Type: result.shoppingSession.voucherType,
       //@ts-ignore
       Voucher: result.shoppingSession.voucher,
+      ShippingCost: result.shoppingSession.shippingCost,
+      TaxCost: result.shoppingSession.taxAmount,
     });
   };
+
+  useEffect(() => {
+    setLoading(true);
+    Promise.all([onLoadSession(), getClientSecret()]).then((r) => {
+      setLoading(false);
+    });
+  }, [cart, checkoutSummary?.Total]);
 
   const getClientSecret = async () => {
     if (checkoutSummary) {
@@ -108,15 +129,14 @@ const PaymentClientPage = () => {
         //@ts-ignore
         email: null,
       };
-      if (auth && auth.email) {
-        checkoutSession.email = auth.email;
+      if (authedSession?.user && authedSession.user.email) {
+        checkoutSession.email = authedSession.user.email;
         //@ts-ignore
-        checkoutSession.id = auth.id;
+        checkoutSession.id = authedSession.user.id;
         const result = (await onCreateSession(
           checkoutSession
         )) as IPaymentResponse;
         setClientSecret(result.clientSecret);
-        dispatch(SetUserPayment(result.paymentMethodModel));
       } else if (Cookies.get("GUEST_EMAIL")) {
         var x = Cookies.get("GUEST_EMAIL");
         const response = (await onGetGuest(x!)) as IUserResponse;
@@ -139,15 +159,6 @@ const PaymentClientPage = () => {
   };
 
   useEffect(() => {
-    onLoadSession();
-  }, [cart]);
-
-  useEffect(() => {
-    window.scroll(0, 0);
-    getClientSecret();
-  }, [checkoutSummary?.Total]);
-
-  useEffect(() => {
     if (calculateCart(cart!) == 0) {
       route.push("/cart");
       return;
@@ -157,11 +168,25 @@ const PaymentClientPage = () => {
 
   return (
     <div>
-      {(orderLoad || paymentLoad) && <CreditCardSkeleton />}
+      {loading && <CreditCardSkeleton />}
 
-      {!paymentLoad && !orderLoad && (
-        <Grid container flexWrap="wrap-reverse" spacing={3}>
-          <Grid item lg={8} md={8} xs={12}>
+      {!loading && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-4 gap-y-2 ">
+          <div>
+            <CheckoutSummary
+              //@ts-ignore
+              Total={checkoutSummary?.Total}
+              //@ts-ignore
+              Type={checkoutSummary?.Type}
+              setCheckoutSummary={setCheckoutSummary}
+              ShippingCost={checkoutSummary?.ShippingCost}
+              Discount={checkoutSummary?.Discount}
+              Voucher={checkoutSummary?.Voucher}
+              guestAddress={guestAddress}
+              TaxCost={checkoutSummary?.TaxCost}
+            />
+          </div>
+          <div className="col-span-1 lg:col-span-2">
             {clientSecret && (
               <Elements
                 stripe={stripePromise}
@@ -181,21 +206,8 @@ const PaymentClientPage = () => {
                 />
               </Elements>
             )}
-          </Grid>
-
-          <Grid item lg={4} md={4} xs={12}>
-            <CheckoutSummary
-              //@ts-ignore
-              Total={checkoutSummary?.Total}
-              //@ts-ignore
-              Type={checkoutSummary?.Type}
-              setCheckoutSummary={setCheckoutSummary}
-              Discount={checkoutSummary?.Discount}
-              Voucher={checkoutSummary?.Voucher}
-              guestAddress={guestAddress}
-            />
-          </Grid>
-        </Grid>
+          </div>
+        </div>
       )}
     </div>
   );

@@ -1,5 +1,5 @@
 "use client";
-import EyeToggleButton from "@/pages-sections/sessions/EyeToggleButton";
+import EyeToggleButton from "@/pages-sections/auth/shared/EyeToggleButton";
 import { TUser } from "@/types/TUser";
 import { loginSchema } from "@/utils/schema";
 import { LoadingButton } from "@mui/lab";
@@ -11,7 +11,7 @@ import React, { useCallback, useState } from "react";
 import { toast } from "react-hot-toast";
 import { Wrapper } from "../shared";
 import Link from "next/link";
-import SocialButtons from "@/pages-sections/sessions/SocialButtons";
+import SocialButtons from "@/pages-sections/auth/shared/SocialButtons";
 
 export default function LoginClientPage() {
   const [loading, setLoading] = useState(false);
@@ -110,6 +110,12 @@ export default function LoginClientPage() {
                 ),
               }}
             />
+            <Link
+              href="/auth/forget-password"
+              className="font-normal text-xs mt-2 leading-6 text-gray-400 hover:text-gray-700 hover:underline"
+            >
+              Forget your password?
+            </Link>
 
             <LoadingButton
               fullWidth
@@ -129,7 +135,7 @@ export default function LoginClientPage() {
             Not a member?{" "}
             <Link
               href="/auth/register"
-              className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
+              className="font-semibold leading-6 text-gray-400 hover:text-gray-700 hover:underline"
             >
               Create your account here
             </Link>

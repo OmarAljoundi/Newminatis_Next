@@ -77,16 +77,13 @@ const ShopCard: FC<ProductCardProps> = ({
   const handleToolOpen = () => {
     setOpenTool(true);
   };
-  const disableChip = (value) =>
-    valueVsQuantity?.find((x) => x.variable == value)?.quantity == 0;
-  const downSm = useMediaQuery((theme: Theme) => theme.breakpoints.down("sm"));
+
+  const downMd = useMediaQuery((theme: Theme) => theme.breakpoints.down("md"));
   const cartItem = useAppSelector((x) =>
     x.Store.CartReducer?.CartItems?.filter((x) => x.id == product.id)
   );
+  const cartState = useAppSelector((x) => x.Store.CartReducer?.CartItems);
   const _setting = useAppSelector((x) => x.Store.SettingReducer.setting);
-  const wishList = useAppSelector((x) =>
-    x.Store.WishlistReducer?.wishlistItems?.find((x) => x.id == product.id)
-  );
 
   const dispatch = useAppDispatch();
 
@@ -126,13 +123,14 @@ const ShopCard: FC<ProductCardProps> = ({
 
   const handleCartAmountChange = (amount) => {
     const { id, name, salePrice, price, mainImage, color } = product;
+    var __price =
+      salePrice && salePrice > 0
+        ? calculateDiscountAsNumber(price, salePrice)
+        : price;
     var cart: CartItem = {
       id: id,
       name: name,
-      price:
-        salePrice && salePrice > 0
-          ? calculateDiscountAsNumber(price, salePrice)
-          : price,
+      price: __price,
       salePrice: salePrice || 0,
       qty: amount,
       slug: name,
@@ -149,33 +147,37 @@ const ShopCard: FC<ProductCardProps> = ({
 
     if (!cartItem?.find((x) => x.sku == GetSKU(name, color, size))) {
       dispatch(AddItem(cart));
-      toasterSuccess(currency(getTotalPrice(), _setting));
+      debugger;
+      toasterSuccess(
+        currency(getTotalPrice(cartState || []) + __price, _setting),
+        downMd ? "bottom-center" : "top-center"
+      );
     } else if (amount != 0) {
       var qttyy =
         valueVsQuantity.find((x) => x.variable == GetSKU(name, color, size))
           ?.quantity ?? 0;
       if (amount > qttyy) {
-        //enqueueSnackbar(`Only avaliable ${qttyy} pieces you can't add more`);
         return;
       }
       dispatch(UpdateItem(cart));
-      const oldCartItem = cartItem.find(
-        (x) => x.sku == GetSKU(name, color, size)
+
+      toasterSuccess(
+        currency(getTotalPrice(cartState || []) + __price, _setting)
       );
-      toasterSuccess(currency(getTotalPrice(), _setting));
     } else {
       dispatch(RemoveItem(cart));
     }
   };
   const handleCartAmountChangePlusMinus =
     (amount: number, type: "remove" | "add" | "update") => () => {
+      var __price =
+        product?.salePrice && product?.salePrice > 0
+          ? calculateDiscountAsNumber(product?.price, product?.salePrice)
+          : product?.price;
       var cart: CartItem = {
         id: product?.id,
         name: product?.name,
-        price:
-          product?.salePrice && product?.salePrice > 0
-            ? calculateDiscountAsNumber(product?.price, product?.salePrice)
-            : product?.price,
+        price: __price,
         salePrice: product?.salePrice || 0,
         qty: amount,
         slug: product?.name,
@@ -216,17 +218,9 @@ const ShopCard: FC<ProductCardProps> = ({
       }
     };
 
-  const handleAddToWishlist = () => {
-    if (wishList) {
-      toast.success("Item removed from Wishlist");
-    } else {
-      toast.success("Item added to Wishlist");
-    }
-    dispatch(AddItemWish(product));
-  };
-
   useEffect(() => {
     if (size !== "") {
+      handleToolClose();
       var _Stock = valueVsQuantity.find(
         (x) => x.variable == GetSKU(product?.name, product?.color, size)
       )?.quantity;
@@ -241,15 +235,17 @@ const ShopCard: FC<ProductCardProps> = ({
     }
   }, [size]);
 
-  useEffect(() => {
-    if (size != "") {
-      handleToolClose();
-    }
-  }, [size]);
-
   const isDisable = (value) => {
     return valueVsQuantity?.find((x) => x.variable == value)?.quantity == 0;
   };
+
+  useEffect(() => {
+    if (openTool) {
+      setTimeout(() => {
+        setOpenTool(false);
+      }, 3500);
+    }
+  }, [openTool]);
 
   return (
     <ShopCardLayout
@@ -262,21 +258,42 @@ const ShopCard: FC<ProductCardProps> = ({
           {valueVsQuantity.filter((x) => x.quantity > 0).length != 0 && (
             <>
               {qty == null ? (
-                <button
-                  onClick={() => {
-                    if (size == "") {
-                      handleToolOpen();
-                    } else {
-                      handleCartAmountChange(1);
-                    }
+                <TooltipError
+                  arrow
+                  disableHoverListener
+                  disableTouchListener
+                  placement="left"
+                  componentsProps={{
+                    tooltip: {
+                      sx: {
+                        color: "white",
+                        backgroundColor: "#E53935",
+                        "& .MuiTooltip-arrow": {
+                          color: "#E53935",
+                        },
+                      },
+                    },
                   }}
-                  className="title rounded-none 
+                  title="Please Select a size"
+                  open={openTool}
+                  TransitionComponent={Zoom}
+                >
+                  <button
+                    onClick={() => {
+                      if (size == "") {
+                        handleToolOpen();
+                      } else {
+                        handleCartAmountChange(1);
+                      }
+                    }}
+                    className="title rounded-none 
                             text-xs uppercase flex 
                             items-center justify-center  border border-transparent
                              bg-black px-2 py-1  text-white shadow-sm hover:bg-slate-700"
-                >
-                  ADD TO CART
-                </button>
+                  >
+                    ADD TO CART
+                  </button>
+                </TooltipError>
               ) : (
                 <FlexBox alignItems="center" justifyContent={"center"}>
                   <IconButton

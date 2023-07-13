@@ -42,7 +42,6 @@ import { ShopCardLayout } from "./ShopCardLayout";
 type ProductCardProps = {
   discount: number;
   product: TProduct;
-  fadeType: "fade-right" | "fade-left";
   perImage?: number;
   classes?: string;
 };
@@ -51,7 +50,6 @@ type ProductCardProps = {
 const ShopMobileCard: FC<ProductCardProps> = ({
   product,
   discount,
-  fadeType,
   perImage = 4,
   classes = "",
 }) => {

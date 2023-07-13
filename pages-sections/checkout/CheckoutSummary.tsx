@@ -22,19 +22,29 @@ import { CartItem } from "@/store/Model/CartItem";
 import { RemoveItem } from "@/store/CartItem/Cart-action";
 import { toast } from "react-hot-toast";
 import { TShoppingSession } from "@/types/TCheckoutSessionRequest";
-import { getTotalPrice } from "@/helpers/Extensions";
+import {
+  calcualteQty,
+  calculateCart,
+  getTotalPrice,
+} from "@/helpers/Extensions";
 import { IShoppingSessionResponse } from "@/interface/IShoppingSessionResponse";
 import { FlexBetween } from "@/components/flex-box";
 import Link from "next/link";
 import { H6, ShortSpan, Span, Tiny } from "@/components/Typography";
 import { calculateDiscount, calculateDiscountAsNumber, currency } from "@/lib";
 import CheckVoucherIcon from "@/components/CheckVoucherIcon";
+import { useSession } from "next-auth/react";
+import AddressInfo from "./AddressInfo";
+import { BlurImage } from "@/components/BlurImage";
+import { CheckCircleIcon, TruckIcon } from "@heroicons/react/20/solid";
 
 export type CheckoutSummaryProps = {
   Discount?: number;
   Voucher?: string;
   Total: number;
   Type: string;
+  ShippingCost?: number | null;
+  TaxCost?: number | null;
 };
 
 export type Props = {
@@ -42,6 +52,8 @@ export type Props = {
   Voucher?: string;
   Type: string;
   Total: number;
+  ShippingCost?: number | null;
+  TaxCost?: number | null;
   setCheckoutSummary: React.Dispatch<
     React.SetStateAction<CheckoutSummaryProps>
   >;
@@ -51,13 +63,15 @@ export type Props = {
 const CheckoutSummary: FC<Props> = ({
   Voucher,
   Discount = 0,
+  ShippingCost,
   setCheckoutSummary,
   guestAddress,
+  TaxCost,
   Type,
   Total,
 }) => {
   const state = useAppSelector((state) => state.Store.CartReducer?.CartItems);
-  const auth = useAppSelector((state) => state.Store.AuthReducer.Auth);
+  const { data: authedSession } = useSession();
   const [onError, setOnError] = useState<boolean>(false);
   const [show, setShow] = useState<boolean>(false);
   const [onSuccess, setOnSuccess] = useState<boolean>(false);
@@ -82,9 +96,16 @@ const CheckoutSummary: FC<Props> = ({
       discount: 0.0,
       expired: new Date(),
       total: getTotalPrice(state),
-      userId: (auth?.id ?? guestAddress?.id) || 0,
+      userId: (authedSession?.user?.id ?? guestAddress?.id) || 0,
       voucher: _Voucher,
       voucherType: "",
+      countryCode:
+        (authedSession?.user?.userAddress[authedSession?.user?.selectedAddress]
+          .country ??
+          guestAddress?.country) ||
+        null,
+      shippingCost: 0,
+      weight: calcualteQty(state || []) * 0.5,
     };
     const result = (await CreateCheckoutSession(
       session
@@ -96,6 +117,8 @@ const CheckoutSummary: FC<Props> = ({
         Total: result.shoppingSession.total,
         Voucher: result.shoppingSession.voucher || "",
         Type: result.shoppingSession.voucherType || "",
+        ShippingCost: result.shoppingSession.shippingCost,
+        TaxCost: result.shoppingSession.taxAmount,
       });
       setOnSuccess(true);
       setOnError(false);
@@ -132,28 +155,89 @@ const CheckoutSummary: FC<Props> = ({
     }
   };
 
+  const getShippingMessage = () => {
+    if (!isEligableForFreeShipping()) {
+      const percentage = 100 - ((300 - calculateCart(state || [])) / 300) * 100;
+
+      return (
+        <div className="mt-2">
+          <div className="flex justify-between items-center">
+            <div className="mb-1 text-[10px] font-bold uppercase">
+              Add {currency(300 - calculateCart(state || []), _setting)} to be
+              Eligible for free shipping
+            </div>
+            <div className="mb-1 text-xs font-bold">
+              <TruckIcon width={20} />
+            </div>
+          </div>
+          <div className="w-full bg-gray-200 rounded-sm h-2.5 mb-4 dark:bg-gray-700">
+            <div
+              className={`bg-gray-600 h-2.5 rounded-sm dark:bg-gray-300`}
+              style={{ width: `${percentage}%` }}
+            ></div>
+          </div>
+        </div>
+      );
+    } else {
+      return (
+        <div className="mt-2">
+          <div className="flex justify-between items-center">
+            <div className="mb-1 text-[10px] font-bold uppercase">
+              Awesome, You Are EligabEligiblele For Free Shipping!
+            </div>
+            <div className="mb-1 text-xs font-medium">
+              <CheckCircleIcon width={20} color="green" />
+            </div>
+          </div>
+          <div className="w-full bg-gray-200 rounded-sm h-2.5 mb-4 dark:bg-gray-700">
+            <div className="bg-gray-600 h-2.5 rounded-sm dark:bg-gray-300 w-full"></div>
+          </div>
+        </div>
+      );
+    }
+  };
+
+  const isEligableForFreeShipping = () => {
+    return getTotalPrice(state) > 300;
+  };
+
+  const getShippingLabel = () => {
+    if (isEligableForFreeShipping()) {
+      return "Free Shipping!";
+    }
+    if (pathname!.includes("payment")) return currency(ShippingCost!, _setting);
+
+    return "Calculate at payment";
+  };
   return (
     <Card elevation={1} role={"drawer"}>
       <div className="border-b-2 pb-3 border-gray-400 grid gap-y-3">
         {state?.map((item) => (
-          <div key={item.id} className="grid grid-cols-4 gap-4 items-center">
+          <div
+            key={item.id}
+            className="grid grid-cols-4 gap-4 items-center rounded-lg"
+          >
             <div className="grid">
               <Link
                 href={`/product/${item.name.toLowerCase()}-${item.color.toString()}`}
               >
-                <Avatar
-                  src={item.imgUrl}
-                  sx={{ width: "75px", height: "75px" }}
+                <BlurImage
+                  image={item.imgUrl || ""}
+                  width={75}
+                  height={80}
+                  customAspect=" rounded-lg"
+                  q={100}
+                  loading="eager"
+                  priority="high"
                 />
               </Link>
             </div>
-            <div className="grid ">
+            <div className="grid col-span-2 gap-y-1">
               <span className="text-xs font-medium">{item.name}</span>
               <span className="text-xs font-medium"> Size: {item.size}</span>
               <span className="text-xs font-medium"> Quantity: {item.qty}</span>
-            </div>
-            <div className="grid justify-items-center">
-              <span className="text-sm font-bold">
+              <span className="text-xs font-medium">
+                Price:
                 {currency(
                   calculateDiscountAsNumber(item.price, item.salePrice) *
                     item.qty,
@@ -169,6 +253,7 @@ const CheckoutSummary: FC<Props> = ({
                 )}
               </span>
             </div>
+
             <div>
               <Tooltip title="Remove Item">
                 <IconButton
@@ -182,119 +267,61 @@ const CheckoutSummary: FC<Props> = ({
             </div>
           </div>
         ))}
+        {getShippingMessage()}
       </div>
 
       <div className="py-3 grid grid-cols-2">
         <div className="grid gap-y-1">
-          <span className="text-sm font-medium">SubTotal:</span>
-          <span className="text-sm font-medium">Shipping:</span>
-          {Discount > 0 && (
-            <span className="text-sm font-medium">Discount:</span>
+          <span className="text-xs font-medium">SubTotal:</span>
+          <span className="text-xs font-medium">Shipping & handling:</span>
+          {!!TaxCost && (
+            <span className="text-xs font-medium">Duties & Tax:</span>
           )}
           {Discount > 0 && (
-            <span className="text-sm font-medium">Voucher Applied:</span>
+            <span className="text-xs font-medium text-red-500">Discount:</span>
           )}
-          {<span className="text-sm font-medium">Total:</span>}
+          {Discount > 0 && (
+            <span className="text-xs font-medium text-red-500">
+              Voucher Applied:
+            </span>
+          )}
+          {pathname?.includes("payment") && (
+            <span className="text-xs font-medium">Total:</span>
+          )}
         </div>
         <div className="grid justify-items-end gap-y-1">
-          <span className="text-sm font-medium">
+          <span className="text-xs font-medium">
             {currency(getTotalPrice(state), _setting)}
           </span>
-          <span className="text-sm font-medium">FREE</span>
+          <span className="text-xs font-medium">{getShippingLabel()}</span>
+          {!!TaxCost && (
+            <span className="text-xs font-medium">
+              {currency(TaxCost, _setting)}
+            </span>
+          )}
           {Discount > 0 && (
-            <span className="text-sm font-medium">
+            <span className="text-xs font-medium text-red-500">
               -{Type == "Fixed" ? "$" : "%"}
               {Discount}
             </span>
           )}
           {Discount > 0 && (
-            <span className="text-sm font-medium"> {Voucher}</span>
+            <span className="text-xs font-medium text-red-500"> {Voucher}</span>
           )}
-          <span className="text-sm font-medium">
-            {Discount > 0
-              ? currency(Total, _setting)
-              : currency(getTotalPrice(state), _setting)}
+          <span className="text-xs font-medium">
+            {pathname?.includes("payment") && currency(Total, _setting)}
           </span>
         </div>
       </div>
 
       {pathname!.includes("payment") && (
-        <div className="grid grid-cols-2 border-t-2 border-gray-400 py-3  gap-y-2">
-          <div className="grid gap-y-1">
-            <span className="text-sm font-medium">Name:</span>
-            <span className="text-sm font-medium">Address Line:</span>
-            <span className="text-sm font-medium"> Delievry Instructions:</span>
-            <span className="text-sm font-medium">Country/City:</span>
-            <span className="text-sm font-medium">Postal Code:</span>
-            <span className="text-sm font-medium">Contact Number:</span>
-          </div>
-          <div className="grid justify-items-end gap-y-1">
-            <span className="text-sm font-medium">
-              {
-                //@ts-ignore
-                auth?.userAddress[auth.selectedAddress]?.firstName ??
-                  guestAddress?.firstName
-              }
-              {
-                //@ts-ignore
-                auth?.userAddress[auth.selectedAddress]?.lastName ??
-                  guestAddress?.lastName
-              }
-            </span>
-            <span className="text-sm font-medium">
-              {
-                //@ts-ignore
-                auth?.userAddress[auth.selectedAddress]?.addressLine ??
-                  guestAddress?.addressLine
-              }
-            </span>
-            <span className="text-sm font-medium">
-              {
-                //@ts-ignore
-                auth?.userAddress[auth.selectedAddress]?.deliveryInstructions ??
-                  guestAddress?.deliveryInstructions
-              }
-            </span>
-            <span className="text-sm font-medium">
-              {
-                //@ts-ignore
-                auth?.userAddress[auth.selectedAddress]?.country ??
-                  guestAddress?.country
-              }
-              {", "}
-              {
-                //@ts-ignore
-                auth?.userAddress[auth.selectedAddress]?.state ??
-                  guestAddress?.state
-              }
-            </span>
-            <span className="text-sm font-medium">
-              {
-                //@ts-ignore
-                auth?.userAddress[auth.selectedAddress]?.postalCode ??
-                  guestAddress?.postalCode
-              }
-            </span>
-            <span className="text-sm font-medium">
-              {
-                //@ts-ignore
-                auth?.userAddress[auth.selectedAddress]?.phoneNumber ??
-                  guestAddress?.phoneNumber
-              }
-            </span>
-          </div>
-          <Link href="/checkout" className="col-span-2">
-            <Button color="secondary" fullWidth variant="text">
-              Change my shipping location
-            </Button>
-          </Link>
-        </div>
+        <AddressInfo guestAddress={guestAddress} />
       )}
 
       {pathname!.includes("payment") && (
         <>
-          <div className="grid grid-cols-3 border-t-2 border-gray-400 pt-3 gap-x-4">
-            <div className="col-span-2">
+          <div className="grid grid-cols-2 border-t-2 border-gray-400 pt-3 gap-x-2">
+            <div className="min-w-[65%]">
               <TextField
                 placeholder="Voucher"
                 variant="outlined"
@@ -329,7 +356,7 @@ const CheckoutSummary: FC<Props> = ({
               color="primary"
               variant="contained"
             >
-              <span className="text-xs font-medium"> Voucher</span>
+              <span className="text-xs font-medium">Apply Voucher</span>
             </LoadingButton>
           </div>
         </>

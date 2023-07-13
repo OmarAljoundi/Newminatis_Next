@@ -1,31 +1,35 @@
 "use client";
-import { GrapQueries } from "@/helpers/Extensions";
+import { GrapQueries, getSubCategories } from "@/helpers/Extensions";
 import useProductService from "@/hooks/useProductService";
 import { IProductResponse } from "@/interface/IProductResponse";
 import { TProduct } from "@/types/TProduct";
 import { Order, SearchQuery, eFilterOperator } from "@/types/TSearchQuery";
-import { useParams, useSearchParams } from "next/navigation";
+import {
+  ReadonlyURLSearchParams,
+  useParams,
+  useSearchParams,
+} from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
-import InfiniteScroll from "react-infinite-scroller";
-import Box from "@mui/material/Box";
 import { ProductCardLoading } from "@/components/loading/ProductCardLoading";
 import useWindowSize from "@/hooks/useWindowSize";
 import ProductList from "./ProductList";
-import { useQuery } from "react-query";
+import { useInfiniteQuery, useQuery } from "react-query";
 import { TProductCategory } from "@/types/TProductCategory";
+import { useInView } from "react-intersection-observer";
+import { forwardRef } from "react";
+import { Theme, useMediaQuery } from "@mui/material";
+import ShopMobileCard from "@/components/product-card/ShopMobileCard";
+import ShopCard from "@/components/product-card/ShopCard";
+import { ExclamationCircleIcon } from "@heroicons/react/20/solid";
 
 export default function ProductSection() {
-  const { onSearchShop, CreateLoad, onGetCategories } = useProductService();
-  const [total, setTotal] = useState<number>(0);
-  const [items, setItems] = useState<TProduct[]>([]);
-  const windows = useWindowSize();
-  const [hasNextItems, setHasNextItems] = useState<boolean>(true);
-  const [pageIndex, setPageIndex] = useState<number>(-1);
-  const [fetching, setFetching] = useState(false);
+  const { ref, inView } = useInView();
+  const LIMIT = 12;
+  const { onSearchShop, onGetCategories } = useProductService();
   const searchParams = useSearchParams();
   const params = useParams();
 
-  const { data: categories, isLoading } = useQuery(
+  const { data: categories, isFetched } = useQuery(
     "Categories",
     () => onGetCategories() as Promise<TProductCategory[]>,
     {
@@ -33,79 +37,17 @@ export default function ProductSection() {
       cacheTime: 60000,
     }
   );
-  const fetchItems = useCallback(
-    async (clear?: boolean) => {
-      if (fetching) {
-        return;
-      }
 
-      setFetching(true);
-
-      try {
-        var _SQ = GrapQueries(searchParams?.entries());
-        _SQ.PageIndex = clear ? 0 : pageIndex + 1;
-        _SQ.PageSize = 12;
-        _SQ.FilterByOptions.push({
-          FilterFor: 1,
-          FilterOperator: eFilterOperator.Equal,
-          MemberName: "Status",
-        });
-        if (params?.category && isLoading == false) {
-          _SQ.FilterByOptions.push({
-            MemberName: "category",
-            FilterFor: categories?.find(
-              (x) =>
-                x.description.toLowerCase() ==
-                (params?.category as string).toLowerCase()
-            )?.name,
-            FilterOperator: eFilterOperator.Equal,
-          });
-        }
-        if (_SQ.OrderByOptions.length == 0) {
-          _SQ.OrderByOptions.push({
-            MemberName: "Priority",
-            SortOrder: Order.DESC,
-          });
-        }
-
-        setPageIndex(pageIndex + 1);
-
-        const { products, total } = (await onSearchShop(
-          _SQ
-        )) as IProductResponse;
-
-        setTotal(total);
-        let _ALL_PRODUCTS = products.length + items.length;
-
-        if (clear) {
-          setPageIndex(0);
-          _ALL_PRODUCTS = products.length;
-          setItems(products);
-        } else {
-          setItems([...items, ...products]);
-        }
-
-        if (total > _ALL_PRODUCTS) {
-          setHasNextItems(true);
-        } else {
-          setHasNextItems(false);
-        }
-      } finally {
-        setFetching(false);
-      }
-    },
-    [items, fetching, hasNextItems, searchParams, isLoading]
-  );
-  useEffect(() => {
-    window.scroll(0, 0);
-    var SearchQuery = GrapQueries(searchParams?.entries());
-    SearchQuery.PageSize = 12;
+  const fetchProducts = async (page: number) => {
+    var SearchQuery = GrapQueries(searchParams);
+    SearchQuery.PageSize = LIMIT;
+    SearchQuery.PageIndex = page;
     SearchQuery.FilterByOptions.push({
       FilterFor: 1,
       FilterOperator: eFilterOperator.Equal,
       MemberName: "Status",
     });
-    if (params?.category && isLoading == false) {
+    if (params?.category && isFetched == true) {
       SearchQuery.FilterByOptions.push({
         MemberName: "category",
         FilterFor: categories?.find(
@@ -116,38 +58,135 @@ export default function ProductSection() {
         FilterOperator: eFilterOperator.Equal,
       });
     }
+    if (params?.subCategory) {
+      SearchQuery.FilterByOptions.push({
+        MemberName: "subcategory",
+        FilterFor: getSubCategories(
+          params!.category as string,
+          categories || []
+        ).find((x) => x.description == (params?.subCategory as string))?.id,
+        FilterOperator: eFilterOperator.Equal,
+      });
+    }
     if (SearchQuery.OrderByOptions.length == 0) {
       SearchQuery.OrderByOptions.push({
         MemberName: "Priority",
         SortOrder: Order.DESC,
       });
     }
+    const result = (await onSearchShop(SearchQuery)) as IProductResponse;
+    return result.products;
+  };
 
-    handleFilterData(SearchQuery);
-  }, [searchParams, isLoading]);
+  const {
+    data,
+    isSuccess,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+    isFetching,
+    isRefetching,
+    isLoading,
+    refetch,
+  } = useInfiniteQuery(
+    "products",
+    ({ pageParam = 0 }) => fetchProducts(pageParam),
+    {
+      getNextPageParam: (lastPage, allPages) => {
+        const nextPage =
+          lastPage.length === LIMIT ? allPages.length : undefined;
+        return nextPage;
+      },
+      refetchOnWindowFocus: false,
+      keepPreviousData: false,
+    }
+  );
 
   useEffect(() => {
-    fetchItems(true);
-  }, [searchParams, isLoading]);
+    if (inView && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, fetchNextPage, hasNextPage]);
 
-  const handleFilterData = async (SearchQuery: SearchQuery) => {
-    const result = (await onSearchShop(SearchQuery)) as IProductResponse;
-    //setData(result.products)
-    setTotal(result.total);
-  };
-  const loader = (
-    <Box mt={2}>
-      <ProductCardLoading loop={3} />
-    </Box>
-  );
+  useEffect(() => {
+    if (!isFetching) {
+      refetch();
+    }
+  }, [searchParams]);
+
+  const content =
+    isSuccess &&
+    data.pages.map((page) =>
+      page.map((item, i) => {
+        if (page.length === i + 1) {
+          return <ProductCard ref={ref} key={item.id} product={item} />;
+        }
+        return <ProductCard key={item.id} product={item} />;
+      })
+    );
+
+  if ((isRefetching && !isFetchingNextPage) || isLoading) {
+    return <ProductCardLoading loop={6} />;
+  }
+
+  console.log("isLoading", isLoading);
+  if (
+    ((isFetched && data?.pages.map((x) => x.length)[0]) || 0) == 0 &&
+    !isLoading
+  ) {
+    return (
+      <div className="grid mx-auto justify-items-center">
+        <ExclamationCircleIcon color="black" className="text-normal w-12" />
+        <div className="mt-4 grid justify-items-center">
+          <span className="text-normal font-bold">
+            Your search returend no result
+          </span>
+          <span className="text-xs font-bold">
+            Try clear some filters or change the collection
+          </span>
+        </div>
+      </div>
+    );
+  }
   return (
-    <InfiniteScroll
-      loadMore={() => fetchItems(false)}
-      hasMore={hasNextItems}
-      loader={loader}
-      threshold={windows > 992 ? 600 : 1500}
-    >
-      <ProductList products={items} />
-    </InfiniteScroll>
+    <>
+      <div className="grid  md:grid-cols-3 grid-cols-2 gap-3">{content}</div>
+      {isFetchingNextPage && <ProductCardLoading loop={3} />}
+    </>
   );
 }
+
+interface ProductProps {
+  product: TProduct;
+}
+
+const ProductCard = forwardRef<HTMLDivElement, ProductProps>(
+  ({ product }, ref) => {
+    const downSm = useMediaQuery((theme: Theme) =>
+      theme.breakpoints.down("md")
+    );
+    const productContent = (
+      <div>
+        {downSm ? (
+          <ShopMobileCard
+            discount={(product.salePrice as unknown as number) ?? 0}
+            product={product}
+          />
+        ) : (
+          <ShopCard
+            discount={(product.salePrice as unknown as number) ?? 0}
+            product={product}
+          />
+        )}
+      </div>
+    );
+
+    const content = ref ? (
+      <article ref={ref}>{productContent}</article>
+    ) : (
+      <article>{productContent}</article>
+    );
+
+    return content;
+  }
+);

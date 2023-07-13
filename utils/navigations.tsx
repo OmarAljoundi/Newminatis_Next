@@ -187,7 +187,7 @@ const categories = [
 export const navigation = {
   categories,
   pages: [
-    { name: "About Us", href: "/our_stroy" },
+    { name: "About Us", href: "/about" },
     { name: "Blogs", href: "/blogs" },
   ],
 };

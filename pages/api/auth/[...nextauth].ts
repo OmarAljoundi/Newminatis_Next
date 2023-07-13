@@ -4,6 +4,8 @@ import FacebookProvider from "next-auth/providers/facebook";
 import GoogleProvider from "next-auth/providers/google";
 import UserService from "@/service/UserService";
 import { RegisterType, Role, TUser } from "@/types/TUser";
+import { TUserAddress } from "@/types/TUserAddress";
+import axios, { Axios } from "axios";
 export const authOptions: AuthOptions = {
   providers: [
     CredentialsProvider({
@@ -112,7 +114,7 @@ export const authOptions: AuthOptions = {
   ],
   pages: {
     signIn: "/",
-    error: "/login",
+    error: "auth/login",
   },
   debug: process.env.NODE_ENV === "development",
   session: {
@@ -120,17 +122,44 @@ export const authOptions: AuthOptions = {
     maxAge: 604800,
   },
   callbacks: {
-    jwt({ user, token }) {
-      if (user) {
+    async jwt({ user, token, trigger, session }) {
+      if (user && trigger !== "update") {
         token.role = (user as any as TUser).role;
         token.access_token = (user as any).access_token;
+        token.id = (user as any as TUser).id;
+        token.userAddress = (user as any as TUser).userAddress || [];
+        token.selectedAddress = 0;
+      } else if (trigger == "update") {
+        token.userAddress = session?.userAddress;
+        token.selectedAddress = session?.selectedAddress || 0;
       }
+
+      const { status } = await axios({
+        baseURL: `${process.env
+          .NEXT_PUBLIC_URL_PRODUCTION!}/User/IsUserStillAlive`,
+        timeout: 50000,
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token.access_token}`,
+        },
+      });
+      if (status == 401) {
+        return {
+          ...token,
+          name: "UNAUTHORIZED",
+        };
+      }
+
       return token;
     },
     session({ session, token }) {
       //@ts-ignore
       session.user.role = token.role;
       session.user.access_token = token.access_token as string;
+      session.user.id = token.id as number;
+      session.user.selectedAddress = token.selectedAddress as number;
+      session.user.userAddress = token.userAddress as TUserAddress[];
       return session;
     },
   },

@@ -4,6 +4,7 @@ import {
   Button,
   Card,
   Checkbox,
+  Collapse,
   Divider,
   FormControlLabel,
   IconButton,
@@ -20,12 +21,18 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { H6, Span } from "@/components/Typography";
 import { FlexBetween, FlexBox } from "@/components/flex-box";
 import { variants } from "@/utils/constants";
-import { createUrlWithSearch, eColor } from "@/helpers/Extensions";
+import {
+  createUrlWithSearch,
+  eColor,
+  getSubCategories,
+} from "@/helpers/Extensions";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useQuery } from "react-query";
-import { RadioGroup } from "@headlessui/react";
+import { Disclosure, RadioGroup } from "@headlessui/react";
 import { MdOutlineRemove } from "react-icons/md";
+import { ChevronUpIcon } from "@heroicons/react/24/outline";
+import SubCategorySection from "./SubCategorySection";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -137,22 +144,54 @@ const FilterSection: FC = () => {
     }
   };
 
-  const handleQuery = (check: boolean, item: string, name: string) => {
-    if (check) {
-      handleFilterChange(name, item);
-    } else {
-      handleFilterChange(name, null);
-    }
-  };
-
   const handleColor = (color: eColor) => {
     handleFilterChange("color", color.toString());
   };
+
   return (
     <Card sx={{ p: "18px 27px", overflow: "auto" }} elevation={5}>
       <H6 mb={1.25}>Categories</H6>
 
-      <div className="grid gap-4">
+      {categories?.map((item, index) => (
+        <Disclosure>
+          {({ open }) => (
+            <>
+              <Disclosure.Button className="flex w-full justify-between bg-transparent border-b border-gray-400  py-2 text-left text-sm font-medium text-white focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75">
+                <span
+                  className={`${
+                    item.description == params?.category
+                      ? "text-black font-semibold "
+                      : "text-gray-600 font-normal"
+                  } `}
+                >
+                  {item.name}
+                </span>
+                <ChevronUpIcon
+                  className={`${
+                    open ? "rotate-180 transform" : ""
+                  } h-5 w-5 text-black`}
+                />
+              </Disclosure.Button>
+              <Collapse in={open}>
+                <Disclosure.Panel
+                  // as={Link}
+                  // href={`/shop/${item.description}/${i.description}`}
+                  static
+                  className="pt-1 text-sm text-gray-500"
+                  style={{ whiteSpace: "break-spaces" }}
+                >
+                  <SubCategorySection
+                    subCategory={item.productSubCategory}
+                    category={item.description.toLowerCase()}
+                  />
+                </Disclosure.Panel>
+              </Collapse>
+            </>
+          )}
+        </Disclosure>
+      ))}
+
+      {/* <div className="grid gap-4">
         {categories?.map((item, index) => (
           <Link
             href={`/shop/${item?.description.toLowerCase()}`}
@@ -168,7 +207,8 @@ const FilterSection: FC = () => {
             <Span>{item.name}</Span>
           </Link>
         ))}
-      </div>
+      </div> */}
+
       <Divider sx={{ my: 2, borderColor: "white" }} />
       {/* PRICE VARIANT FILTER */}
       <FlexBetween alignItems={"flex-start"}>

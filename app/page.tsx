@@ -1,3 +1,4 @@
+"use server";
 import AboutSection from "@/pages-sections/home/AboutSection";
 import BestSellerSection from "@/pages-sections/home/BestSellerSection";
 import CollectionSection from "@/pages-sections/home/CollectionSection";
@@ -7,7 +8,7 @@ import { InstagramSection } from "@/pages-sections/home/InstagramSection";
 import ValueSection from "@/pages-sections/home/ValueSection";
 import React from "react";
 
-export default function Home() {
+export default async function Home() {
   return (
     <div>
       <section>
@@ -27,7 +28,7 @@ export default function Home() {
       </section>
 
       <section>
-        <ValueSection />
+        <ValueSection extraClass="py-7 md:py-14 mx-auto" mode="light" />
       </section>
       <section>
         <InstagramSection />

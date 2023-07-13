@@ -4,10 +4,9 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { FC } from "react";
 import { FlexBetween } from "@/components/flex-box";
 import { H3 } from "@/components/Typography";
-type Prop = {
-  handleSetType: (type: string) => void;
-};
-const PasswordChange: FC<Prop> = ({ handleSetType }) => {
+import Link from "next/link";
+
+const PasswordChange = () => {
   const containerStyle = useSpring({
     from: { opacity: 0 },
     to: { opacity: 1 },
@@ -17,20 +16,17 @@ const PasswordChange: FC<Prop> = ({ handleSetType }) => {
   return (
     <animated.div
       style={containerStyle}
-      className="row flex-row-reverse m-auto py-5"
+      className="row flex-row-reverse m-auto py-5 px-8"
     >
       <FlexBetween justifyContent={"flex-start"} columnGap="5px" my="15px">
         <CheckCircleIcon color="success" fontSize="large" />
         <H3 textAlign={"center"}>Password Changed Successfully</H3>
       </FlexBetween>
-
-      <Button
-        //color="dark"
-        fullWidth
-        onClick={() => handleSetType("LOGIN")}
-      >
-        Go Back To Login
-      </Button>
+      <Link href={"/auth/login"}>
+        <Button fullWidth color="primary">
+          Go Back To Login
+        </Button>
+      </Link>
     </animated.div>
   );
 };

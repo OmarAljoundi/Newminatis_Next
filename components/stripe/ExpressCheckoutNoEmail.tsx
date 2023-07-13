@@ -15,7 +15,12 @@ import useOrderService from "@/hooks/useOrderService";
 import useUserService from "@/hooks/useUserService";
 import { IBaseResponse } from "@/interface/IBaseResponse";
 import { Items } from "@/types/TOrderRequest";
-import { calculateCart } from "@/helpers/Extensions";
+import {
+  calcualteQty,
+  calculateCart,
+  getShippingLabel,
+  getShippingObject,
+} from "@/helpers/Extensions";
 import { TUserGuest } from "@/types/TUserGuest";
 import { IUserResponse } from "@/interface/IUserResponse";
 import { toast } from "react-hot-toast";
@@ -27,6 +32,9 @@ import FacebookService from "@/service/FacebookService";
 import { TCheckoutRequest } from "@/types/TCheckoutRequest";
 import { IPaymentResponse } from "@/interface/IPaymentResponse";
 import { PurchaseEvent, grapUserData } from "@/helpers/FacebookEvent";
+import { EncryptData } from "@/helpers/Crypto";
+import Cookies from "js-cookie";
+import SettingService from "@/service/SettingService";
 
 export const ExpressCheckoutNoEmail = () => {
   const stripe = useStripe();
@@ -70,12 +78,18 @@ export const ExpressCheckoutNoEmail = () => {
       requestPayerName: true,
       requestPayerPhone: true,
       requestShipping: true,
-      shippingOptions: [
+      shippingOptions: [],
+      displayItems: [
         {
-          id: "free-shipping",
-          label: "Free shipping",
-          detail: "",
+          label: "Subtotal",
+          amount:
+            (calculateCart(cart || []).toFixed(2) as unknown as number) * 100,
+          pending: false,
+        },
+        {
+          label: "Express Delivery",
           amount: 0,
+          pending: true,
         },
       ],
 
@@ -83,26 +97,68 @@ export const ExpressCheckoutNoEmail = () => {
         amount:
           (calculateCart(cart || []).toFixed(2) as unknown as number) * 100,
         label: "Checkout Newminatis",
+        pending: true,
       },
     });
+
     pr.canMakePayment().then((res) => {
       if (res) {
         setPaymentRequest(pr);
       }
     });
 
-    pr.on("shippingaddresschange", (ev) => {
-      ev.updateWith({
-        status: "success",
-        shippingOptions: [
-          {
-            id: "free-shipping",
-            label: "Free shipping",
-            detail: "",
-            amount: 0,
+    pr.on("shippingaddresschange", async (ev) => {
+      const { data } = await SettingService.getShippingAndTax(
+        ev.shippingAddress.country ?? "",
+        calcualteQty(cart || []) * 0.5,
+        calculateCart(cart || [])
+      );
+
+      if (data?.success) {
+        var delievryOption = getShippingObject(
+          data.shippingCost,
+          data.currentDate,
+          data.delievryDate,
+          ev.shippingAddress.country || ""
+        );
+        ev.updateWith({
+          status: "success",
+          displayItems: [
+            {
+              label: "Subtotal",
+              amount:
+                (calculateCart(cart || []).toFixed(2) as unknown as number) *
+                100,
+              pending: false,
+            },
+            {
+              label: getShippingLabel(
+                data.shippingCost,
+                data.currentDate,
+                data.delievryDate,
+                ev.shippingAddress.country || ""
+              ),
+              amount: (data.shippingCost.toFixed(2) as unknown as number) * 100,
+              pending: false,
+            },
+            {
+              label: "Estimated VAT & DUTY",
+              amount:
+                ((data.dutyAmount + data.vatAmount).toFixed(
+                  2
+                ) as unknown as number) * 100,
+              pending: false,
+            },
+          ],
+          total: {
+            amount:
+              (data.totalAfterAdditonal.toFixed(2) as unknown as number) * 100,
+            label: "Checkout Newminatis",
+            pending: false,
           },
-        ],
-      });
+          shippingOptions: [delievryOption],
+        });
+      }
     });
 
     pr.on("paymentmethod", async (e) => {
@@ -119,11 +175,14 @@ export const ExpressCheckoutNoEmail = () => {
         phoneNumber: e.payerPhone || "",
         postalCode: e.shippingAddress?.postalCode as any,
         state: e.shippingAddress?.city || "",
-        newsletter: null,
+        newsletter: false,
         createdDate: null,
         modifiedDate: null,
       };
-      const { guest } = (await onCreateGuest(newGuestUser)) as IUserResponse;
+      const { guest, message } = (await onCreateGuest(
+        newGuestUser
+      )) as IUserResponse;
+      toast.success(message || "Success");
       const clientSecret = await getClientSecretGuest(
         e.payerEmail || "",
         calculateCart(cart || []) * 100,
@@ -263,13 +322,9 @@ export const ExpressCheckoutNoEmail = () => {
         } catch (ex) {}
       }
 
-      dispatch(ClearCart());
-      //   route.push("/review_order", {
-      //     state: order_create,
-      //   });
-      route.push("/review_order", {
-        state: order_create,
-      });
+      const orderIdEncrypted = EncryptData<IOrderResponse>(order_create);
+      Cookies.set("Order_confirmed", orderIdEncrypted);
+      route.push(`/order_confirmation`);
     }
   };
   const getClientSecretGuest = async (

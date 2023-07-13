@@ -28,17 +28,7 @@ export const InstagramSection = () => {
 
   return (
     <>
-      <Box
-        sx={{
-          position: "relative",
-          background: "black",
-          padding: {
-            xs: "30px 0",
-            sm: "30px 0",
-            md: "100px 30px 30px 30px",
-          },
-        }}
-      >
+      <div className="relative">
         <div className="swiper-button-insta image-swiper-button-next-insta">
           <ArrowForwardIcon />
         </div>
@@ -91,7 +81,7 @@ export const InstagramSection = () => {
                         height={400}
                         title={item.permalink}
                         loading="lazy"
-                        priority="low"
+                        priority="auto"
                         q={80}
                       />
                     </Card>
@@ -100,7 +90,7 @@ export const InstagramSection = () => {
               ))}
           </Swiper>
         </Container>
-      </Box>
+      </div>
     </>
   );
 };

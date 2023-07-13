@@ -45,47 +45,45 @@ const HeroSection = () => {
     }
   }, [width]);
   return (
-    <>
-      <Box mb={1} sx={{ position: "relative" }}>
-        <div className="swiper-button image-swiper-button-next">
-          <ArrowForwardIcon />
-        </div>
-        <div className="swiper-button image-swiper-button-prev">
-          <ArrowBackIcon />
-        </div>
-        <Swiper
-          pagination={{
-            clickable: true,
-          }}
-          modules={[Pagination, Navigation, Autoplay]}
-          navigation={{
-            nextEl: ".image-swiper-button-next",
-            prevEl: ".image-swiper-button-prev",
-            disabledClass: "swiper-button-disabled",
-          }}
-          autoplay={{
-            delay: 5000,
-            disableOnInteraction: true,
-          }}
-          loop={false}
-          loopFillGroupWithBlank={true}
-          speed={1200}
-          className="mySwiper-1"
-        >
-          <>
-            {bannerContent.map((item, index) => (
-              <SwiperSlide key={index}>
-                <HeroImage
-                  src={item.imageUrl}
-                  content={item.text}
-                  key={item.imageUrl}
-                />
-              </SwiperSlide>
-            ))}
-          </>
-        </Swiper>
-      </Box>
-    </>
+    <Box mb={1} sx={{ position: "relative" }}>
+      <div className="swiper-button image-swiper-button-next">
+        <ArrowForwardIcon />
+      </div>
+      <div className="swiper-button image-swiper-button-prev">
+        <ArrowBackIcon />
+      </div>
+      <Swiper
+        pagination={{
+          clickable: true,
+        }}
+        modules={[Pagination, Navigation, Autoplay]}
+        navigation={{
+          nextEl: ".image-swiper-button-next",
+          prevEl: ".image-swiper-button-prev",
+          disabledClass: "swiper-button-disabled",
+        }}
+        autoplay={{
+          delay: 5000,
+          disableOnInteraction: true,
+        }}
+        loop={false}
+        loopFillGroupWithBlank={true}
+        speed={1200}
+        className="mySwiper-1"
+      >
+        <>
+          {bannerContent.map((item, index) => (
+            <SwiperSlide key={index}>
+              <HeroImage
+                src={item.imageUrl}
+                content={item.text}
+                key={item.imageUrl}
+              />
+            </SwiperSlide>
+          ))}
+        </>
+      </Swiper>
+    </Box>
   );
 };
 

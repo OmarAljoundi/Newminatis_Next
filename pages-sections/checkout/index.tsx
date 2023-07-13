@@ -1,7 +1,11 @@
 "use client";
 import { CreditCardSkeleton } from "@/components/loading/CreditCardSkeleton";
 import { ExpressCheckoutNoEmail } from "@/components/stripe/ExpressCheckoutNoEmail";
-import { calculateCart, getTotalPrice } from "@/helpers/Extensions";
+import {
+  calcualteQty,
+  calculateCart,
+  getTotalPrice,
+} from "@/helpers/Extensions";
 import useOrderService from "@/hooks/useOrderService";
 import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
 import useStripePayment from "@/hooks/useStripePayment";
@@ -14,7 +18,7 @@ import CheckoutSummary, {
 import { updateCart } from "@/store/CartItem/ThunkAPI";
 import { TShoppingSession } from "@/types/TCheckoutSessionRequest";
 import { TUserGuest } from "@/types/TUserGuest";
-import { Grid } from "@mui/material";
+import { Card, Grid, Skeleton, TextField, Typography } from "@mui/material";
 import { Elements } from "@stripe/react-stripe-js";
 import Cookies from "js-cookie";
 import { usePathname } from "next/navigation";
@@ -23,13 +27,16 @@ import React, { useState, useEffect, useCallback } from "react";
 import AuthForm from "./AuthForm";
 import GuestForm from "./GuestForm";
 import { stripePromise } from "@/components/stripe/StripeScript";
+import { useSession } from "next-auth/react";
+import { FlexBox } from "@/components/flex-box";
+import AddressFormSkeleton from "./AddressFormSkeleton";
 
 export default function CheckoutClientPage() {
   const pathname = usePathname();
-  const auth = useAppSelector((x) => x.Store.AuthReducer.Auth);
   const cart = useAppSelector((x) => x.Store.CartReducer?.CartItems);
   const route = useRouter();
   const dispatch = useAppDispatch();
+  const { data: authedSession, status } = useSession();
   const [checkoutSummary, setCheckoutSummary] =
     useState<CheckoutSummaryProps | null>(null);
 
@@ -51,7 +58,7 @@ export default function CheckoutClientPage() {
     };
     let _userGuest: TUserGuest | null = null;
     var userType: "GUEST" | "Authed" | "None" = "None";
-    if (auth && auth.email) {
+    if (authedSession && authedSession?.user?.email) {
       userType = "Authed";
     } else if (Cookies.get("GUEST_EMAIL")) {
       var x = Cookies.get("GUEST_EMAIL");
@@ -66,15 +73,22 @@ export default function CheckoutClientPage() {
 
     switch (userType) {
       case "Authed":
-        //@ts-ignore
-        session.userId = auth?.id;
+        session.userId = authedSession?.user?.id || 0;
+        session.countryCode =
+          authedSession!.user.userAddress[authedSession!.user.selectedAddress]
+            .country || null;
+        session.weight = calcualteQty(cart || []);
+        session.shippingCost = 0;
         break;
       case "GUEST":
         //@ts-ignore
         session.userId = _userGuest.id;
+        session.countryCode = _userGuest?.country || null;
+        session.weight = calcualteQty(cart || []) * 0.5;
+        session.shippingCost = 0;
         break;
       case "None":
-        if (pathname!.includes("payment")) route.push("cart/checkout");
+        if (pathname!.includes("payment")) route.push("/checkout");
         break;
     }
 
@@ -90,6 +104,7 @@ export default function CheckoutClientPage() {
         Total: result.shoppingSession.total,
         Type: result.shoppingSession.voucherType || "",
         Voucher: result.shoppingSession.voucher || "",
+        ShippingCost: result.shoppingSession.shippingCost,
       });
     }
   };
@@ -113,25 +128,32 @@ export default function CheckoutClientPage() {
   return (
     <div>
       {userLoad == false && orderLoad == false ? (
-        <Grid container flexWrap="wrap-reverse" spacing={3}>
-          <Grid item md={8} xs={12}>
-            <Elements stripe={stripePromise}>
-              <ExpressCheckoutNoEmail />
-            </Elements>
-
-            {auth ? <AuthForm /> : <GuestForm />}
-          </Grid>
-
-          <Grid item lg={4} md={4} xs={12}>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-4 gap-y-2">
+          <div>
             <CheckoutSummary
               Total={checkoutSummary?.Total || 0}
               Type={checkoutSummary?.Type || ""}
               Discount={checkoutSummary?.Discount}
               Voucher={checkoutSummary?.Voucher}
               setCheckoutSummary={setCheckoutSummary}
+              ShippingCost={checkoutSummary?.ShippingCost}
+              TaxCost={checkoutSummary?.TaxCost}
             />
-          </Grid>
-        </Grid>
+          </div>
+          <div className="col-span-1 lg:col-span-2">
+            <Elements stripe={stripePromise}>
+              <ExpressCheckoutNoEmail />
+            </Elements>
+
+            {status == "loading" && <AddressFormSkeleton />}
+
+            {status == "authenticated" ? (
+              <AuthForm />
+            ) : status == "unauthenticated" ? (
+              <GuestForm />
+            ) : null}
+          </div>
+        </div>
       ) : (
         <CreditCardSkeleton />
       )}

@@ -10,14 +10,11 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import ReactGA from "react-ga4";
 import { Purchase } from "react-facebook-pixel";
 import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
-import useStripePayment from "@/hooks/useStripePayment";
 import useOrderService from "@/hooks/useOrderService";
 import { useRouter } from "next/navigation";
 import { Items, TOrderRequest } from "@/types/TOrderRequest";
 import { IBaseResponse } from "@/interface/IBaseResponse";
-import { TCheckoutSavedCardRequest } from "@/types/TCheckoutRequest";
 import { calculateCart } from "@/helpers/Extensions";
-import { IPaymentResponse } from "@/interface/IPaymentResponse";
 import { toast } from "react-hot-toast";
 import { ClearCart, UpdateStock } from "@/store/CartItem/Cart-action";
 import { IOrderResponse } from "@/interface/IOrderResponse";
@@ -27,6 +24,9 @@ import { TOrderRequestGuest } from "@/types/TOrderRequestGuest";
 import { Card } from "@mui/material";
 import { H6 } from "@/components/Typography";
 import { CartItem } from "@/store/Model/CartItem";
+import { EncryptData } from "@/helpers/Crypto";
+import { useSession } from "next-auth/react";
+import { TUser } from "@/types/TUser";
 
 const Text =
   "We will contribute 1% of your purchase to removing CO₂ from the atmosphere.";
@@ -34,18 +34,15 @@ const Text =
 export default function PaymentForm({ totalAfterDiscount, guestUser }) {
   const stripe = useStripe();
   const elements = useElements();
-  const Auth = useAppSelector((x) => x.Store.AuthReducer.Auth);
+  const { data: authedSession } = useSession();
   const cart = useAppSelector((x) => x.Store.CartReducer?.CartItems);
   const _setting = useAppSelector((x) => x.Store.SettingReducer.setting);
   const dispatch = useAppDispatch();
-  const [selected, setSelected] = useState<string | null>("0");
-  const { onChargeSavedCard } = useStripePayment();
   const [isLoading, setIsLoading] = useState(false);
   const { onCreateOrder, onCheckStock, onCreateGuestOrder } = useOrderService();
   const route = useRouter();
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     if (!Cookies.get("Session")) {
       window.location.reload();
       return;
@@ -66,50 +63,31 @@ export default function PaymentForm({ totalAfterDiscount, guestUser }) {
     });
     const isStockAvaliable = (await onCheckStock(items)) as IBaseResponse;
     if (isStockAvaliable.success) {
-      if (selected && selected != "0") {
-        var savedCardRequest: TCheckoutSavedCardRequest = {
-          amount:
-            totalAfterDiscount > 0 ? totalAfterDiscount : calculateCart(cart!),
-          email: Auth!.email,
-          paymentId: selected,
-        };
-        var result = (await onChargeSavedCard(
-          savedCardRequest
-        )) as IPaymentResponse;
-
-        if (!result.success) {
-          toast.error(result.message);
-        }
-        setIsLoading(false);
-      } else {
-        if (!stripe || !elements) {
-          // Stripe.js has not yet loaded.
-          // Make sure to disable form submission until Stripe.js has loaded.
-          return;
-        }
-
-        await stripe
-          .confirmPayment({
-            elements,
-            confirmParams: {
-              return_url: "http://newminatis.com/review_order",
-            },
-            redirect: "if_required",
-          })
-          .then(async (res) => {
-            if (res.error) {
-              toast.error(res.error.message || "Something went wrong");
-              setIsLoading(false);
-            } else {
-              if (guestUser) {
-                await CreateGuestOrderRequest(items);
-                Cookies.remove("GUEST_EMAIL");
-              } else {
-                await CreateOrderRequest(items);
-              }
-            }
-          });
+      if (!stripe || !elements) {
+        return;
       }
+
+      await stripe
+        .confirmPayment({
+          elements,
+          confirmParams: {
+            return_url: "http://newminatis.com/review_order",
+          },
+          redirect: "if_required",
+        })
+        .then(async (res) => {
+          if (res.error) {
+            toast.error(res.error.message || "Something went wrong");
+            setIsLoading(false);
+          } else {
+            if (guestUser) {
+              await CreateGuestOrderRequest(items);
+              Cookies.remove("GUEST_EMAIL");
+            } else {
+              await CreateOrderRequest(items);
+            }
+          }
+        });
     } else {
       const cartItems = [...cart!];
       cartItems.map((i) => {
@@ -141,13 +119,14 @@ export default function PaymentForm({ totalAfterDiscount, guestUser }) {
       subTotal: calculateCart(cart!),
       total: totalAfterDiscount > 0 ? totalAfterDiscount : calculateCart(cart!),
       sessionId: Cookies.get("Session") as unknown as number,
-      //@ts-ignore
-      userAddressId: Auth.userAddress[Auth.selectedAddress].id,
+      userAddressId:
+        authedSession!.user.userAddress[authedSession!.user.selectedAddress].id,
       currency: _setting?.currencyCode ?? "USD",
       rate: _setting?.rate ?? 1,
     };
     const order_create = (await onCreateOrder(OrderRequest)) as IOrderResponse;
     if (!order_create.success) {
+      setIsLoading(false);
       toast.error(order_create.message);
     } else {
       if (process.env.NODE_ENV !== "development") {
@@ -196,17 +175,19 @@ export default function PaymentForm({ totalAfterDiscount, guestUser }) {
                   currency: "USD",
                   value: order_create.total.toString(),
                 },
-                user_data: grapUserData(Auth, guestUser),
+                user_data: grapUserData(
+                  authedSession!.user as TUser,
+                  guestUser
+                ),
               },
             ],
           });
         } catch (ex) {}
       }
       dispatch(ClearCart());
-      //   route("/review_order", {
-      //     state: order_create,
-      //   });
-      route.push("/review_order");
+
+      const orderIdEncrypted = EncryptData<IOrderResponse>(order_create);
+      route.push(`/payment/${orderIdEncrypted}`);
     }
   };
 
@@ -224,6 +205,7 @@ export default function PaymentForm({ totalAfterDiscount, guestUser }) {
       OrderRequest
     )) as IOrderResponse;
     if (!order_create.success) {
+      setIsLoading(false);
       toast.error(order_create.message);
     } else {
       if (process.env.NODE_ENV !== "development") {
@@ -272,18 +254,16 @@ export default function PaymentForm({ totalAfterDiscount, guestUser }) {
                   currency: "USD",
                   value: order_create.total.toString(),
                 },
-                user_data: grapUserData(Auth, guestUser),
+                user_data: grapUserData(null, guestUser),
               },
             ],
           });
         } catch (ex) {}
       }
 
-      dispatch(ClearCart());
-      //   route("/review_order", {
-      //     state: order_create,
-      //   });
-      route.push("/review_order");
+      const orderIdEncrypted = EncryptData<IOrderResponse>(order_create);
+      Cookies.set("Order_confirmed", orderIdEncrypted);
+      route.push(`/order_confirmation`);
     }
   };
 
@@ -309,15 +289,6 @@ export default function PaymentForm({ totalAfterDiscount, guestUser }) {
             className="payment-form-new"
           />
           <H6 sx={{ display: "inline-block" }} my={1.5}>
-            {/* <img
-              src={require("../../images/earth.png")}
-              width={20}
-              style={{
-                display: "inline-block",
-                marginRight: 10,
-                verticalAlign: "bottom",
-              }}
-            /> */}
             {Text}
           </H6>
         </>

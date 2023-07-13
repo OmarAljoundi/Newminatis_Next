@@ -1,4 +1,4 @@
-import React, { FC, Fragment, useState } from "react";
+import React, { FC, Fragment, useEffect, useState } from "react";
 import {
   Autocomplete,
   Button,
@@ -12,17 +12,15 @@ import { useFormik } from "formik";
 import { Country, ICountry, IState, State } from "country-state-city";
 import MuiPhoneNumber from "material-ui-phone-number-2";
 import { AddressValidationSchema } from "@/utils/schema";
-import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
 import useUserService from "@/hooks/useUserService";
 import { TUserAddress } from "@/types/TUserAddress";
 import { IUserResponse } from "@/interface/IUserResponse";
-import { AddUserAddress } from "@/store/Auth/Auth-action";
 import { toast } from "react-hot-toast";
 import { ex_countries } from "@/utils/constants";
+import { useSession } from "next-auth/react";
 const NewAddressForm: FC = () => {
   const [addCardForm, setAddCardForm] = useState<boolean>(false);
-  const auth = useAppSelector((state) => state.Store.AuthReducer.Auth);
-  const dispatch = useAppDispatch();
+  const { data: authedSession, update } = useSession();
   const { onPostAddress } = useUserService();
   const initialValues: TUserAddress = {
     addressLine: "",
@@ -38,7 +36,8 @@ const NewAddressForm: FC = () => {
     modifiedDate: null,
     phoneNumber: "",
     postalCode: "",
-    userId: auth?.id || 0,
+    userId: authedSession?.user.id || 0,
+    email: authedSession?.user.email || "",
   };
 
   const {
@@ -53,10 +52,20 @@ const NewAddressForm: FC = () => {
     initialValues: initialValues,
     validationSchema: AddressValidationSchema,
     onSubmit: async (values, { resetForm }) => {
+      debugger;
       values.city = values.state!;
       const result = (await onPostAddress(values)) as IUserResponse;
       if (result.success) {
-        dispatch(AddUserAddress(result.userAddress));
+        if (authedSession) {
+          await update({
+            userAddress: [
+              ...authedSession.user.userAddress,
+              result.userAddress,
+            ],
+            selectedAddress: authedSession.user.userAddress.length - 1,
+          });
+          resetForm();
+        }
         toast.success("Address Added Successfully", {
           duration: 5000,
         });
@@ -207,7 +216,7 @@ const NewAddressForm: FC = () => {
                   size="small"
                   sx={{ mb: 3 }}
                   type="number"
-                  label="PostalCode (optional)"
+                  label="PostalCode *"
                   name="postalCode"
                   inputProps={{
                     inputMode: "numeric",

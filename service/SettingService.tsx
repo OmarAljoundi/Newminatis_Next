@@ -22,6 +22,12 @@ class SettingService {
     );
   }
 
+  getShippingAndTax(countryCode: string, weight: number, total: number) {
+    return http(axios.create()).get<any>(
+      `/External/CalculateAdditonalFees?countryCode=${countryCode}&weight=${weight}&total=${total}`
+    );
+  }
+
   getUserSetting(currecnyCode?: string | null) {
     if (currecnyCode) {
       return http(axios.create()).get<any>(

@@ -1,9 +1,7 @@
 "use client";
 import { FC, useEffect, useState } from "react";
-import { Box, Grid, Theme, useMediaQuery } from "@mui/material";
-import { Pagination, Navigation, Autoplay, Scrollbar, Keyboard } from "swiper";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { Theme, useMediaQuery } from "@mui/material";
+import { Navigation, Autoplay, Scrollbar, Keyboard } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/scrollbar";
@@ -11,7 +9,6 @@ import { TProduct } from "@/types/TProduct";
 import useProductService from "@/hooks/useProductService";
 import { SearchQuery, eFilterOperator } from "@/types/TSearchQuery";
 import { IProductResponse } from "@/interface/IProductResponse";
-import { H2 } from "@/components/Typography";
 import ShopCard from "@/components/product-card/ShopCard";
 import ShopMobileCard from "@/components/product-card/ShopMobileCard";
 type RelatedProductsProps = { related: string; id: number };
@@ -94,7 +91,6 @@ const ProductRelatedSection: FC<RelatedProductsProps> = ({ related, id }) => {
                     discount={(item.salePrice as unknown as number) ?? 0}
                     perImage={1}
                     product={item}
-                    fadeType={(index + 1) % 2 == 0 ? "fade-left" : "fade-right"}
                   />
                 )}
               </SwiperSlide>
@@ -106,18 +102,3 @@ const ProductRelatedSection: FC<RelatedProductsProps> = ({ related, id }) => {
 };
 
 export default ProductRelatedSection;
-
-//  slidesPerView={1}
-//         centeredSlides={false}
-//         slidesPerGroupSkip={1}
-//         grabCursor={true}
-//         breakpoints={{
-//           350: { slidesPerView: 2 },
-//           640: { slidesPerView: 2 },
-//           768: { slidesPerView: 3 },
-//           1024: { slidesPerView: 4 },
-//         }}
-//         scrollbar={true}
-//         navigation={true}
-//         modules={[Keyboard, Scrollbar, Navigation]}
-//         className="mySwiper"

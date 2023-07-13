@@ -3,10 +3,11 @@ import { useFormik } from "formik";
 import { FC, useCallback, useState } from "react";
 import { useSpring, animated } from "react-spring";
 import * as yup from "yup";
-import EyeToggleButton from "./EyeToggleButton";
+import EyeToggleButton from "../shared/EyeToggleButton";
 import useUserService from "@/hooks/useUserService";
 import { IUserResponse } from "@/interface/IUserResponse";
 import { H3 } from "@/components/Typography";
+import { LoadingButton } from "@mui/lab";
 const ResetPassword: FC<{
   email: string;
   setActiveStep: any;
@@ -17,8 +18,7 @@ const ResetPassword: FC<{
     to: { opacity: 1 },
     config: { duration: 500 },
   });
-  const { onResetPassword } = useUserService();
-  const { userLoad } = useUserService();
+  const { onResetPassword, userLoad } = useUserService();
   const [passwordVisibility, setPasswordVisibility] = useState(false);
   const togglePasswordVisibility = useCallback(() => {
     setPasswordVisibility((visible) => !visible);
@@ -48,10 +48,8 @@ const ResetPassword: FC<{
     });
 
   return (
-    <animated.div style={containerStyle} className="container">
-      <H3 textAlign={"center"} my={2}>
-        Enter your new password
-      </H3>
+    <animated.div style={containerStyle} className="container px-8">
+      <h1 className={"mt-8 text-center text-2xl"}>Enter your new password</h1>
 
       <form className="d-grid mt-3" autoComplete="off" onSubmit={handleSubmit}>
         <TextField
@@ -103,9 +101,15 @@ const ResetPassword: FC<{
           }}
         />
 
-        <Button type="submit" fullWidth>
+        <LoadingButton
+          type="submit"
+          fullWidth
+          color="primary"
+          loading={userLoad}
+          disabled={userLoad}
+        >
           Reset Password
-        </Button>
+        </LoadingButton>
       </form>
     </animated.div>
   );

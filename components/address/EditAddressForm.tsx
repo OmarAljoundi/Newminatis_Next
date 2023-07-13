@@ -210,7 +210,7 @@ const EditAddressForm: FC<EditAddressFormProps> = ({ initialValues }) => {
                   size="small"
                   sx={{ mb: 3 }}
                   type="number"
-                  label="PostalCode (optional)"
+                  label="PostalCode *"
                   name="postalCode"
                   inputProps={{
                     inputMode: "numeric",
