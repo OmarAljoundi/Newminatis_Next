@@ -147,7 +147,6 @@ const ShopCard: FC<ProductCardProps> = ({
 
     if (!cartItem?.find((x) => x.sku == GetSKU(name, color, size))) {
       dispatch(AddItem(cart));
-      debugger;
       toasterSuccess(
         currency(getTotalPrice(cartState || []) + __price, _setting),
         downMd ? "bottom-center" : "top-center"

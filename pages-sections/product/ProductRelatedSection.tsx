@@ -48,9 +48,9 @@ const ProductRelatedSection: FC<RelatedProductsProps> = ({ related, id }) => {
     collectRelatedProducts();
   }, []);
   return (
-    <article className="mt-10">
+    <article className="mt-5 md:mt-10 pt-3">
       {relatedProducts?.length > 0 && (
-        <h2 className="px-3 lg:px-0 text-xl lg:text-2xl mb-3">
+        <h2 className="px-3 lg:px-0 text-lg lg:text-2xl mb-3">
           Related Products
         </h2>
       )}

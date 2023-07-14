@@ -56,15 +56,17 @@ export default async function SingleProductPage({ params: { slug } }: Params) {
           title={["Home", "Shop", _response?.data?.product?.friendlyName]}
         />
       </div>
-      <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-2  lg:grid-cols-2 xl:gap-x-8">
-        <ProductImagesSection product={_response?.data?.product} />
-        <ProductInfoSection response={_response?.data} />
-      </div>
+      <div className="md:divide-y-2">
+        <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-2  lg:grid-cols-2 xl:gap-x-8">
+          <ProductImagesSection product={_response?.data?.product} />
+          <ProductInfoSection response={_response?.data} />
+        </div>
 
-      <ProductRelatedSection
-        related={_response?.data?.product?.relatedProducts || ""}
-        id={_response?.data?.product?.id}
-      />
+        <ProductRelatedSection
+          related={_response?.data?.product?.relatedProducts || ""}
+          id={_response?.data?.product?.id}
+        />
+      </div>
     </div>
   );
 }

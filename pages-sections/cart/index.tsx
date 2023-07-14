@@ -1,6 +1,6 @@
 "use client";
 import CartCard from "@/components/product-card/CartCard";
-import { getTotalPrice } from "@/helpers/Extensions";
+import { getShippingLabel, getTotalPrice } from "@/helpers/Extensions";
 import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
 import { currency } from "@/lib";
 import { updateCart } from "@/store/CartItem/ThunkAPI";
@@ -12,6 +12,7 @@ import { Elements } from "@stripe/react-stripe-js";
 import { ExpressCheckoutNoEmail } from "@/components/stripe/ExpressCheckoutNoEmail";
 import { stripePromise } from "@/components/stripe/StripeScript";
 import { EmptyCart } from "@/components/mini-cart/EmptyCart";
+import { isEligableForFreeShipping } from "@/helpers/Summery";
 export default function CartClientPage() {
   const state = useAppSelector((x) => x.Store.CartReducer?.CartItems);
   const [load, setLoad] = useState(false);
@@ -28,33 +29,55 @@ export default function CartClientPage() {
     }, 250);
   }, [state]);
 
-  return (
-    <Grid container spacing={3}>
-      {state && state?.length > 0 ? (
-        <Fragment>
-          <Grid item md={8} xs={12}>
-            {state?.map((item) => (
-              <CartCard key={item.id} {...item} />
-            ))}
-          </Grid>
+  if (state?.length == 0) {
+    return (
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-4 gap-y-2 items-start">
+        <div className="col-span-3">
+          <EmptyCart />
+        </div>
+      </div>
+    );
+  }
 
-          <Grid item md={4} xs={12}>
-            <Card sx={{ borderRadius: "0", paddingY: "1rem" }} elevation={1}>
+  return (
+    <div className="max-w-7xl">
+      <div className="mx-auto">
+        <div className="grid grid-cols-1  lg:gap-x-16 lg:grid-cols-6 items-start  gap-y-10">
+          <div className="md:col-span-3 lg:col-span-4 ">
+            <div className="flow-root mt-7 ">
+              <ul className="-my-7 divide-y divide-zinc-200">
+                {state?.map((item) => (
+                  <li
+                    className="p-5 flex border border-gray-200 border-opacity-90 bg-white "
+                    key={item.id}
+                  >
+                    <CartCard {...item} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <div className="lg:col-span-2 lg:top-6 lg:sticky bg-zinc-900">
+            <div className="border border-gray-200 border-opacity-90 bg-white p-3 divide-y divide-zinc-200">
               <EDD />
-              <div className="py-3 grid grid-cols-2 px-5">
+              <div className="py-3 grid grid-cols-2 px-3">
                 <div className="grid gap-y-1">
-                  <span className="text-sm font-medium">SubTotal:</span>
-                  <span className="text-sm font-medium">Shipping:</span>
-                  <span className="text-sm font-medium">Total:</span>
+                  <span className="text-xs xl:text-sm font-medium">
+                    SubTotal:
+                  </span>
+                  <span className="text-xs xl:text-sm font-medium">
+                    Shipping:
+                  </span>
                 </div>
                 <div className="grid justify-items-end gap-y-1">
-                  <span className="text-sm font-medium">
+                  <span className="text-xs  xl:text-sm font-medium">
                     {currency(getTotalPrice(state), _setting)}
                   </span>
-                  <span className="text-sm font-medium">FREE</span>
-
-                  <span className="text-sm font-medium">
-                    {currency(getTotalPrice(state), _setting)}
+                  <span className="text-xs  xl:text-sm font-medium text-right">
+                    {isEligableForFreeShipping(state)
+                      ? "Free shipping"
+                      : "Calculate at payment!"}
                   </span>
                 </div>
                 <div className="mt-4 col-span-2">
@@ -89,14 +112,10 @@ export default function CartClientPage() {
                   )}
                 </div>
               </div>
-            </Card>
-          </Grid>
-        </Fragment>
-      ) : (
-        <Grid item xs={12}>
-          <EmptyCart />
-        </Grid>
-      )}
-    </Grid>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

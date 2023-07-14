@@ -3,18 +3,14 @@
 import { FC, Fragment, ReactNode, useCallback, useState } from "react";
 import { Dialog, Disclosure, Menu, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import {
-  ChevronDownIcon,
-  FunnelIcon,
-  MinusIcon,
-  PlusIcon,
-} from "@heroicons/react/20/solid";
+import { FunnelIcon } from "@heroicons/react/20/solid";
 import ProductSection from "@/pages-sections/shop/ProductSection";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { AiOutlineArrowRight } from "react-icons/ai";
 import FilterSection from "@/pages-sections/shop/FilterSection";
 import Sidenav from "@/components/Sidenav";
+import { AdjustmentsHorizontalIcon } from "@heroicons/react/20/solid";
 
 type ShopRootLayoutProp = {
   children: ReactNode;
@@ -58,18 +54,15 @@ const ShopRootLayout: FC<ShopRootLayoutProp> = ({ children }) => {
       </Sidenav>
 
       <main className="mx-auto max-w-7xl px-0 sm:px-6 lg:px-8">
-        <div className="flex items-baseline justify-between border-b border-gray-200  pt-6">
-          <h1 className="text-4xl font-bold tracking-tight text-gray-900">
-            {children}
-          </h1>
+        <div className="flex justify-between border-b border-gray-200  pt-6 items-start">
+          <h1 className="tracking-tight">{children}</h1>
 
-          <div className="flex items-center">
+          <div className="flex items-start gap-x-4">
             <Menu as="div" className="relative inline-block text-left">
               <div>
-                <Menu.Button className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900 title">
-                  Sort
-                  <ChevronDownIcon
-                    className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
+                <Menu.Button className="group inline-flex justify-center font-medium text-gray-700 hover:text-gray-900 title text-xs lg:text-sm">
+                  <AdjustmentsHorizontalIcon
+                    className="h-5 w-5"
                     aria-hidden="true"
                   />
                 </Menu.Button>
@@ -112,8 +105,8 @@ const ShopRootLayout: FC<ShopRootLayoutProp> = ({ children }) => {
 
             <button
               type="button"
-              className="-m-2 ml-4 p-2 text-gray-400 hover:text-gray-500 sm:ml-6 lg:hidden mr-2"
               onClick={() => setMobileFiltersOpen(true)}
+              className="lg:hidden"
             >
               <span className="sr-only">Filters</span>
               <FunnelIcon className="h-5 w-5" aria-hidden="true" />

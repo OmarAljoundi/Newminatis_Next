@@ -151,10 +151,7 @@ export enum eColor {
   Black = 1,
   Gray = 2,
   White = 3,
-  Red = 4,
-  Green = 5,
-  Yellow = 6,
-  Orange = 7,
+  Beige = 4,
 }
 
 export const MapColors = (n: number) => {
@@ -163,14 +160,10 @@ export const MapColors = (n: number) => {
       return "Black";
     case eColor.Gray as Number:
       return "Grey";
-    case eColor.Green as Number:
-      return "Green";
-    case eColor.Orange as Number:
-      return "Orange";
-    case eColor.Red as Number:
-      return "Red";
     case eColor.White as Number:
       return "White";
+    case eColor.Beige as Number:
+      return "Beige";
   }
 };
 

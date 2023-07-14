@@ -320,28 +320,6 @@ const FilterSection: FC = () => {
 
       <Divider sx={{ my: 2, borderColor: "white" }} />
 
-      {/* {otherOptions.map((item, index) => (
-        <FormControlLabel
-          key={item}
-          sx={{ display: "flex" }}
-          label={<Span color="inherit">{item}</Span>}
-          control={
-            <Checkbox
-              defaultChecked={searchParams?.get(`others${index}`) !== null}
-              size="small"
-              color="secondary"
-              onChange={(e) =>
-                handleQuery(
-                  e.target.checked,
-                  item.replace(/ /g, "").toLowerCase(),
-                  `others${index}`
-                )
-              }
-            />
-          }
-        />
-      ))} */}
-
       <H6 mb={2}>Sizes</H6>
       <RadioGroup
         onChange={(e: any) =>
@@ -454,7 +432,6 @@ const FilterSection: FC = () => {
   );
 };
 
-const otherOptions = ["On Sale"];
 const colorList = [
   {
     color: "black",
@@ -467,6 +444,10 @@ const colorList = [
   {
     color: "gray",
     value: eColor.Gray,
+  },
+  {
+    color: "beige",
+    value: eColor.Beige,
   },
 ];
 

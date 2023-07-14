@@ -37,6 +37,10 @@ import { useSession } from "next-auth/react";
 import AddressInfo from "./AddressInfo";
 import { BlurImage } from "@/components/BlurImage";
 import { CheckCircleIcon, TruckIcon } from "@heroicons/react/20/solid";
+import {
+  getShippingMessage,
+  isEligableForFreeShipping,
+} from "@/helpers/Summery";
 
 export type CheckoutSummaryProps = {
   Discount?: number;
@@ -155,54 +159,8 @@ const CheckoutSummary: FC<Props> = ({
     }
   };
 
-  const getShippingMessage = () => {
-    if (!isEligableForFreeShipping()) {
-      const percentage = 100 - ((300 - calculateCart(state || [])) / 300) * 100;
-
-      return (
-        <div className="mt-2">
-          <div className="flex justify-between items-center">
-            <div className="mb-1 text-[10px] font-bold uppercase">
-              Add {currency(300 - calculateCart(state || []), _setting)} to be
-              Eligible for free shipping
-            </div>
-            <div className="mb-1 text-xs font-bold">
-              <TruckIcon width={20} />
-            </div>
-          </div>
-          <div className="w-full bg-gray-200 rounded-sm h-2.5 mb-4 dark:bg-gray-700">
-            <div
-              className={`bg-gray-600 h-2.5 rounded-sm dark:bg-gray-300`}
-              style={{ width: `${percentage}%` }}
-            ></div>
-          </div>
-        </div>
-      );
-    } else {
-      return (
-        <div className="mt-2">
-          <div className="flex justify-between items-center">
-            <div className="mb-1 text-[10px] font-bold uppercase">
-              Awesome, You Are EligabEligiblele For Free Shipping!
-            </div>
-            <div className="mb-1 text-xs font-medium">
-              <CheckCircleIcon width={20} color="green" />
-            </div>
-          </div>
-          <div className="w-full bg-gray-200 rounded-sm h-2.5 mb-4 dark:bg-gray-700">
-            <div className="bg-gray-600 h-2.5 rounded-sm dark:bg-gray-300 w-full"></div>
-          </div>
-        </div>
-      );
-    }
-  };
-
-  const isEligableForFreeShipping = () => {
-    return getTotalPrice(state) > 300;
-  };
-
   const getShippingLabel = () => {
-    if (isEligableForFreeShipping()) {
+    if (isEligableForFreeShipping(state)) {
       return "Free Shipping!";
     }
     if (pathname!.includes("payment")) return currency(ShippingCost!, _setting);
@@ -267,7 +225,7 @@ const CheckoutSummary: FC<Props> = ({
             </div>
           </div>
         ))}
-        {getShippingMessage()}
+        {getShippingMessage(state, _setting)}
       </div>
 
       <div className="py-3 grid grid-cols-2">

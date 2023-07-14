@@ -15,7 +15,7 @@ import {
   ShoppingBagIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import { navigation } from "@/utils/navigations";
+import { navigation, placeholderDataCategories } from "@/utils/navigations";
 import Image from "next/image";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { toast } from "react-hot-toast";
@@ -26,6 +26,11 @@ import { FeaturedProducts } from "./FeaturedProducts";
 import { CategorySections } from "./CategorySections";
 import MiniWishList from "../mini-cart/MiniWishList";
 import UserMenu from "./UserMenu";
+import { UserCircleIcon } from "@heroicons/react/20/solid";
+import MobileUserMenu from "./MobileUserMenu";
+import useProductService from "@/hooks/useProductService";
+import { TProductCategory } from "@/types/TProductCategory";
+import { useQuery } from "react-query";
 
 export const HeaderWrapper = styled(Box)(({ theme }) => ({
   zIndex: 3,
@@ -44,6 +49,8 @@ const Header = () => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const route = useRouter();
+  const { onGetCategories } = useProductService();
+
   const cartItems = useAppSelector((state) =>
     calcualteQty(state.Store?.CartReducer?.CartItems || [])
   );
@@ -70,8 +77,25 @@ const Header = () => {
     }
   }, [session]);
 
+  const closeMenu = () => setOpen(false);
+
+  const fetchCategories = async () => {
+    const result = (await onGetCategories()) as TProductCategory[];
+    return result;
+  };
+
+  const { data: categories } = useQuery(
+    "Feature Categories",
+    () => fetchCategories(),
+    {
+      cacheTime: 60000,
+      enabled: true,
+      placeholderData: placeholderDataCategories,
+    }
+  );
+
   return (
-    <div className="bg-white ">
+    <div className="bg-white">
       {/* Mobile menu */}
       <Transition.Root show={open} as={Fragment}>
         <Dialog as="div" className="relative z-40 lg:hidden" onClose={setOpen}>
@@ -113,7 +137,7 @@ const Header = () => {
                 <Tab.Group as="div" className="mt-2">
                   <div className="border-b border-gray-200">
                     <Tab.List className="-mb-px flex space-x-8 px-4">
-                      {navigation.categories.map((category) => (
+                      {categories?.map((category) => (
                         <Tab
                           key={category.name}
                           className={({ selected }) =>
@@ -131,13 +155,19 @@ const Header = () => {
                     </Tab.List>
                   </div>
                   <Tab.Panels as={Fragment}>
-                    {navigation.categories.map((category) => (
+                    {categories?.map((category) => (
                       <Tab.Panel
                         key={category.name}
                         className="space-y-10 px-4 pb-8 pt-6"
                       >
-                        <CategorySections sections={category.sections} />
-                        <FeaturedProducts featured={category.featured} />
+                        <CategorySections
+                          close={closeMenu}
+                          category={category}
+                        />
+                        <FeaturedProducts
+                          close={closeMenu}
+                          category={category}
+                        />
                       </Tab.Panel>
                     ))}
                   </Tab.Panels>
@@ -156,33 +186,6 @@ const Header = () => {
                   ))}
                 </div>
 
-                <div className="space-y-6 border-t border-gray-200 px-4 py-6">
-                  <div className="flow-root">
-                    {status === "authenticated" ? (
-                      <span className="title">
-                        <UserMenu />
-                      </span>
-                    ) : (
-                      <Link
-                        href="/auth/login"
-                        className="title text-sm font-medium text-gray-700 hover:text-gray-800"
-                      >
-                        Sign in
-                      </Link>
-                    )}
-                  </div>
-                  <div className="flow-root">
-                    {status === "unauthenticated" && (
-                      <Link
-                        href="/auth/register"
-                        className="title text-sm font-medium text-gray-700 hover:text-gray-800"
-                      >
-                        Create account
-                      </Link>
-                    )}
-                  </div>
-                </div>
-
                 <div className="border-t border-gray-200 px-1 py-3">
                   <Currency />
                 </div>
@@ -196,7 +199,7 @@ const Header = () => {
         <nav aria-label="Top" className="mx-auto max-w-7xl px-0lg:px-8">
           <div className="border-b border-gray-200">
             <div className="flex h-16 items-center px-2 md:px-4">
-              <div className="w-1/4 lg:w-auto">
+              <div className="mr-auto flex items-center w-1/4 lg:w-auto justify-start gap-x-2">
                 <button
                   type="button"
                   className="rounded-md bg-white p-2 text-gray-400 lg:hidden"
@@ -205,6 +208,9 @@ const Header = () => {
                   <span className="sr-only">Open menu</span>
                   <Bars3Icon className="h-6 w-6" aria-hidden="true" />
                 </button>
+                <div className="lg:hidden">
+                  <MobileUserMenu />
+                </div>
               </div>
 
               <div className="ml-0 md:ml-4 flex lg:ml-0  w-1/2 justify-center lg:w-auto">
@@ -222,15 +228,15 @@ const Header = () => {
               </div>
               <Popover.Group className="hidden lg:ml-8 lg:block lg:self-stretch">
                 <div className="flex h-full space-x-8">
-                  {navigation.categories.map((category) => (
+                  {categories?.map((category) => (
                     <Popover key={category.name} className="flex">
-                      {({ open }) => (
+                      {({ open, close }) => (
                         <>
                           <div className="relative flex">
                             <Popover.Button
                               className={classNames(
                                 open
-                                  ? "border-indigo-600 text-indigo-600"
+                                  ? "border-gray-600-600 text-gray-600"
                                   : "border-transparent text-gray-700 hover:text-gray-800",
                                 "title relative z-10 -mb-px flex items-center border-b-2 pt-px text-sm font-medium transition-colors duration-200 ease-out"
                               )}
@@ -251,10 +257,12 @@ const Header = () => {
                                   <div className="mx-auto max-w-7xl px-8">
                                     <div className="grid grid-cols-2 gap-x-8 gap-y-10 py-6">
                                       <FeaturedProducts
-                                        featured={category.featured}
+                                        category={category}
+                                        close={close}
                                       />
                                       <CategorySections
-                                        sections={category.sections}
+                                        close={close}
+                                        category={category}
                                       />
                                     </div>
                                   </div>
@@ -281,7 +289,7 @@ const Header = () => {
 
               <div className="ml-auto flex items-center w-1/4  lg:w-auto justify-end">
                 <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-                  {status === "authenticated" ? (
+                  {status === "authenticated" || status == "loading" ? (
                     <span className="title">
                       <UserMenu />
                     </span>
