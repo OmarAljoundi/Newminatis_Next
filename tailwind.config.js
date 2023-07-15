@@ -6,6 +6,7 @@ module.exports = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./pages-sections/**/*.{js,ts,jsx,tsx,mdx}",
     "./service/*.{js,ts,jsx,tsx,mdx}",
+    "./helpers/*.{js,ts,jsx,tsx,mdx}",
   ],
 
   theme: {

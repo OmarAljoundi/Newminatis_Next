@@ -184,10 +184,10 @@ export default function PaymentForm({ totalAfterDiscount, guestUser }) {
           });
         } catch (ex) {}
       }
-      dispatch(ClearCart());
 
       const orderIdEncrypted = EncryptData<IOrderResponse>(order_create);
-      route.push(`/payment/${orderIdEncrypted}`);
+      Cookies.set("Order_confirmed", orderIdEncrypted);
+      route.push(`/order_confirmation`);
     }
   };
 

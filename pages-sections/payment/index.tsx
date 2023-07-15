@@ -1,5 +1,4 @@
 "use client";
-import { Box, Checkbox, Grid, StepContext } from "@mui/material";
 import { FC, useEffect, useState } from "react";
 import { Elements, PaymentElement } from "@stripe/react-stripe-js";
 import Cookies from "js-cookie";
@@ -7,9 +6,6 @@ import useStripePayment from "@/hooks/useStripePayment";
 import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
 import { TUserGuest } from "@/types/TUserGuest";
 import { useRouter } from "next/navigation";
-import CheckoutSummary, {
-  CheckoutSummaryProps,
-} from "../checkout/CheckoutSummary";
 import useOrderService from "@/hooks/useOrderService";
 import useUserService from "@/hooks/useUserService";
 import { TShoppingSession } from "@/types/TCheckoutSessionRequest";
@@ -28,6 +24,7 @@ import { stripePromise } from "@/components/stripe/StripeScript";
 import { CreditCardSkeleton } from "@/components/loading/CreditCardSkeleton";
 import PaymentForm from "./PaymentForm";
 import { useSession } from "next-auth/react";
+import CheckoutSummary, { CheckoutSummaryProps } from "./CheckoutSummary";
 
 const PaymentClientPage: FC = () => {
   const [loading, setLoading] = useState(false);
@@ -52,7 +49,8 @@ const PaymentClientPage: FC = () => {
       createdDate: null,
       discount: 0.0,
       expired: new Date(),
-      total: getTotalPrice(cart!),
+      subTotal: getTotalPrice(cart!),
+      total: 0,
       voucher: "",
       //@ts-ignore
       userId: null,
@@ -81,7 +79,7 @@ const PaymentClientPage: FC = () => {
         session.countryCode =
           authedSession!.user.userAddress[authedSession!.user.selectedAddress]
             .country || null;
-        session.weight = calcualteQty(cart || []);
+        session.weight = calcualteQty(cart || []) * 0.5;
         session.shippingCost = 0;
         break;
       case "GUEST":
@@ -101,6 +99,7 @@ const PaymentClientPage: FC = () => {
     if (result.success) {
       Cookies.set("Session", result.shoppingSession.id.toString());
     }
+
     setCheckoutSummary({
       Discount: result.shoppingSession.discount,
       Total: result.shoppingSession.total,
@@ -110,6 +109,9 @@ const PaymentClientPage: FC = () => {
       Voucher: result.shoppingSession.voucher,
       ShippingCost: result.shoppingSession.shippingCost,
       TaxCost: result.shoppingSession.taxAmount,
+      DutyCost: result.shoppingSession.dutyAmount,
+      TaxRate: result.shoppingSession.taxRate,
+      TotalDiscount: result.shoppingSession.totalDiscount,
     });
   };
 
@@ -180,10 +182,12 @@ const PaymentClientPage: FC = () => {
               Type={checkoutSummary?.Type}
               setCheckoutSummary={setCheckoutSummary}
               ShippingCost={checkoutSummary?.ShippingCost}
-              Discount={checkoutSummary?.Discount}
+              TotalDiscount={checkoutSummary?.TotalDiscount}
               Voucher={checkoutSummary?.Voucher}
               guestAddress={guestAddress}
               TaxCost={checkoutSummary?.TaxCost}
+              DutyCost={checkoutSummary?.DutyCost}
+              TaxRate={checkoutSummary?.TaxRate}
             />
           </div>
           <div className="col-span-1 lg:col-span-2">

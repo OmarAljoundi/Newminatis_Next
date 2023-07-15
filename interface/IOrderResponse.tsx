@@ -5,6 +5,12 @@ import { TOrderDto, TOrderItemsDto } from "@/types/TOrder";
 export interface IOrderResponse extends IBaseResponse {
   depoterOrderId: string;
   edd: Date;
+  dutyAmount: number;
+  discount: number;
+  shippingCost: number;
+  taxAmount: number;
+  taxRate: number;
+  subTotal: number;
   orderReviewItems: OrderReviewItems[];
   total: number;
   userAddress?: TUserAddress;

@@ -12,8 +12,11 @@ export type Prop = {
   inventory_type: "domestic";
 };
 class OrderService {
-  createOrder(data: TOrderRequest) {
-    return http(axios.create()).post<IOrderResponse>(`/Order`, data);
+  createOrder(data: TOrderRequest, token: string) {
+    return http(axios.create(), false, token).post<IOrderResponse>(
+      `/Order`,
+      data
+    );
   }
 
   getOrders() {

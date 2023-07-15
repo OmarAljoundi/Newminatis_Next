@@ -6,9 +6,11 @@ import {
 } from "axios";
 import Cookie from "js-cookie";
 
-const onRequest = (config: AxiosRequestConfig, forceLive?: boolean): any => {
-  const token = Cookie.get("token");
-
+const onRequest = (
+  config: AxiosRequestConfig,
+  forceLive?: boolean,
+  token?: string
+): any => {
   return {
     ...config,
     baseURL: `${
@@ -29,8 +31,6 @@ const onRequestFormData = (
   config: AxiosRequestConfig,
   forceLive?: boolean
 ): any => {
-  const token = Cookie.get("token");
-
   return {
     ...config,
     baseURL: `${
@@ -41,7 +41,6 @@ const onRequestFormData = (
     timeout: 500000,
     headers: {
       Accept: "application/json",
-      Authorization: `Bearer ${token}`,
     },
   };
 };
@@ -60,10 +59,11 @@ const onResponseError = (error: AxiosError): Promise<AxiosError> => {
 
 export function http(
   axiosInstance: AxiosInstance,
-  forceLive?: boolean
+  forceLive?: boolean,
+  token?: string
 ): AxiosInstance {
   axiosInstance.interceptors.request.use(
-    (config) => onRequest(config, forceLive),
+    (config) => onRequest(config, forceLive, token),
     onRequestError
   );
   axiosInstance.interceptors.response.use(onResponse, onResponseError);

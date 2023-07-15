@@ -191,26 +191,7 @@ const FilterSection: FC = () => {
         </Disclosure>
       ))}
 
-      {/* <div className="grid gap-4">
-        {categories?.map((item, index) => (
-          <Link
-            href={`/shop/${item?.description.toLowerCase()}`}
-            key={item.description}
-            style={{ textDecoration: "underline" }}
-            className={`${
-              (params?.category as string)?.toLowerCase() ==
-              item?.description.toLowerCase()
-                ? "text-gray-800"
-                : "text-gray-400"
-            }`}
-          >
-            <Span>{item.name}</Span>
-          </Link>
-        ))}
-      </div> */}
-
       <Divider sx={{ my: 2, borderColor: "white" }} />
-      {/* PRICE VARIANT FILTER */}
       <FlexBetween alignItems={"flex-start"}>
         <H6 mb={2}>Price Range</H6>
         {(searchParams?.get("min") || searchParams?.get("max")) && (

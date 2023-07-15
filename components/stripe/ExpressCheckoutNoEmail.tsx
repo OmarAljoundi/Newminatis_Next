@@ -144,7 +144,7 @@ export const ExpressCheckoutNoEmail = () => {
             {
               label: "Estimated VAT & DUTY",
               amount:
-                ((data.dutyAmount + data.vatAmount).toFixed(
+                ((data.dutyAmount + data.taxAmount).toFixed(
                   2
                 ) as unknown as number) * 100,
               pending: false,

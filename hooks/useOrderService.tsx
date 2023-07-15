@@ -2,15 +2,16 @@ import OrderService from "@/service/OrderService";
 import { TShoppingSession } from "@/types/TCheckoutSessionRequest";
 import { Items, TOrderRequest } from "@/types/TOrderRequest";
 import { TOrderRequestGuest } from "@/types/TOrderRequestGuest";
+import { useSession } from "next-auth/react";
 import { useState } from "react";
 
 const useOrderService = () => {
   const [orderLoad, setOrderLoad] = useState(false);
-
+  const { data: session } = useSession();
   const onCreateOrder = (data: TOrderRequest) => {
     setOrderLoad(true);
     return new Promise((resolve, reject) => {
-      OrderService.createOrder(data)
+      OrderService.createOrder(data, session?.user.access_token ?? "")
         .then((res) => {
           setOrderLoad(false);
           resolve(res.data);

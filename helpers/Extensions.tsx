@@ -1,10 +1,11 @@
-import { calculateDiscountAsNumber } from "@/lib";
+import { calculateDiscountAsNumber, currency } from "@/lib";
 import { CartItem } from "@/store/Model/CartItem";
 import { eOrderStatus } from "@/types/TOrder";
 import { TProductCategory } from "@/types/TProductCategory";
 import { TProductReview, eReviewStatus } from "@/types/TProductReview";
 import { TProductVariant } from "@/types/TProductVariant";
 import { Order, SearchQuery, eFilterOperator } from "@/types/TSearchQuery";
+import { TSetting } from "@/types/TSetting";
 import { countryVsProvider } from "@/utils/constants";
 import { ReadonlyURLSearchParams } from "next/navigation";
 
@@ -379,3 +380,34 @@ export const getSubCategories = (
 
   return subs || [];
 };
+
+export const priceAfterTax = (
+  price: number,
+  _setting: TSetting | null,
+  TaxRate: number = 0,
+  salePrice: number = 0,
+  qty: number
+) => {
+  return currency(
+    calculateDiscountAsNumber(
+      price * ((TaxRate || 0) / 100 + 1),
+      salePrice * ((TaxRate || 0) / 100 + 1)
+    ) * qty,
+    _setting
+  );
+};
+
+export const getTotalPriceAfterTax = (
+  cartList: CartItem[] = [],
+  TaxRate: number = 0
+) =>
+  cartList.reduce(
+    (accum, item) =>
+      accum +
+      calculateDiscountAsNumber(
+        item.price * ((TaxRate || 0) / 100 + 1),
+        item.salePrice * ((TaxRate || 0) / 100 + 1)
+      ) *
+        item.qty,
+    0
+  );

@@ -50,7 +50,8 @@ export default function CheckoutClientPage() {
       createdDate: null,
       discount: 0.0,
       expired: new Date(),
-      total: getTotalPrice(cart),
+      subTotal: getTotalPrice(cart),
+      total: 0,
       voucher: "",
       //@ts-ignore
       userId: null,
@@ -105,6 +106,8 @@ export default function CheckoutClientPage() {
         Type: result.shoppingSession.voucherType || "",
         Voucher: result.shoppingSession.voucher || "",
         ShippingCost: result.shoppingSession.shippingCost,
+        DutyCost: result.shoppingSession.dutyAmount,
+        TaxCost: result.shoppingSession.taxAmount,
       });
     }
   };

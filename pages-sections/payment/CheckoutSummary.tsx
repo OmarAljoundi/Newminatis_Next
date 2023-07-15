@@ -26,40 +26,42 @@ import {
   calcualteQty,
   calculateCart,
   getTotalPrice,
+  getTotalPriceAfterTax,
+  priceAfterTax,
 } from "@/helpers/Extensions";
 import { IShoppingSessionResponse } from "@/interface/IShoppingSessionResponse";
-import { FlexBetween } from "@/components/flex-box";
-import Link from "next/link";
-import { H6, ShortSpan, Span, Tiny } from "@/components/Typography";
-import { calculateDiscount, calculateDiscountAsNumber, currency } from "@/lib";
+import { calculateDiscountAsNumber, currency } from "@/lib";
 import CheckVoucherIcon from "@/components/CheckVoucherIcon";
 import { useSession } from "next-auth/react";
-import AddressInfo from "../payment/AddressInfo";
-import { BlurImage } from "@/components/BlurImage";
-import { CheckCircleIcon, TruckIcon } from "@heroicons/react/20/solid";
+import AddressInfo from "./AddressInfo";
 import {
   getShippingMessage,
   isEligableForFreeShipping,
 } from "@/helpers/Summery";
+import Link from "next/link";
+import { BlurImage } from "@/components/BlurImage";
+import { Tiny } from "@/components/Typography";
 
 export type CheckoutSummaryProps = {
-  Discount?: number;
   Voucher?: string;
   Total: number;
   Type: string;
   ShippingCost?: number | null;
   TaxCost?: number | null;
   DutyCost?: number | null;
+  TaxRate?: number | null;
+  TotalDiscount?: number | null;
 };
 
 export type Props = {
-  Discount?: number;
   Voucher?: string;
   Type: string;
   Total: number;
+  TotalDiscount?: number | null;
   ShippingCost?: number | null;
   TaxCost?: number | null;
   DutyCost?: number | null;
+  TaxRate?: number | null;
   setCheckoutSummary: React.Dispatch<
     React.SetStateAction<CheckoutSummaryProps>
   >;
@@ -68,12 +70,13 @@ export type Props = {
 
 const CheckoutSummary: FC<Props> = ({
   Voucher,
-  Discount = 0,
+  TotalDiscount = 0,
   ShippingCost,
   setCheckoutSummary,
   guestAddress,
   DutyCost,
   TaxCost,
+  TaxRate,
   Type,
   Total,
 }) => {
@@ -120,15 +123,15 @@ const CheckoutSummary: FC<Props> = ({
     )) as IShoppingSessionResponse;
     if (result.success) {
       Cookies.set("Session", result.shoppingSession.id.toString());
-      debugger;
       setCheckoutSummary({
-        Discount: result.shoppingSession.discount,
+        TotalDiscount: result.shoppingSession.totalDiscount,
         Total: result.shoppingSession.total,
         Voucher: result.shoppingSession.voucher || "",
         Type: result.shoppingSession.voucherType || "",
         ShippingCost: result.shoppingSession.shippingCost,
         DutyCost: result.shoppingSession.dutyAmount,
         TaxCost: result.shoppingSession.taxAmount,
+        TaxRate: result.shoppingSession.taxRate,
       });
       setOnSuccess(true);
       setOnError(false);
@@ -154,6 +157,16 @@ const CheckoutSummary: FC<Props> = ({
       setOnError(false);
     }
   }, [_Voucher]);
+
+  const handleVoucherChange = (e) => {
+    setOnSuccess(false);
+    setVoucher(e);
+
+    if (e == Voucher) {
+      setOnError(false);
+      setShow(true);
+    }
+  };
 
   const getShippingLabel = () => {
     if (isEligableForFreeShipping(state)) {
@@ -191,20 +204,30 @@ const CheckoutSummary: FC<Props> = ({
               <span className="text-xs font-medium"> Size: {item.size}</span>
               <span className="text-xs font-medium"> Quantity: {item.qty}</span>
               <span className="text-xs font-medium">
-                Price:
-                {currency(
-                  calculateDiscountAsNumber(item.price, item.salePrice) *
-                    item.qty,
-                  _setting
+                Price:{" "}
+                {priceAfterTax(
+                  item.price,
+                  _setting,
+                  TaxRate || 0,
+                  item.salePrice,
+                  item.qty
                 )}
                 {!!item.salePrice && (
                   <Tiny
                     sx={{ ml: 0.4, mb: 0.5, fontSize: "9px" }}
                     color="#D3C4AB"
                   >
-                    <del>{currency(item.price, _setting)}</del>
+                    <del>
+                      {currency(
+                        item.price * ((TaxRate || 0) / 100 + 1),
+                        _setting
+                      )}
+                    </del>
                   </Tiny>
                 )}
+              </span>
+              <span className="text-[8px] font-bold text-gray-500">
+                * VAT Inclusive
               </span>
             </div>
 
@@ -226,15 +249,93 @@ const CheckoutSummary: FC<Props> = ({
 
       <div className="py-3 grid grid-cols-2">
         <div className="grid gap-y-1">
-          <span className="text-xs font-medium">SubTotal:</span>
-          <span className="text-xs font-medium">Shipping & handling:</span>
+          <span className="text-xs font-medium">SubTotal</span>
+          {!!TotalDiscount && (
+            <span className="text-xs font-medium text-red-500">Discount</span>
+          )}
+          {!!TotalDiscount && (
+            <span className="text-xs font-medium text-red-500">
+              Voucher Applied
+            </span>
+          )}
+          <span className="text-xs font-medium">Shipping & handling</span>
+          {!!DutyCost && <span className="text-xs font-medium">Duties</span>}
         </div>
         <div className="grid justify-items-end gap-y-1">
           <span className="text-xs font-medium">
-            {currency(getTotalPrice(state), _setting)}
+            {currency(getTotalPriceAfterTax(state, TaxRate || 0), _setting)}
           </span>
+          {!!TotalDiscount && (
+            <span className="text-xs font-medium text-red-500">
+              -{currency(TotalDiscount, _setting)}
+            </span>
+          )}
+          {!!TotalDiscount && (
+            <span className="text-xs font-medium text-red-500"> {Voucher}</span>
+          )}
           <span className="text-xs font-medium">{getShippingLabel()}</span>
+          {!!DutyCost && (
+            <span className="text-xs font-medium">
+              {currency(DutyCost!, _setting)}
+            </span>
+          )}
         </div>
+      </div>
+
+      <div className="py-3 grid grid-cols-2 border-t-2 border-gray-400">
+        <div className="grid gap-y-1">
+          <span className="text-lg font-bold">
+            Total{" "}
+            <span className="text-sm font-bold text-gray-400">
+              (VAT Inclusive)
+            </span>
+          </span>
+        </div>
+        <div className="grid justify-items-end gap-y-1">
+          <span className="text-lg font-bold">{currency(Total, _setting)}</span>
+        </div>
+      </div>
+
+      <AddressInfo guestAddress={guestAddress} />
+
+      <div className="grid grid-cols-2  pt-3 gap-x-2">
+        <div className="min-w-[65%]">
+          <TextField
+            placeholder="Voucher"
+            variant="outlined"
+            size="small"
+            value={_Voucher}
+            defaultValue={Voucher}
+            fullWidth
+            onChange={(e) => handleVoucherChange(e.target.value)}
+            error={ErrorMessage != ""}
+            onBlur={() => {
+              setErrorMessage("");
+              setOnError(false);
+            }}
+            InputProps={{
+              endAdornment: (
+                <CheckVoucherIcon
+                  show={show}
+                  onError={onError}
+                  onSuccess={onSuccess}
+                />
+              ),
+            }}
+          />
+        </div>
+
+        <LoadingButton
+          loading={orderLoad}
+          onClick={handleVoucherApplied}
+          type="submit"
+          disabled={_Voucher == ""}
+          fullWidth
+          color="primary"
+          variant="contained"
+        >
+          <span className="text-xs font-medium">Apply Voucher</span>
+        </LoadingButton>
       </div>
     </Card>
   );
