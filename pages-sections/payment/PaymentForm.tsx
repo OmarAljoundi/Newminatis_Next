@@ -176,8 +176,11 @@ export default function PaymentForm({ totalAfterDiscount, guestUser }) {
                   value: order_create.total.toString(),
                 },
                 user_data: grapUserData(
-                  authedSession!.user as TUser,
-                  guestUser
+                  authedSession?.user.userAddress[
+                    authedSession.user.selectedAddress
+                  ],
+                  guestUser,
+                  authedSession?.user.email
                 ),
               },
             ],

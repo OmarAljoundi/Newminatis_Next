@@ -22,14 +22,26 @@ export default function ProviderRouteChange() {
                 {
                   event_name: ViewContentEvent,
                   event_source_url: window.location.href,
-                  user_data: grapUserData(authedSession as unknown as TUser),
+                  user_data: grapUserData(
+                    authedSession?.user.userAddress[
+                      authedSession.user.selectedAddress
+                    ],
+                    undefined,
+                    authedSession?.user.email
+                  ),
                 },
               ],
             }).then((response) => {
               ReactPixel.fbq("track", ViewContentEvent, {
                 event_id: response.data.data[0].event_id,
                 event_time: response.data.data[0].event_time,
-                user_data: grapUserData(authedSession as unknown as TUser),
+                user_data: grapUserData(
+                  authedSession?.user.userAddress[
+                    authedSession.user.selectedAddress
+                  ],
+                  undefined,
+                  authedSession?.user.email
+                ),
               });
             });
           });
