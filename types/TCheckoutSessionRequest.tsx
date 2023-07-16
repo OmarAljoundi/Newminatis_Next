@@ -16,4 +16,6 @@ export type TShoppingSession = {
   subTotal: number;
   expired: Date;
   createdDate?: Date | null;
+  edd?: Date | null;
+  currentDateTime?: Date | null;
 };

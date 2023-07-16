@@ -43,7 +43,6 @@ export const ExpressCheckoutNoEmail = () => {
   const elements = useElements();
   const [paymentRequest, setPaymentRequest] = useState<any | null>(null);
   const cart = useAppSelector((x) => x.Store.CartReducer?.CartItems);
-  const Auth = useAppSelector((x) => x.Store.AuthReducer.Auth);
   const _setting = useAppSelector((x) => x.Store.SettingReducer.setting);
   const dispatch = useAppDispatch();
   const route = useRouter();
@@ -374,7 +373,7 @@ export const ExpressCheckoutNoEmail = () => {
                   currency: "USD",
                   value: order_create.total.toString(),
                 },
-                user_data: grapUserData(Auth, __guestUser),
+                user_data: grapUserData(null, __guestUser),
               },
             ],
           });

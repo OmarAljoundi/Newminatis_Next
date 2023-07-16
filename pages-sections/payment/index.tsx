@@ -112,6 +112,9 @@ const PaymentClientPage: FC = () => {
       DutyCost: result.shoppingSession.dutyAmount,
       TaxRate: result.shoppingSession.taxRate,
       TotalDiscount: result.shoppingSession.totalDiscount,
+      currentDateTime: result.shoppingSession.currentDateTime,
+      edd: result.shoppingSession.edd,
+      countryCode: result.shoppingSession.countryCode,
     });
   };
 
@@ -176,18 +179,8 @@ const PaymentClientPage: FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-4 gap-y-2 ">
           <div>
             <CheckoutSummary
-              //@ts-ignore
-              Total={checkoutSummary?.Total}
-              //@ts-ignore
-              Type={checkoutSummary?.Type}
               setCheckoutSummary={setCheckoutSummary}
-              ShippingCost={checkoutSummary?.ShippingCost}
-              TotalDiscount={checkoutSummary?.TotalDiscount}
-              Voucher={checkoutSummary?.Voucher}
-              guestAddress={guestAddress}
-              TaxCost={checkoutSummary?.TaxCost}
-              DutyCost={checkoutSummary?.DutyCost}
-              TaxRate={checkoutSummary?.TaxRate}
+              {...checkoutSummary}
             />
           </div>
           <div className="col-span-1 lg:col-span-2">
@@ -200,9 +193,8 @@ const PaymentClientPage: FC = () => {
               >
                 <ExpressCheckoutWithEmail
                   clientSecret={clientSecret}
-                  totalAfterDiscount={checkoutSummary?.Total}
-                  //@ts-ignore
                   guestUser={guestAddress}
+                  checkoutSummary={checkoutSummary}
                 />
                 <PaymentForm
                   totalAfterDiscount={checkoutSummary?.Total}

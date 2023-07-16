@@ -51,17 +51,23 @@ export type CheckoutSummaryProps = {
   DutyCost?: number | null;
   TaxRate?: number | null;
   TotalDiscount?: number | null;
+  edd?: Date | null;
+  currentDateTime?: Date | null;
+  countryCode?: string | null;
 };
 
 export type Props = {
   Voucher?: string;
-  Type: string;
-  Total: number;
+  Type?: string;
+  Total?: number | null;
   TotalDiscount?: number | null;
   ShippingCost?: number | null;
   TaxCost?: number | null;
   DutyCost?: number | null;
   TaxRate?: number | null;
+  edd?: Date | null;
+  countryCode?: string | null;
+  currentDateTime?: Date | null;
   setCheckoutSummary: React.Dispatch<
     React.SetStateAction<CheckoutSummaryProps>
   >;
@@ -292,7 +298,9 @@ const CheckoutSummary: FC<Props> = ({
           </span>
         </div>
         <div className="grid justify-items-end gap-y-1">
-          <span className="text-lg font-bold">{currency(Total, _setting)}</span>
+          <span className="text-lg font-bold">
+            {currency(Total!, _setting)}
+          </span>
         </div>
       </div>
 

@@ -2,6 +2,7 @@ import { TUser } from "@/types/TUser";
 import { removeDuplicates } from "./Extensions";
 import Cookies from "js-cookie";
 import { TUserGuest } from "@/types/TUserGuest";
+import { TUserAddress } from "@/types/TUserAddress";
 
 export const AddToCartEvent = "AddToCart";
 export const AddToWishlistEvent = "AddToWishlist";
@@ -42,63 +43,37 @@ export interface CustomData {
 }
 
 export const grapUserData = (
-  Auth?: TUser | null,
-  userAddress?: TUserGuest
+  AuthAddress?: TUserAddress | null,
+  guestAddress?: TUserGuest,
+  EmailAddress?: string | null
 ): UserData => {
-  var emailList: string[] | null = null;
-  var phoneNumberList: string[] | null = null;
-  var countriesList: string[] | null = null;
-  var citiesList: string[] | null = null;
-  var zipCodeList: string[] | null = null;
-  var fnList: string[] | null = null;
-  var lnList: string[] | null = null;
-  if (Auth) {
-    //@ts-ignore
-    emailList = Auth?.userAddress.map((i) => i.email);
-    //@ts-ignore
-    phoneNumberList = Auth?.userAddress.map((i) => i.phoneNumber);
-    //@ts-ignore
-    countriesList = Auth?.userAddress.map((i) => i.country);
-    //@ts-ignore
-    citiesList = Auth?.userAddress.map((i) => i.city);
-    //@ts-ignore
-    zipCodeList = Auth?.userAddress.map((i) => i.postalCode);
-    //@ts-ignore
-    fnList = Auth?.userAddress.map((i) => i.firstName);
-    //@ts-ignore
-    lnList = Auth?.userAddress.map((i) => i.lastName);
-  } else if (userAddress) {
-    //@ts-ignore
-    phoneNumberList = [userAddress?.phoneNumber];
-    //@ts-ignore
-    countriesList = [userAddress?.country];
-    //@ts-ignore
-    citiesList = [userAddress?.city];
-    //@ts-ignore
-    zipCodeList = [userAddress?.postalCode?.toString()];
-    //@ts-ignore
-    fnList = [userAddress?.firstName];
-    //@ts-ignore
-    lnList = [userAddress?.lastName];
-  }
-  var email = Cookies.get("GUEST_EMAIL");
-  if (email) {
-    try {
-      //@ts-ignore
-      emailList.push(email);
-    } catch (ex) {
-      emailList = [];
-      emailList.push(email);
-    }
+  var emailList: string[] = [];
+  var phoneNumberList: string[] = [];
+  var countriesList: string[] = [];
+  var citiesList: string[] = [];
+  var zipCodeList: string[] = [];
+  var fnList: string[] = [];
+  var lnList: string[] = [];
+  if (EmailAddress) {
+    emailList.push(EmailAddress);
   }
 
-  emailList = removeDuplicates(emailList);
-  phoneNumberList = removeDuplicates(phoneNumberList);
-  countriesList = removeDuplicates(countriesList);
-  citiesList = removeDuplicates(citiesList);
-  zipCodeList = removeDuplicates(zipCodeList);
-  fnList = removeDuplicates(fnList);
-  lnList = removeDuplicates(lnList);
+  if (AuthAddress) {
+    phoneNumberList.push(AuthAddress.phoneNumber);
+    countriesList.push(AuthAddress.country);
+    citiesList.push(AuthAddress.city);
+    zipCodeList.push(AuthAddress.postalCode);
+    fnList.push(AuthAddress.firstName);
+    lnList.push(AuthAddress.lastName);
+  } else if (guestAddress) {
+    emailList.push(guestAddress.email!);
+    phoneNumberList.push(guestAddress.phoneNumber!);
+    countriesList.push(guestAddress.country!);
+    citiesList.push(guestAddress.city!);
+    zipCodeList.push(guestAddress.postalCode! as unknown as string);
+    fnList.push(guestAddress.firstName!);
+    lnList.push(guestAddress.lastName!);
+  }
 
   return {
     country: countriesList,
