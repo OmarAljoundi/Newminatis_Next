@@ -198,7 +198,7 @@ export function getEstimatedDuration(
 
   if (diffInDays === 1) {
     return "Next day";
-  } else if (diffInDays < 1) {
+  } else if (diffInDays == 0) {
     return "Same day";
   } else {
     return `${diffInDays} - ${diffInDays - 2} working days`;

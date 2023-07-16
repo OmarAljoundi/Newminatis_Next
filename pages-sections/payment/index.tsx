@@ -89,7 +89,7 @@ const PaymentClientPage: FC = () => {
         session.shippingCost = 0;
         break;
       case "None":
-        alert(`Auth type is null ${JSON.stringify(authedSession)}`); //route.push("/checkout");
+        route.push("/checkout");
         break;
     }
 
@@ -157,10 +157,10 @@ const PaymentClientPage: FC = () => {
           )) as IPaymentResponse;
           setClientSecret(result.clientSecret);
         } else {
-          alert(`API Return False Respomes ${JSON.stringify(response)}`); //route.push("/checkout");
+          route.push("/checkout");
         }
       } else {
-        alert("NO GUEST EMAIL"); //route.push("/checkout");
+        route.push("/checkout");
       }
     }
   };

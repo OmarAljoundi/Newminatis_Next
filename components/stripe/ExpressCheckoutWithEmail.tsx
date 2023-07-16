@@ -78,6 +78,25 @@ export const ExpressCheckoutWithEmail: FC<IExpressCheckout> = ({
       checkoutSummary!.countryCode!
     );
 
+    var DI: any[] = [];
+    DI.push({
+      label: "Subtotal (VAT Inclusive)",
+      amount:
+        ((
+          calculateCart(cart || []) *
+          (checkoutSummary!.TaxRate! / 100 + 1)
+        ).toFixed(0) as unknown as number) * 100,
+    });
+
+    if (checkoutSummary?.TotalDiscount! > 0) {
+      DI.push({
+        label: "Discount",
+        amount:
+          (checkoutSummary?.TotalDiscount!.toFixed(0) as unknown as number) *
+          -100,
+      });
+    }
+
     const pr = stripe.paymentRequest({
       currency: "usd",
       country: "US",
@@ -86,14 +105,7 @@ export const ExpressCheckoutWithEmail: FC<IExpressCheckout> = ({
       requestShipping: false,
       shippingOptions: [delievryOption],
       displayItems: [
-        {
-          label: "Subtotal (VAT Inclusive)",
-          amount:
-            ((
-              calculateCart(cart || []) *
-              (checkoutSummary!.TaxRate! / 100 + 1)
-            ).toFixed(0) as unknown as number) * 100,
-        },
+        ...DI,
         {
           label: getShippingLabel(
             checkoutSummary?.ShippingCost!,
@@ -106,7 +118,7 @@ export const ExpressCheckoutWithEmail: FC<IExpressCheckout> = ({
             100,
         },
         {
-          label: "Estimated DUTY",
+          label: "Estimated Duties",
           amount:
             (checkoutSummary?.DutyCost!.toFixed(0) as unknown as number) * 100,
         },
