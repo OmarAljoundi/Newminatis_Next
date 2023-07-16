@@ -56,7 +56,7 @@ const useOrderService = () => {
   const GetOrders = () => {
     setOrderLoad(true);
     return new Promise((resolve, reject) => {
-      OrderService.getOrders()
+      OrderService.getOrders(session?.user.access_token ?? "")
         .then((res) => {
           setOrderLoad(false);
           resolve(res.data);

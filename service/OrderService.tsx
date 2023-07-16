@@ -19,8 +19,8 @@ class OrderService {
     );
   }
 
-  getOrders() {
-    return http(axios.create()).get<IOrderResponse>(`/Order`);
+  getOrders(token: string) {
+    return http(axios.create(), false, token).get<IOrderResponse>(`/Order`);
   }
   getOrderDetails(id: number) {
     return http(axios.create()).get<IOrderResponse>(`/Order/${id}`);

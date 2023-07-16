@@ -83,4 +83,8 @@ export const UserMenuItems = [
     label: "Track your orders",
     link: "/my-profile/track-orders",
   },
+  {
+    label: "Orders History",
+    link: "/my-profile/orders-history",
+  },
 ];
