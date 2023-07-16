@@ -131,9 +131,10 @@ export const ExpressCheckoutNoEmail = () => {
               {
                 label: "Subtotal (VAT Inclusive)",
                 amount:
-                  ((calculateCart(cart || []) * data.vatRate).toFixed(
-                    2
-                  ) as unknown as number) * 100,
+                  ((
+                    calculateCart(cart || []) *
+                    (data.vatRate / 100 + 1)
+                  ).toFixed(0) as unknown as number) * 100,
                 pending: false,
               },
               {
@@ -144,18 +145,18 @@ export const ExpressCheckoutNoEmail = () => {
                   ev.shippingAddress.country || ""
                 ),
                 amount:
-                  (data.shippingCost.toFixed(2) as unknown as number) * 100,
+                  (data.shippingCost.toFixed(0) as unknown as number) * 100,
                 pending: false,
               },
               {
                 label: "Estimated DUTY",
-                amount: (data.dutyAmount.toFixed(2) as unknown as number) * 100,
+                amount: (data.dutyAmount.toFixed(0) as unknown as number) * 100,
                 pending: false,
               },
             ],
             total: {
               amount:
-                (data.totalAfterAdditonal.toFixed(2) as unknown as number) *
+                (data.totalAfterAdditonal.toFixed(0) as unknown as number) *
                 100,
               label: "Newminatis Checkout",
               pending: false,
@@ -237,7 +238,7 @@ export const ExpressCheckoutNoEmail = () => {
 
       const clientSecret = await getClientSecretGuest(
         e.payerEmail || "",
-        (sessionResult.shoppingSession.total.toFixed(2) as unknown as number) *
+        (sessionResult.shoppingSession.total.toFixed(0) as unknown as number) *
           100,
         guest?.id
       );
