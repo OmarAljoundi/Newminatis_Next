@@ -29,7 +29,7 @@ import CheckoutSummary, { CheckoutSummaryProps } from "./CheckoutSummary";
 const PaymentClientPage: FC = () => {
   const [loading, setLoading] = useState(false);
   const { onCreateSession, paymentLoad } = useStripePayment();
-  const { data: authedSession } = useSession();
+  const { data: authedSession, status } = useSession();
   const [guestAddress, setGuestAddress] = useState<TUserGuest>();
   const cart = useAppSelector((x) => x.Store.CartReducer?.CartItems);
   const [clientSecret, setClientSecret] = useState("");
@@ -120,10 +120,12 @@ const PaymentClientPage: FC = () => {
 
   useEffect(() => {
     setLoading(true);
-    Promise.all([onLoadSession(), getClientSecret()]).then((r) => {
-      setLoading(false);
-    });
-  }, [cart, checkoutSummary?.Total]);
+    if (status !== "loading") {
+      Promise.all([onLoadSession(), getClientSecret()]).then((r) => {
+        setLoading(false);
+      });
+    }
+  }, [cart, checkoutSummary?.Total, status]);
 
   const getClientSecret = async () => {
     if (checkoutSummary) {
