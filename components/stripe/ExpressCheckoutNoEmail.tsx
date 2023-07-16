@@ -129,10 +129,11 @@ export const ExpressCheckoutNoEmail = () => {
             status: "success",
             displayItems: [
               {
-                label: "Subtotal",
+                label: "Subtotal (VAT Inclusive)",
                 amount:
-                  (calculateCart(cart || []).toFixed(2) as unknown as number) *
-                  100,
+                  ((calculateCart(cart || []) * data.vatRate).toFixed(
+                    2
+                  ) as unknown as number) * 100,
                 pending: false,
               },
               {
@@ -156,7 +157,7 @@ export const ExpressCheckoutNoEmail = () => {
               amount:
                 (data.totalAfterAdditonal.toFixed(2) as unknown as number) *
                 100,
-              label: "Total (VAT Inclusive)",
+              label: "Newminatis Checkout",
               pending: false,
             },
             shippingOptions: [delievryOption],
