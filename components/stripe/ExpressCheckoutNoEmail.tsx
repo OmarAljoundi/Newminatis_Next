@@ -35,18 +35,20 @@ import { PurchaseEvent, grapUserData } from "@/helpers/FacebookEvent";
 import { EncryptData } from "@/helpers/Crypto";
 import Cookies from "js-cookie";
 import SettingService from "@/service/SettingService";
+import { TShoppingSession } from "@/types/TCheckoutSessionRequest";
+import { IShoppingSessionResponse } from "@/interface/IShoppingSessionResponse";
 
 export const ExpressCheckoutNoEmail = () => {
   const stripe = useStripe();
   const elements = useElements();
   const [paymentRequest, setPaymentRequest] = useState<any | null>(null);
   const cart = useAppSelector((x) => x.Store.CartReducer?.CartItems);
-  const Auth = useAppSelector((x) => x.Store.AuthReducer.Auth);
   const _setting = useAppSelector((x) => x.Store.SettingReducer.setting);
   const dispatch = useAppDispatch();
   const route = useRouter();
   const { onCreateSession } = useStripePayment();
-  const { onCheckStock, onCreateGuestOrder } = useOrderService();
+  const { onCheckStock, onCreateGuestOrder, CreateCheckoutSession } =
+    useOrderService();
 
   const { onCreateGuest, userLoad } = useUserService();
 
@@ -108,61 +110,89 @@ export const ExpressCheckoutNoEmail = () => {
     });
 
     pr.on("shippingaddresschange", async (ev) => {
-      const { data } = await SettingService.getShippingAndTax(
-        ev.shippingAddress.country ?? "",
-        calcualteQty(cart || []) * 0.5,
-        calculateCart(cart || [])
-      );
-
-      if (data?.success) {
-        var delievryOption = getShippingObject(
-          data.shippingCost,
-          data.currentDate,
-          data.delievryDate,
-          ev.shippingAddress.country || ""
+      if (ev.shippingAddress.country) {
+        const { data } = await SettingService.getShippingAndTax(
+          ev.shippingAddress.country,
+          calcualteQty(cart || []) * 0.5,
+          calculateCart(cart || [])
         );
-        ev.updateWith({
-          status: "success",
-          displayItems: [
-            {
-              label: "Subtotal",
+
+        if (data?.success) {
+          var delievryOption = getShippingObject(
+            data.shippingCost,
+            data.currentDate,
+            data.delievryDate,
+            ev.shippingAddress.country || ""
+          );
+          ev.updateWith({
+            status: "success",
+            displayItems: [
+              {
+                label: "Subtotal (VAT Inclusive)",
+                amount:
+                  ((
+                    calculateCart(cart || []) *
+                    (data.vatRate / 100 + 1)
+                  ).toFixed(0) as unknown as number) * 100,
+                pending: false,
+              },
+              {
+                label: getShippingLabel(
+                  data.shippingCost,
+                  data.currentDate,
+                  data.delievryDate,
+                  ev.shippingAddress.country || ""
+                ),
+                amount:
+                  (data.shippingCost.toFixed(0) as unknown as number) * 100,
+                pending: false,
+              },
+              {
+                label: "Estimated DUTY",
+                amount: (data.dutyAmount.toFixed(0) as unknown as number) * 100,
+                pending: false,
+              },
+            ],
+            total: {
               amount:
-                (calculateCart(cart || []).toFixed(2) as unknown as number) *
+                (data.totalAfterAdditonal.toFixed(0) as unknown as number) *
                 100,
+              label: "Newminatis Checkout",
               pending: false,
             },
-            {
-              label: getShippingLabel(
-                data.shippingCost,
-                data.currentDate,
-                data.delievryDate,
-                ev.shippingAddress.country || ""
-              ),
-              amount: (data.shippingCost.toFixed(2) as unknown as number) * 100,
-              pending: false,
-            },
-            {
-              label: "Estimated VAT & DUTY",
-              amount:
-                ((data.dutyAmount + data.vatAmount).toFixed(
-                  2
-                ) as unknown as number) * 100,
-              pending: false,
-            },
-          ],
-          total: {
-            amount:
-              (data.totalAfterAdditonal.toFixed(2) as unknown as number) * 100,
-            label: "Checkout Newminatis",
-            pending: false,
-          },
-          shippingOptions: [delievryOption],
-        });
+            shippingOptions: [delievryOption],
+          });
+        }
       }
     });
 
     pr.on("paymentmethod", async (e) => {
-      const isStocked = await handleStockabaliablity(items);
+      var isStocked = await handleStockabaliablity(items);
+      if (!isStocked.success) {
+        const cartItems = [...cart!];
+        cartItems.map((i) => {
+          var CartItem: CartItem = {
+            color: i.color,
+            salePrice: i.salePrice,
+            id: i.id,
+            name: i.name,
+            price: i.price,
+            qty: i.qty,
+            size: i.size,
+            sku: isStocked?.stockErrors?.find((x) => x.sku == i.sku)?.sku ?? "",
+            slug: i.slug,
+            stock:
+              isStocked?.stockErrors.find((x) => x.sku == i.sku)?.quantity ?? 0,
+            imgUrl: i.imgUrl,
+          };
+
+          dispatch(UpdateStock(CartItem));
+        });
+        e.complete("fail");
+        route.push("/cart");
+        return;
+      }
+
       var newGuestUser: TUserGuest = {
         id: 0,
         firstName: e.payerName || "",
@@ -182,10 +212,33 @@ export const ExpressCheckoutNoEmail = () => {
       const { guest, message } = (await onCreateGuest(
         newGuestUser
       )) as IUserResponse;
-      toast.success(message || "Success");
+
+      const Session = Cookies.get("Session");
+      let session: TShoppingSession = {
+        id: Session ? (Session as unknown as number) : 0,
+        checkedout: false,
+        createdDate: null,
+        discount: 0.0,
+        expired: new Date(),
+        subTotal: calculateCart(cart || []),
+        total: 0,
+        voucher: "",
+        userId: guest.id,
+        voucherType: "",
+        countryCode: e.shippingAddress?.country ?? "",
+        weight: calcualteQty(cart || []) * 0.5,
+      };
+      const sessionResult = (await CreateCheckoutSession(
+        session
+      )) as IShoppingSessionResponse;
+      if (sessionResult.success) {
+        Cookies.set("Session", sessionResult.shoppingSession.id.toString());
+      }
+
       const clientSecret = await getClientSecretGuest(
         e.payerEmail || "",
-        calculateCart(cart || []) * 100,
+        (sessionResult.shoppingSession.total.toFixed(0) as unknown as number) *
+          100,
         guest?.id
       );
       if (isStocked.success) {
@@ -217,7 +270,11 @@ export const ExpressCheckoutNoEmail = () => {
             return;
           }
         }
-        await CreateGuestOrderRequest(items, guest);
+        await CreateGuestOrderRequest(
+          items,
+          guest,
+          sessionResult.shoppingSession.id
+        );
       } else {
         const cartItems = [...cart!];
         cartItems.map((i) => {
@@ -249,12 +306,13 @@ export const ExpressCheckoutNoEmail = () => {
 
   const CreateGuestOrderRequest = async (
     items: Items[],
-    __guestUser: TUserGuest
+    __guestUser: TUserGuest,
+    shoppingSessionId: number
   ) => {
     var OrderRequest: TOrderRequestGuest = {
       items: items,
       subTotal: calculateCart(cart || []),
-      sessionId: -1,
+      sessionId: shoppingSessionId,
       total: calculateCart(cart || []),
       guest: __guestUser,
       currency: _setting?.currencyCode || "USD",
@@ -268,7 +326,7 @@ export const ExpressCheckoutNoEmail = () => {
         duration: 5000,
       });
     } else {
-      if (process.env.NODE_ENV !== "development") {
+      if (process.env.NODE_ENV === "production") {
         ReactGA.event("purchase", {
           currency: "USD",
           transaction_id: order_create.depoterOrderId,
@@ -295,7 +353,7 @@ export const ExpressCheckoutNoEmail = () => {
         content_name: "Newminatis New Order",
       };
 
-      if (process.env.NODE_ENV !== "development") {
+      if (process.env.NODE_ENV === "production") {
         import("react-facebook-pixel")
           .then((x) => x.default)
           .then((ReactPixel) => {
@@ -315,7 +373,7 @@ export const ExpressCheckoutNoEmail = () => {
                   currency: "USD",
                   value: order_create.total.toString(),
                 },
-                user_data: grapUserData(Auth, __guestUser),
+                user_data: grapUserData(null, __guestUser),
               },
             ],
           });

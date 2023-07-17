@@ -37,21 +37,10 @@ const EDD = () => {
           }}
         >
           <FlexBetween alignItems={"center"} justifyContent={"flex-start"}>
-            {/* <MdOutlineWatchLater
-              color="black"
-              size={25}
-              style={{ margin: "0px 0px 0px 14px" }}
-            /> */}
-            <H6
-              textAlign={"left"}
-              display={"inline-block"}
-              color="black"
-              sx={{ textTransform: "uppercase" }}
-              px={1}
-            >
+            <p className="text-xs md:text-sm px-3">
               Receive you order <strong>{_response?.closeDay} </strong> if you
               order within <strong>{_response?.hours} hours </strong>
-            </H6>
+            </p>
           </FlexBetween>
         </Box>
       ) : (
@@ -63,18 +52,7 @@ const EDD = () => {
           }}
         >
           <FlexBetween alignItems={"flex-start"} justifyContent={"flex-start"}>
-            {/* <MdOutlineWatchLater
-              color="black"
-              size={40}
-              style={{ margin: "0px 0px 0px 14px" }}
-            /> */}
-            <H6
-              textAlign={"left"}
-              display={"inline-block"}
-              color="black"
-              px={1}
-              sx={{ textTransform: "uppercase" }}
-            >
+            <p className="text-xs md:text-sm px-3">
               Receive you order{" "}
               <span
                 dangerouslySetInnerHTML={{
@@ -86,7 +64,7 @@ const EDD = () => {
                 }}
               ></span>{" "}
               if you order within <strong>{_response?.hours} hours </strong>
-            </H6>
+            </p>
           </FlexBetween>
         </Box>
       )}

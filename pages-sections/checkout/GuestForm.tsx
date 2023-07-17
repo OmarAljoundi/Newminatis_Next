@@ -31,7 +31,6 @@ import { useFormik } from "formik";
 
 const GuestForm: FC = () => {
   const router = useRouter();
-  const auth = useAppSelector((state) => state.Store.AuthReducer.Auth);
   const cart = useAppSelector((state) => state.Store.CartReducer?.CartItems);
   const [loading, setLoading] = useState(false);
   const [initialValues, setInitialValues] = useState<TUserGuest>({
@@ -76,7 +75,7 @@ const GuestForm: FC = () => {
       data: [
         {
           event_name: InitiateCheckoutEvent,
-          user_data: grapUserData(auth, userGuest),
+          user_data: grapUserData(null, userGuest),
           event_source_url: window.location.href,
           custom_data: {
             content_category: "product",
@@ -140,7 +139,6 @@ const GuestForm: FC = () => {
                 sx={{ mb: 3 }}
                 size="small"
                 onBlur={handleBlur}
-                disabled={auth != null}
                 label="Email Address *"
                 onChange={handleChange}
                 name="email"

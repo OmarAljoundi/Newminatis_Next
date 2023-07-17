@@ -18,10 +18,10 @@ const Breadcrumb: FC<{ title?: string[]; link?: string[] }> = ({
               <Link
                 href={link![index]}
                 aria-current={index == title.length - 1 ? "true" : "false"}
-                className={`capitalize font-medium text-sm ${
+                className={`capitalize font-medium text-xs  lg:text-sm  ${
                   index != title.length - 1
-                    ? "mr-2 text-sm font-medium text-gray-900 title"
-                    : "text-gray-500 hover:text-gray-600"
+                    ? "mr-2 text-xs  lg:text-sm font-medium text-gray-900 title"
+                    : "text-gray-500 hover:text-gray-600 w-14 sm:w-full truncate"
                 }`}
               >
                 {i}

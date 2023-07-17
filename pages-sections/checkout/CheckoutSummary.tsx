@@ -34,9 +34,13 @@ import { H6, ShortSpan, Span, Tiny } from "@/components/Typography";
 import { calculateDiscount, calculateDiscountAsNumber, currency } from "@/lib";
 import CheckVoucherIcon from "@/components/CheckVoucherIcon";
 import { useSession } from "next-auth/react";
-import AddressInfo from "./AddressInfo";
+import AddressInfo from "../payment/AddressInfo";
 import { BlurImage } from "@/components/BlurImage";
 import { CheckCircleIcon, TruckIcon } from "@heroicons/react/20/solid";
+import {
+  getShippingMessage,
+  isEligableForFreeShipping,
+} from "@/helpers/Summery";
 
 export type CheckoutSummaryProps = {
   Discount?: number;
@@ -45,6 +49,7 @@ export type CheckoutSummaryProps = {
   Type: string;
   ShippingCost?: number | null;
   TaxCost?: number | null;
+  DutyCost?: number | null;
 };
 
 export type Props = {
@@ -54,6 +59,7 @@ export type Props = {
   Total: number;
   ShippingCost?: number | null;
   TaxCost?: number | null;
+  DutyCost?: number | null;
   setCheckoutSummary: React.Dispatch<
     React.SetStateAction<CheckoutSummaryProps>
   >;
@@ -66,6 +72,7 @@ const CheckoutSummary: FC<Props> = ({
   ShippingCost,
   setCheckoutSummary,
   guestAddress,
+  DutyCost,
   TaxCost,
   Type,
   Total,
@@ -95,7 +102,8 @@ const CheckoutSummary: FC<Props> = ({
       createdDate: null,
       discount: 0.0,
       expired: new Date(),
-      total: getTotalPrice(state),
+      total: 0,
+      subTotal: getTotalPrice(state),
       userId: (authedSession?.user?.id ?? guestAddress?.id) || 0,
       voucher: _Voucher,
       voucherType: "",
@@ -118,6 +126,7 @@ const CheckoutSummary: FC<Props> = ({
         Voucher: result.shoppingSession.voucher || "",
         Type: result.shoppingSession.voucherType || "",
         ShippingCost: result.shoppingSession.shippingCost,
+        DutyCost: result.shoppingSession.dutyAmount,
         TaxCost: result.shoppingSession.taxAmount,
       });
       setOnSuccess(true);
@@ -145,64 +154,8 @@ const CheckoutSummary: FC<Props> = ({
     }
   }, [_Voucher]);
 
-  const handleVoucherChange = (e) => {
-    setOnSuccess(false);
-    setVoucher(e);
-
-    if (e == Voucher) {
-      setOnError(false);
-      setShow(true);
-    }
-  };
-
-  const getShippingMessage = () => {
-    if (!isEligableForFreeShipping()) {
-      const percentage = 100 - ((300 - calculateCart(state || [])) / 300) * 100;
-
-      return (
-        <div className="mt-2">
-          <div className="flex justify-between items-center">
-            <div className="mb-1 text-[10px] font-bold uppercase">
-              Add {currency(300 - calculateCart(state || []), _setting)} to be
-              Eligible for free shipping
-            </div>
-            <div className="mb-1 text-xs font-bold">
-              <TruckIcon width={20} />
-            </div>
-          </div>
-          <div className="w-full bg-gray-200 rounded-sm h-2.5 mb-4 dark:bg-gray-700">
-            <div
-              className={`bg-gray-600 h-2.5 rounded-sm dark:bg-gray-300`}
-              style={{ width: `${percentage}%` }}
-            ></div>
-          </div>
-        </div>
-      );
-    } else {
-      return (
-        <div className="mt-2">
-          <div className="flex justify-between items-center">
-            <div className="mb-1 text-[10px] font-bold uppercase">
-              Awesome, You Are EligabEligiblele For Free Shipping!
-            </div>
-            <div className="mb-1 text-xs font-medium">
-              <CheckCircleIcon width={20} color="green" />
-            </div>
-          </div>
-          <div className="w-full bg-gray-200 rounded-sm h-2.5 mb-4 dark:bg-gray-700">
-            <div className="bg-gray-600 h-2.5 rounded-sm dark:bg-gray-300 w-full"></div>
-          </div>
-        </div>
-      );
-    }
-  };
-
-  const isEligableForFreeShipping = () => {
-    return getTotalPrice(state) > 300;
-  };
-
   const getShippingLabel = () => {
-    if (isEligableForFreeShipping()) {
+    if (isEligableForFreeShipping(state)) {
       return "Free Shipping!";
     }
     if (pathname!.includes("payment")) return currency(ShippingCost!, _setting);
@@ -267,100 +220,21 @@ const CheckoutSummary: FC<Props> = ({
             </div>
           </div>
         ))}
-        {getShippingMessage()}
+        {getShippingMessage(state, _setting)}
       </div>
 
       <div className="py-3 grid grid-cols-2">
         <div className="grid gap-y-1">
           <span className="text-xs font-medium">SubTotal:</span>
           <span className="text-xs font-medium">Shipping & handling:</span>
-          {!!TaxCost && (
-            <span className="text-xs font-medium">Duties & Tax:</span>
-          )}
-          {Discount > 0 && (
-            <span className="text-xs font-medium text-red-500">Discount:</span>
-          )}
-          {Discount > 0 && (
-            <span className="text-xs font-medium text-red-500">
-              Voucher Applied:
-            </span>
-          )}
-          {pathname?.includes("payment") && (
-            <span className="text-xs font-medium">Total:</span>
-          )}
         </div>
         <div className="grid justify-items-end gap-y-1">
           <span className="text-xs font-medium">
             {currency(getTotalPrice(state), _setting)}
           </span>
           <span className="text-xs font-medium">{getShippingLabel()}</span>
-          {!!TaxCost && (
-            <span className="text-xs font-medium">
-              {currency(TaxCost, _setting)}
-            </span>
-          )}
-          {Discount > 0 && (
-            <span className="text-xs font-medium text-red-500">
-              -{Type == "Fixed" ? "$" : "%"}
-              {Discount}
-            </span>
-          )}
-          {Discount > 0 && (
-            <span className="text-xs font-medium text-red-500"> {Voucher}</span>
-          )}
-          <span className="text-xs font-medium">
-            {pathname?.includes("payment") && currency(Total, _setting)}
-          </span>
         </div>
       </div>
-
-      {pathname!.includes("payment") && (
-        <AddressInfo guestAddress={guestAddress} />
-      )}
-
-      {pathname!.includes("payment") && (
-        <>
-          <div className="grid grid-cols-2 border-t-2 border-gray-400 pt-3 gap-x-2">
-            <div className="min-w-[65%]">
-              <TextField
-                placeholder="Voucher"
-                variant="outlined"
-                size="small"
-                value={_Voucher}
-                defaultValue={Voucher}
-                fullWidth
-                onChange={(e) => handleVoucherChange(e.target.value)}
-                error={ErrorMessage != ""}
-                onBlur={() => {
-                  setErrorMessage("");
-                  setOnError(false);
-                }}
-                InputProps={{
-                  endAdornment: (
-                    <CheckVoucherIcon
-                      show={show}
-                      onError={onError}
-                      onSuccess={onSuccess}
-                    />
-                  ),
-                }}
-              />
-            </div>
-
-            <LoadingButton
-              loading={orderLoad}
-              onClick={handleVoucherApplied}
-              type="submit"
-              disabled={_Voucher == ""}
-              fullWidth
-              color="primary"
-              variant="contained"
-            >
-              <span className="text-xs font-medium">Apply Voucher</span>
-            </LoadingButton>
-          </div>
-        </>
-      )}
     </Card>
   );
 };

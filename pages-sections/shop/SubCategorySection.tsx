@@ -31,7 +31,7 @@ export default function SubCategorySection({ subCategory, category }) {
               classNames(
                 param?.subCategory == item.description &&
                   param?.category == category
-                  ? "ring-2 ring-indigo-500"
+                  ? "ring-2 ring-black"
                   : "",
                 "cursor-pointer group relative flex items-center justify-center rounded-md border py-2 px-2 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1"
               )

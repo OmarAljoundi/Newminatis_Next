@@ -41,30 +41,8 @@ export default function ProductInfoSection({ response }) {
     description,
   } = product;
 
-  const [size, setSize] = useState<string>("");
-  const [addToCart, setAddToCart] = useState(false);
-  const toggleAddToCart = () => setAddToCart(!addToCart);
-  const [valueVsQuantity, setValueVsQuantity] = useState<ValueVsQuantity[]>([]);
-  const [stock, setStock] = useState<number | null>(null);
-  const [qty, setQty] = useState<number | null>(null);
   const Content = useAppSelector((x) => x.Store.ContentReducer?.Content);
-
-  const cartItem = useAppSelector((x) => x.Store.CartReducer?.CartItems);
-  const dispatch = useAppDispatch();
   const _setting = useAppSelector((x) => x.Store.SettingReducer.setting);
-  const [openTool, setOpenTool] = useState(false);
-  const handleToolClose = () => {
-    setOpenTool(false);
-  };
-  const handleToolOpen = () => {
-    setOpenTool(true);
-  };
-
-  const [openToolInfo, setOpenToolInfo] = useState(false);
-
-  const handleToolCloseInfo = () => {
-    setOpenToolInfo(false);
-  };
 
   return (
     <Grid
@@ -86,36 +64,22 @@ export default function ProductInfoSection({ response }) {
           background: "transparent",
         }}
       >
-        <div className="mb-6  grid grid-cols-1 gap-x-6 gap-y-2  lg:grid-cols-2 xl:gap-x-8 px-4 ">
+        <div className="mb-6 grid grid-cols-1 gap-x-6 gap-y-2  lg:grid-cols-2 xl:gap-x-8 px-4 ">
           <div className="product-details">
-            <H4
-              title={name}
-              color={"#1c1d26"}
-              sx={{
-                whiteSpace: "nowrap",
-                display: "block!important",
-                fontSize: "15px",
-              }}
-              className="title"
-            >
+            <p title={name} className="title text-sm font-medium">
               {friendlyName ?? name}
-            </H4>
-            <H6
-              mb={0}
+            </p>
+            <p
               title={shortDescription.toUpperCase()}
-              className="title"
-              color={"#1c1d26"}
-              sx={{ fontSize: "12px" }}
+              className="title text-sm font-medium"
             >
               {shortDescription.toUpperCase().toUpperCase()}
-            </H6>
-            <FlexBetween>
+            </p>
+            <div className="flex justify-between">
               <FlexBox alignItems="center" gap={1}>
-                <Box color="primary.main">
-                  <H5 color="black" fontWeight={300} mt={1}>
-                    {calculateDiscount(price, salePrice, _setting)}
-                  </H5>
-                </Box>
+                <p className="title text-sm font-bold mt-4">
+                  {calculateDiscount(price, salePrice, _setting)}
+                </p>
 
                 {!!salePrice && (
                   <Box color="grey.600">
@@ -123,7 +87,7 @@ export default function ProductInfoSection({ response }) {
                   </Box>
                 )}
               </FlexBox>
-            </FlexBetween>
+            </div>
           </div>
 
           <ProductSizeSection product={product} />
@@ -324,7 +288,7 @@ export default function ProductInfoSection({ response }) {
             </Disclosure>
           </div>
         </div>
-        <ProductSpecialIcons />
+        {/* <ProductSpecialIcons /> */}
       </ContentWrapper>
     </Grid>
   );

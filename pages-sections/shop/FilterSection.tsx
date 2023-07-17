@@ -191,26 +191,7 @@ const FilterSection: FC = () => {
         </Disclosure>
       ))}
 
-      {/* <div className="grid gap-4">
-        {categories?.map((item, index) => (
-          <Link
-            href={`/shop/${item?.description.toLowerCase()}`}
-            key={item.description}
-            style={{ textDecoration: "underline" }}
-            className={`${
-              (params?.category as string)?.toLowerCase() ==
-              item?.description.toLowerCase()
-                ? "text-gray-800"
-                : "text-gray-400"
-            }`}
-          >
-            <Span>{item.name}</Span>
-          </Link>
-        ))}
-      </div> */}
-
       <Divider sx={{ my: 2, borderColor: "white" }} />
-      {/* PRICE VARIANT FILTER */}
       <FlexBetween alignItems={"flex-start"}>
         <H6 mb={2}>Price Range</H6>
         {(searchParams?.get("min") || searchParams?.get("max")) && (
@@ -319,28 +300,6 @@ const FilterSection: FC = () => {
       </FlexBox>
 
       <Divider sx={{ my: 2, borderColor: "white" }} />
-
-      {/* {otherOptions.map((item, index) => (
-        <FormControlLabel
-          key={item}
-          sx={{ display: "flex" }}
-          label={<Span color="inherit">{item}</Span>}
-          control={
-            <Checkbox
-              defaultChecked={searchParams?.get(`others${index}`) !== null}
-              size="small"
-              color="secondary"
-              onChange={(e) =>
-                handleQuery(
-                  e.target.checked,
-                  item.replace(/ /g, "").toLowerCase(),
-                  `others${index}`
-                )
-              }
-            />
-          }
-        />
-      ))} */}
 
       <H6 mb={2}>Sizes</H6>
       <RadioGroup
@@ -454,7 +413,6 @@ const FilterSection: FC = () => {
   );
 };
 
-const otherOptions = ["On Sale"];
 const colorList = [
   {
     color: "black",
@@ -467,6 +425,10 @@ const colorList = [
   {
     color: "gray",
     value: eColor.Gray,
+  },
+  {
+    color: "beige",
+    value: eColor.Beige,
   },
 ];
 

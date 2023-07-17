@@ -1,3 +1,4 @@
+"use client";
 import {
   Button,
   Card,
@@ -7,13 +8,15 @@ import {
   Typography,
 } from "@mui/material";
 import { FlexBox } from "../flex-box";
+import { useAppSelector } from "@/hooks/useRedux";
 
 export const CreditCardSkeleton = () => {
+  const cartLength = useAppSelector((x) => x.Store.CartReducer?.CartItems);
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-4 gap-y-2">
       <div>
         <Card elevation={5} role={"drawer"}>
-          {Array.from(new Array(2)).map((i) => (
+          {Array.from(new Array(cartLength?.length ?? 2)).map((i) => (
             <div className="flex mt-2 gap-x-3">
               <Skeleton width="60px" height={"60px"} variant="rounded">
                 <TextField />

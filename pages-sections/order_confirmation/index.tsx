@@ -8,16 +8,17 @@ import { BlurImage } from "@/components/BlurImage";
 import { DecryptData } from "@/helpers/Crypto";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { createUrlWithSearch } from "@/helpers/Extensions";
-import { useSearchParams } from "next/navigation";
 import { ClearCart } from "@/store/CartItem/Cart-action";
 import Cookies from "js-cookie";
+import {
+  calculateCart,
+  getTotalPriceAfterTax,
+  priceAfterTax,
+} from "@/helpers/Extensions";
 
 export const OrderReviewClient = () => {
   const router = useRouter();
-  const pathname = usePathname();
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams();
   const [order_confirm, setOrder_confirm] = useState<IOrderResponse | null>(
     () => {
       var orderSecret = Cookies.get("Order_confirmed");
@@ -33,19 +34,21 @@ export const OrderReviewClient = () => {
     if (order_confirm == null) {
       router.replace("/");
     } else {
-      Cookies.remove("Order_confirmed");
+      //Cookies.remove("Order_confirmed");
       dispatch(ClearCart());
     }
-    return () => {
-      setOrder_confirm(null);
-    };
+    // return () => {
+    //   setOrder_confirm(null);
+    // };
   }, []);
+
+  console.log(`Order Response ${JSON.stringify(order_confirm)}`);
 
   const _setting = useAppSelector((x) => x.Store.SettingReducer.setting);
   return (
     <section className="py-16" data-aos="fade-down">
       {order_confirm ? (
-        <div className="px-6 max-w-7xl mx-auto">
+        <div className="px-2 lg:px-6 max-w-7xl mx-auto">
           <div className="text-center ">
             <p className="uppercase font-semibold text-xs text-gray-700">
               Thank you
@@ -129,22 +132,31 @@ export const OrderReviewClient = () => {
 
                             <div className="pr-4 md:pr-0 flex justify-between flex-col ml-5 ">
                               <div className="flex-1">
-                                <p className="text-sm font-bold truncate w-20">
+                                <p className="text-xs md:text-sm font-bold truncate w-20">
                                   {item.productName}
                                 </p>
-                                <p className="text-sm font-semibold">
+                                <p className="text-xs md:text-sm font-semibold">
                                   Size: {item.size}
                                 </p>
                               </div>
-                              <p className="text-sm font-semibold">
+                              <p className="text-xs md:text-sm font-semibold">
                                 x {item.quantity}
                               </p>
                             </div>
 
                             <div className="bottom-auto top-0 right-0 absolute">
-                              <p className="text-sm text-right">
-                                {currency(item.price, _setting)}
+                              <p className="text-xs md:text-sm text-right">
+                                {priceAfterTax(
+                                  item.price,
+                                  _setting,
+                                  order_confirm?.taxRate,
+                                  0,
+                                  item.quantity
+                                )}
                               </p>
+                              <span className="text-[8px] font-bold text-gray-500">
+                                * VAT Inclusive
+                              </span>
                             </div>
                           </div>
                         </li>
@@ -152,21 +164,57 @@ export const OrderReviewClient = () => {
                     </ul>
                   </div>
                   <hr className="mt-6 border" />
-                  <ul className="mt-5">
-                    <li className="flex items-center justify-between">
-                      <p className="font-medium text-sm">Sub total</p>
-                      <p className="font-medium text-sm">
-                        {currency(order_confirm?.total, _setting)}
-                      </p>
-                    </li>
+                  <div className="divide-y-2">
+                    <ul className="my-5">
+                      <li className="flex items-center justify-between">
+                        <p className="font-medium text-xs md:text-sm">
+                          Sub total
+                        </p>
+                        <p className="font-medium text-xs md:text-sm">
+                          {priceAfterTax(
+                            order_confirm?.subTotal,
+                            _setting,
+                            order_confirm?.taxRate,
+                            0,
+                            1
+                          )}
+                        </p>
+                      </li>
+                      {order_confirm?.discount > 0 && (
+                        <li className="flex items-center justify-between">
+                          <p className="font-medium text-xs md:text-sm text-red-500">
+                            Discount
+                          </p>
+                          <p className="font-medium text-xs md:text-sm text-red-500">
+                            -{currency(order_confirm?.discount, _setting)}
+                          </p>
+                        </li>
+                      )}
 
-                    <li className="flex items-center justify-between space-y-3">
-                      <p className="font-bold text-sm">Total</p>
-                      <p className="font-bold text-sm">
+                      <li className="flex items-center justify-between">
+                        <p className="font-medium text-xs md:text-sm">
+                          Shipping & handling
+                        </p>
+                        <p className="font-medium text-xs md:text-sm">
+                          {order_confirm?.shippingCost > 0
+                            ? currency(order_confirm?.shippingCost, _setting)
+                            : "Free shipping!"}
+                        </p>
+                      </li>
+                      <li className="flex items-center justify-between">
+                        <p className="font-medium text-xs md:text-sm">Duty</p>
+                        <p className="font-medium text-xs md:text-sm">
+                          {currency(order_confirm?.dutyAmount, _setting)}
+                        </p>
+                      </li>
+                    </ul>
+                    <div className="py-5 flex justify-between">
+                      <p className="font-bold text-lg">Total</p>
+                      <p className="font-bold text-lg">
                         {currency(order_confirm?.total, _setting)}
                       </p>
-                    </li>
-                  </ul>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

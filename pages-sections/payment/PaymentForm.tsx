@@ -176,18 +176,21 @@ export default function PaymentForm({ totalAfterDiscount, guestUser }) {
                   value: order_create.total.toString(),
                 },
                 user_data: grapUserData(
-                  authedSession!.user as TUser,
-                  guestUser
+                  authedSession?.user.userAddress[
+                    authedSession.user.selectedAddress
+                  ],
+                  guestUser,
+                  authedSession?.user.email
                 ),
               },
             ],
           });
         } catch (ex) {}
       }
-      dispatch(ClearCart());
 
       const orderIdEncrypted = EncryptData<IOrderResponse>(order_create);
-      route.push(`/payment/${orderIdEncrypted}`);
+      Cookies.set("Order_confirmed", orderIdEncrypted);
+      route.push(`/order_confirmation`);
     }
   };
 

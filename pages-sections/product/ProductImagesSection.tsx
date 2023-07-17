@@ -29,7 +29,7 @@ export default function ProductImagesSection({ product }) {
                 placeholder="blur"
                 priority={i == 0}
                 fetchPriority={i == 0 ? "high" : "auto"}
-                quality={85}
+                quality={100}
               />
             </SwiperSlide>
           ))}

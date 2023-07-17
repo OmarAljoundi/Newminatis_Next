@@ -59,7 +59,7 @@ export const ShippingInfo = () => {
     createData("All other regions", "4-7 Business Days ", "FREE"),
   ];
   return (
-    <Container sx={{ px: 0 }}>
+    <div>
       <TableContainer>
         <Table
           sx={{ minWidth: 200 }}
@@ -103,6 +103,6 @@ export const ShippingInfo = () => {
           ></Paragraph>
         </Box>
       )}
-    </Container>
+    </div>
   );
 };

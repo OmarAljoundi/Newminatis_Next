@@ -5,11 +5,17 @@ export type TShoppingSession = {
   voucher: string | null;
   voucherType: string | null;
   discount: number;
+  totalDiscount?: number | null;
   checkedout: boolean;
   countryCode?: string | null;
   weight?: number | null;
   shippingCost?: number | null;
   taxAmount?: number | null;
+  dutyAmount?: number | null;
+  taxRate?: number | null;
+  subTotal: number;
   expired: Date;
-  createdDate: Date | null;
+  createdDate?: Date | null;
+  edd?: Date | null;
+  currentDateTime?: Date | null;
 };

@@ -1,10 +1,11 @@
-import { calculateDiscountAsNumber } from "@/lib";
+import { calculateDiscountAsNumber, currency } from "@/lib";
 import { CartItem } from "@/store/Model/CartItem";
 import { eOrderStatus } from "@/types/TOrder";
 import { TProductCategory } from "@/types/TProductCategory";
 import { TProductReview, eReviewStatus } from "@/types/TProductReview";
 import { TProductVariant } from "@/types/TProductVariant";
 import { Order, SearchQuery, eFilterOperator } from "@/types/TSearchQuery";
+import { TSetting } from "@/types/TSetting";
 import { countryVsProvider } from "@/utils/constants";
 import { ReadonlyURLSearchParams } from "next/navigation";
 
@@ -151,10 +152,7 @@ export enum eColor {
   Black = 1,
   Gray = 2,
   White = 3,
-  Red = 4,
-  Green = 5,
-  Yellow = 6,
-  Orange = 7,
+  Beige = 4,
 }
 
 export const MapColors = (n: number) => {
@@ -163,14 +161,10 @@ export const MapColors = (n: number) => {
       return "Black";
     case eColor.Gray as Number:
       return "Grey";
-    case eColor.Green as Number:
-      return "Green";
-    case eColor.Orange as Number:
-      return "Orange";
-    case eColor.Red as Number:
-      return "Red";
     case eColor.White as Number:
       return "White";
+    case eColor.Beige as Number:
+      return "Beige";
   }
 };
 
@@ -204,7 +198,7 @@ export function getEstimatedDuration(
 
   if (diffInDays === 1) {
     return "Next day";
-  } else if (diffInDays < 1) {
+  } else if (diffInDays == 0) {
     return "Same day";
   } else {
     return `${diffInDays} - ${diffInDays - 2} working days`;
@@ -386,3 +380,34 @@ export const getSubCategories = (
 
   return subs || [];
 };
+
+export const priceAfterTax = (
+  price: number,
+  _setting: TSetting | null,
+  TaxRate: number = 0,
+  salePrice: number = 0,
+  qty: number
+) => {
+  return currency(
+    calculateDiscountAsNumber(
+      price * ((TaxRate || 0) / 100 + 1),
+      salePrice * ((TaxRate || 0) / 100 + 1)
+    ) * qty,
+    _setting
+  );
+};
+
+export const getTotalPriceAfterTax = (
+  cartList: CartItem[] = [],
+  TaxRate: number = 0
+) =>
+  cartList.reduce(
+    (accum, item) =>
+      accum +
+      calculateDiscountAsNumber(
+        item.price * ((TaxRate || 0) / 100 + 1),
+        item.salePrice * ((TaxRate || 0) / 100 + 1)
+      ) *
+        item.qty,
+    0
+  );

@@ -6,7 +6,15 @@ import { TProduct } from "@/types/TProduct";
 import { ValueVsQuantity } from "@/types/TProductInventory";
 import { RadioGroup } from "@headlessui/react";
 import { Add, Remove } from "@mui/icons-material";
-import { Box, Chip, IconButton, Skeleton, Zoom } from "@mui/material";
+import {
+  Box,
+  Chip,
+  IconButton,
+  Skeleton,
+  Theme,
+  Zoom,
+  useMediaQuery,
+} from "@mui/material";
 import React, { useEffect, useState, FC } from "react";
 import { Button } from "@mui/material";
 import { calculateDiscountAsNumber, currency } from "@/lib";
@@ -36,6 +44,7 @@ const ProductSizeSection: FC<ProductSizeSectionProp> = ({ product }) => {
   const dispatch = useAppDispatch();
   const cartItem = useAppSelector((x) => x.Store.CartReducer?.CartItems);
   const _setting = useAppSelector((x) => x.Store.SettingReducer?.setting);
+  const downMd = useMediaQuery((theme: Theme) => theme.breakpoints.down("md"));
   useEffect(() => {
     setLoadStock(true);
     executeAllLongRunningTasks().then((res) => {
@@ -111,7 +120,10 @@ const ProductSizeSection: FC<ProductSizeSectionProp> = ({ product }) => {
 
       if (!cartItem?.find((x) => x.sku == selectedSize)) {
         dispatch(AddItem(cart));
-        toasterSuccess(currency(getTotalPrice() + __price * qty, _setting));
+        toasterSuccess(
+          currency(getTotalPrice(cartItem || []) + __price, _setting),
+          downMd ? "bottom-center" : "top-center"
+        );
       } else if (qty != 0) {
         var qttyy =
           valueVsQuantity.find((x) => x.variable == selectedSize)?.quantity ??
@@ -122,7 +134,10 @@ const ProductSizeSection: FC<ProductSizeSectionProp> = ({ product }) => {
         }
         dispatch(UpdateItem(cart));
 
-        toasterSuccess(currency(getTotalPrice() + __price * qty, _setting));
+        toasterSuccess(
+          currency(getTotalPrice(cartItem || []) + __price, _setting),
+          downMd ? "bottom-center" : "top-center"
+        );
       } else {
         dispatch(RemoveItem(cart));
       }
@@ -160,7 +175,7 @@ const ProductSizeSection: FC<ProductSizeSectionProp> = ({ product }) => {
                       !isDisable(size)
                         ? "cursor-pointer bg-white text-gray-900 shadow-sm"
                         : "cursor-not-allowed bg-gray-50 text-gray-200",
-                      active ? "ring-2 ring-indigo-500" : "",
+                      active ? "ring-2 ring-black" : "",
                       "group relative flex items-center justify-center rounded-md border py-2 px-2 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1"
                     )
                   }
@@ -174,9 +189,7 @@ const ProductSizeSection: FC<ProductSizeSectionProp> = ({ product }) => {
                         <span
                           className={classNames(
                             active ? "border" : "border-2",
-                            checked
-                              ? "border-indigo-500"
-                              : "border-transparent",
+                            checked ? "border-black" : "border-transparent",
                             "pointer-events-none absolute -inset-px rounded-md"
                           )}
                           aria-hidden="true"

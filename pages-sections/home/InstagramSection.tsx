@@ -68,6 +68,7 @@ export const InstagramSection = () => {
           >
             {instagramFeeds
               ?.filter((x) => x.media_type != "VIDEO")
+              .slice(0, 5)
               .map((item, index) => (
                 <SwiperSlide
                   key={index + 99}
@@ -80,9 +81,9 @@ export const InstagramSection = () => {
                         image={item.media_url}
                         height={400}
                         title={item.permalink}
-                        loading="lazy"
-                        priority="auto"
-                        q={80}
+                        loading={"eager"}
+                        priority="high"
+                        q={50}
                       />
                     </Card>
                   </a>

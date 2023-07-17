@@ -29,15 +29,20 @@ export default function ProductSection() {
   const searchParams = useSearchParams();
   const params = useParams();
 
-  const { data: categories, isFetched } = useQuery(
-    "Categories",
-    () => onGetCategories() as Promise<TProductCategory[]>,
-    {
-      enabled: true,
-      cacheTime: 60000,
-    }
-  );
+  const fetchCategory = async () => {
+    const result = (await onGetCategories()) as TProductCategory[];
+    return result;
+  };
 
+  const {
+    data: categories,
+    isFetched,
+    isFetching: isfetchingCategories,
+  } = useQuery("Categories", () => fetchCategory(), {
+    enabled: true,
+    cacheTime: 60000,
+    keepPreviousData: true,
+  });
   const fetchProducts = async (page: number) => {
     var SearchQuery = GrapQueries(searchParams);
     SearchQuery.PageSize = LIMIT;
@@ -99,6 +104,7 @@ export default function ProductSection() {
       },
       refetchOnWindowFocus: false,
       keepPreviousData: false,
+      enabled: isFetched,
     }
   );
 
@@ -109,7 +115,7 @@ export default function ProductSection() {
   }, [inView, fetchNextPage, hasNextPage]);
 
   useEffect(() => {
-    if (!isFetching) {
+    if (!isFetching && !isfetchingCategories) {
       refetch();
     }
   }, [searchParams]);
@@ -125,14 +131,18 @@ export default function ProductSection() {
       })
     );
 
-  if ((isRefetching && !isFetchingNextPage) || isLoading) {
+  if (
+    (isRefetching && !isFetchingNextPage) ||
+    isLoading ||
+    isfetchingCategories
+  ) {
     return <ProductCardLoading loop={6} />;
   }
 
-  console.log("isLoading", isLoading);
   if (
     ((isFetched && data?.pages.map((x) => x.length)[0]) || 0) == 0 &&
-    !isLoading
+    !isLoading &&
+    !isfetchingCategories
   ) {
     return (
       <div className="grid mx-auto justify-items-center">

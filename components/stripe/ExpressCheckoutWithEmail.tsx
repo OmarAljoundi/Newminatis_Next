@@ -4,7 +4,6 @@ import {
   useElements,
   PaymentRequestButtonElement,
 } from "@stripe/react-stripe-js";
-import { PaymentRequestShippingAddress } from "@stripe/stripe-js";
 import Cookies from "js-cookie";
 import { FC, useEffect, useState } from "react";
 import ReactGA from "react-ga4";
@@ -13,10 +12,13 @@ import { TUserGuest } from "@/types/TUserGuest";
 import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
 import { useRouter } from "next/navigation";
 import useOrderService from "@/hooks/useOrderService";
-import useUserService from "@/hooks/useUserService";
 import { Items, TOrderRequest } from "@/types/TOrderRequest";
 import { IBaseResponse } from "@/interface/IBaseResponse";
-import { calculateCart } from "@/helpers/Extensions";
+import {
+  calculateCart,
+  getShippingLabel,
+  getShippingObject,
+} from "@/helpers/Extensions";
 import { toast } from "react-hot-toast";
 import { CartItem } from "@/store/Model/CartItem";
 import { ClearCart, UpdateStock } from "@/store/CartItem/Cart-action";
@@ -25,30 +27,28 @@ import FacebookService from "@/service/FacebookService";
 import { PurchaseEvent, grapUserData } from "@/helpers/FacebookEvent";
 import { TOrderRequestGuest } from "@/types/TOrderRequestGuest";
 import { EncryptData } from "@/helpers/Crypto";
+import { CheckoutSummaryProps } from "@/pages-sections/payment/CheckoutSummary";
+import { useSession } from "next-auth/react";
 
 export interface IExpressCheckout {
   clientSecret: string;
-  totalAfterDiscount?: number;
-  guestUser: TUserGuest;
-  requestShipping?: boolean;
+  checkoutSummary: CheckoutSummaryProps | null;
+  guestUser: TUserGuest | undefined;
 }
 export const ExpressCheckoutWithEmail: FC<IExpressCheckout> = ({
   guestUser,
   clientSecret,
-  totalAfterDiscount = 0,
-  requestShipping,
+  checkoutSummary,
 }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [paymentRequest, setPaymentRequest] = useState<any>(null);
   const cart = useAppSelector((x) => x.Store.CartReducer?.CartItems);
-  const Auth = useAppSelector((x) => x.Store.AuthReducer.Auth);
   const _setting = useAppSelector((x) => x.Store.SettingReducer.setting);
   const dispatch = useAppDispatch();
   const route = useRouter();
   const { onCreateOrder, onCheckStock, onCreateGuestOrder } = useOrderService();
-
-  const { onCreateGuest, userLoad } = useUserService();
+  const { data: authedSession } = useSession();
 
   const handleStockabaliablity = async (items: Items[]) => {
     const isStockAvaliable = (await onCheckStock(items)) as IBaseResponse;
@@ -71,28 +71,60 @@ export const ExpressCheckoutWithEmail: FC<IExpressCheckout> = ({
       });
     });
 
+    var delievryOption = getShippingObject(
+      checkoutSummary?.ShippingCost || 0,
+      checkoutSummary!.currentDateTime!,
+      checkoutSummary!.edd!,
+      checkoutSummary!.countryCode!
+    );
+
+    var DI: any[] = [];
+    DI.push({
+      label: "Subtotal (VAT Inclusive)",
+      amount:
+        ((
+          calculateCart(cart || []) *
+          (checkoutSummary!.TaxRate! / 100 + 1)
+        ).toFixed(0) as unknown as number) * 100,
+    });
+
+    if (checkoutSummary?.TotalDiscount! > 0) {
+      DI.push({
+        label: "Discount",
+        amount:
+          (checkoutSummary?.TotalDiscount!.toFixed(0) as unknown as number) *
+          -100,
+      });
+    }
+
     const pr = stripe.paymentRequest({
       currency: "usd",
       country: "US",
-      requestPayerEmail: true,
-      requestPayerName: true,
-      requestShipping: requestShipping ?? false,
-      shippingOptions: [
+      requestPayerEmail: false,
+      requestPayerName: false,
+      requestShipping: false,
+      shippingOptions: [delievryOption],
+      displayItems: [
+        ...DI,
         {
-          id: "free-shipping",
-          label: "Free shipping",
-          detail: "",
-          amount: 0,
+          label: getShippingLabel(
+            checkoutSummary?.ShippingCost!,
+            checkoutSummary?.currentDateTime!,
+            checkoutSummary?.edd!,
+            checkoutSummary?.countryCode!
+          ),
+          amount:
+            (checkoutSummary?.ShippingCost!.toFixed(0) as unknown as number) *
+            100,
+        },
+        {
+          label: "Estimated Duties",
+          amount:
+            (checkoutSummary?.DutyCost!.toFixed(0) as unknown as number) * 100,
         },
       ],
-
       total: {
-        amount:
-          totalAfterDiscount > 0
-            ? Math.round(
-                (totalAfterDiscount.toFixed(2) as unknown as number) * 100
-              )
-            : (calculateCart(cart || []).toFixed(2) as unknown as number) * 100,
+        amount: (checkoutSummary?.Total!.toFixed(0) as unknown as number) * 100,
         label: "Checkout Newminatis",
       },
     });
@@ -100,20 +132,6 @@ export const ExpressCheckoutWithEmail: FC<IExpressCheckout> = ({
       if (res) {
         setPaymentRequest(pr);
       }
-    });
-
-    pr.on("shippingaddresschange", (ev) => {
-      ev.updateWith({
-        status: "success",
-        shippingOptions: [
-          {
-            id: "free-shipping",
-            label: "Free shipping",
-            detail: "",
-            amount: 0,
-          },
-        ],
-      });
     });
 
     pr.on("paymentmethod", async (e) => {
@@ -155,9 +173,6 @@ export const ExpressCheckoutWithEmail: FC<IExpressCheckout> = ({
         }
 
         if (guestUser) {
-          if (requestShipping && requestShipping == true) {
-            handleUpdateGuestAddress(e.shippingAddress!, guestUser);
-          }
           await CreateGuestOrderRequest(items);
           Cookies.remove("GUEST_EMAIL");
         } else {
@@ -191,16 +206,17 @@ export const ExpressCheckoutWithEmail: FC<IExpressCheckout> = ({
     return () => {
       setPaymentRequest(null);
     };
-  }, [stripe, elements, cart, totalAfterDiscount]);
+  }, [stripe, elements, cart]);
 
   const CreateOrderRequest = async (items: Items[]) => {
     var OrderRequest: TOrderRequest = {
       items: items,
-      subTotal: calculateCart(cart!),
+      subTotal: 0,
       sessionId: Cookies.get("Session") as unknown as number,
-      total: totalAfterDiscount > 0 ? totalAfterDiscount : calculateCart(cart!),
-      //@ts-ignore
-      userAddressId: Auth.userAddress[Auth.selectedAddress].id,
+      total: 0,
+      userAddressId:
+        authedSession?.user.userAddress[authedSession?.user.selectedAddress]
+          .id!,
       currency: _setting?.currencyCode ?? "USD",
       rate: _setting?.rate ?? 1,
     };
@@ -208,7 +224,7 @@ export const ExpressCheckoutWithEmail: FC<IExpressCheckout> = ({
     if (!order_create.success) {
       toast.error(order_create.message);
     } else {
-      if (process.env.NODE_ENV !== "development") {
+      if (process.env.NODE_ENV === "production") {
         ReactGA.event("purchase", {
           currency: "USD",
           transaction_id: order_create.depoterOrderId,
@@ -253,7 +269,13 @@ export const ExpressCheckoutWithEmail: FC<IExpressCheckout> = ({
                   currency: "USD",
                   value: order_create.total.toString(),
                 },
-                user_data: grapUserData(Auth, guestUser),
+                user_data: grapUserData(
+                  authedSession?.user.userAddress[
+                    authedSession?.user.selectedAddress
+                  ],
+                  guestUser,
+                  authedSession?.user.email
+                ),
               },
             ],
           });
@@ -269,10 +291,10 @@ export const ExpressCheckoutWithEmail: FC<IExpressCheckout> = ({
   const CreateGuestOrderRequest = async (items: Items[]) => {
     var OrderRequest: TOrderRequestGuest = {
       items: items,
-      subTotal: calculateCart(cart!),
+      subTotal: 0,
       sessionId: Cookies.get("Session") as unknown as number,
-      total: totalAfterDiscount > 0 ? totalAfterDiscount : calculateCart(cart!),
-      guest: guestUser,
+      total: 0,
+      guest: guestUser!,
       currency: _setting?.currencyCode ?? "USD",
       rate: _setting?.rate ?? 1,
     };
@@ -282,7 +304,7 @@ export const ExpressCheckoutWithEmail: FC<IExpressCheckout> = ({
     if (!order_create.success) {
       toast.error(order_create.message);
     } else {
-      if (process.env.NODE_ENV !== "development") {
+      if (process.env.NODE_ENV === "production") {
         ReactGA.event("purchase", {
           currency: "USD",
           transaction_id: order_create.depoterOrderId,
@@ -309,7 +331,7 @@ export const ExpressCheckoutWithEmail: FC<IExpressCheckout> = ({
         content_name: "Newminatis New Order",
       };
 
-      if (process.env.NODE_ENV !== "development") {
+      if (process.env.NODE_ENV === "production") {
         import("react-facebook-pixel")
           .then((x) => x.default)
           .then((ReactPixel) => {
@@ -329,7 +351,13 @@ export const ExpressCheckoutWithEmail: FC<IExpressCheckout> = ({
                   currency: "USD",
                   value: order_create.total.toString(),
                 },
-                user_data: grapUserData(Auth, guestUser),
+                user_data: grapUserData(
+                  authedSession?.user.userAddress[
+                    authedSession?.user.selectedAddress
+                  ],
+                  guestUser,
+                  authedSession?.user.email
+                ),
               },
             ],
           });
@@ -340,33 +368,6 @@ export const ExpressCheckoutWithEmail: FC<IExpressCheckout> = ({
       Cookies.set("Order_confirmed", orderIdEncrypted);
       route.push(`/order_confirmation`);
     }
-  };
-
-  const handleUpdateGuestAddress = async (
-    values: PaymentRequestShippingAddress,
-    guest: TUserGuest
-  ) => {
-    var Guest: TUserGuest = {
-      addressLine: JSON.stringify(values.addressLine),
-      //@ts-ignore
-      city: values.city,
-      //@ts-ignore
-      country: values.country,
-      deliveryInstructions: "",
-      firstName: guest.email,
-      createdDate: null,
-      email: guest.email,
-      id: guest.id,
-      lastName: guest.email,
-      modifiedDate: null,
-      //@ts-ignore
-      phoneNumber: values.phone,
-      postalCode: values.postalCode as unknown as number,
-      //@ts-ignore
-      state: values.city,
-      newsletter: null,
-    };
-    await onCreateGuest(Guest);
   };
 
   return (
