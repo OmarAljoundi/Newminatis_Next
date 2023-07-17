@@ -120,7 +120,6 @@ const CheckoutSummary: FC<Props> = ({
     )) as IShoppingSessionResponse;
     if (result.success) {
       Cookies.set("Session", result.shoppingSession.id.toString());
-      debugger;
       setCheckoutSummary({
         Discount: result.shoppingSession.discount,
         Total: result.shoppingSession.total,

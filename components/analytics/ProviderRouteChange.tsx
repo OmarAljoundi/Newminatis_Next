@@ -1,7 +1,6 @@
 "use client";
 import { ViewContentEvent, grapUserData } from "@/helpers/FacebookEvent";
 import FacebookService from "@/service/FacebookService";
-import { TUser } from "@/types/TUser";
 import { useSession } from "next-auth/react";
 import { Router } from "next/router";
 import React, { useEffect } from "react";
@@ -9,7 +8,7 @@ import React, { useEffect } from "react";
 export default function ProviderRouteChange() {
   const { data: authedSession } = useSession();
   useEffect(() => {
-    if (process.env.NODE_ENV != "development") {
+    if (process.env.NODE_ENV === "production") {
       import("react-facebook-pixel")
         .then((x) => x.default)
         .then((ReactPixel) => {

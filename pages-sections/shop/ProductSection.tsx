@@ -52,7 +52,6 @@ export default function ProductSection() {
       FilterOperator: eFilterOperator.Equal,
       MemberName: "Status",
     });
-    debugger;
     if (params?.category && isFetched == true) {
       SearchQuery.FilterByOptions.push({
         MemberName: "category",

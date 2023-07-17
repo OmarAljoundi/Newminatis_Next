@@ -52,7 +52,6 @@ const NewAddressForm: FC = () => {
     initialValues: initialValues,
     validationSchema: AddressValidationSchema,
     onSubmit: async (values, { resetForm }) => {
-      debugger;
       values.city = values.state!;
       const result = (await onPostAddress(values)) as IUserResponse;
       if (result.success) {

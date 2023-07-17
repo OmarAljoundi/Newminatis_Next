@@ -43,7 +43,6 @@ export const FeaturedProducts: FC<FeaturedProductsProp> = ({
       PageIndex: 0,
       PageSize: 2,
     });
-    debugger;
     return (result as IProductResponse).products;
   };
 

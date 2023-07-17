@@ -184,27 +184,27 @@ const Footer: FC = () => {
 const importantLinks = [
   {
     label: "About Us",
-    link: "/our-story",
+    link: "/about",
   },
   {
     label: "Terms & Conditions",
-    link: "/terms-and-conditions",
+    link: "/support-related/terms-and-conditions",
   },
   {
     label: "Privacy Policy",
-    link: "/privacy-policy",
+    link: "/support-related/privacy-policy",
   },
   {
     label: "Shipping Information",
-    link: "/shipping-information",
+    link: "/support-related/shipping-information",
   },
   {
     label: "Return Policy",
-    link: "/return-policy",
+    link: "/support-related/return-policy",
   },
   {
     label: "FAQs",
-    link: "/faqs",
+    link: "/support-related/faqs",
   },
 ];
 const contactUs = [
