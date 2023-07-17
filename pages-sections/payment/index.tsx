@@ -181,6 +181,7 @@ const PaymentClientPage: FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-4 gap-y-2 ">
           <div>
             <CheckoutSummary
+              guestAddress={guestAddress}
               setCheckoutSummary={setCheckoutSummary}
               {...checkoutSummary}
             />
