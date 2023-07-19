@@ -90,9 +90,7 @@ export const FeaturedProducts: FC<FeaturedProductsProp> = ({
           </div>
           <div className="grid lg:grid-cols-2 justify-items-center mt-2">
             <Link
-              href={`product/${item.name.toLowerCase()}-0${MapColors(
-                item.color
-              )}`}
+              href={`product/${item.name.toLowerCase()}-0${item.color.toString()}`}
               className="block font-medium text-gray-900  text-sm"
               onClick={() => close()}
             >

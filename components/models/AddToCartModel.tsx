@@ -30,6 +30,7 @@ import { FlexBetween, FlexBox } from "../flex-box";
 import { TooltipError, TooltipStock } from "../Tooltips";
 import { RadioGroup } from "@headlessui/react";
 import { toasterSuccess } from "@/service/toasterService";
+import { BlurImage } from "../BlurImage";
 type CartModelProps = {
   toggleDrawer: () => void;
   product: TProduct;
@@ -166,46 +167,41 @@ const AddToCardModel: FC<CartModelProps> = ({
   };
 
   return (
-    <Box px={4} py={1}>
-      <Grid container item columnSpacing={3} mt={2} position="relative">
-        <Grid item xs={4}>
+    <div className="max-w-2xl mx-auto py-3 px-2 w-full">
+      <div className="grid grid-cols-3 gap-3 relative">
+        <div className="col-span-1">
           <Link
             href={`/product/${product.name.toLowerCase()}-${product.color.toString()}`}
           >
-            <img src={product.mainImage || ""} width={"100%"} />
+            <BlurImage image={product.mainImage || ""} />
           </Link>
           <Link
             href={`/product/${product.name.toLowerCase()}-${product.color.toString()}`}
+            className="flex justify-center mt-3"
           >
-            <Button variant="text" sx={{ paddingLeft: "0", paddingRight: "0" }}>
-              {" "}
-              <span
-                className="text-xs title"
-                style={{ textDecoration: "underline" }}
-              >
-                {" "}
-                View Product Details
-              </span>
-            </Button>
+            <span
+              className="text-sm font-bold title"
+              style={{ textDecoration: "underline" }}
+            >
+              View
+            </span>
           </Link>
-        </Grid>
-        <Grid item xs={8}>
+        </div>
+        <div className="col-span-2">
           <Stack className="details">
-            <H2 className="text-sm">{product.friendlyName}</H2>
+            <p className="text-sm">{product.friendlyName}</p>
             <p className="text-xs mb-2">{product.shortDescription}</p>
-            <FlexBox alignItems="center" gap={1} className="text-12">
-              <Box color={"black"} className="text-12">
-                <H4 color="black" fontWeight={100} className="text-12">
-                  {calculateDiscount(product.price, discount, _setting)}
-                </H4>
-              </Box>
+            <div className="flex text-xs items-center gap-1">
+              <h4 className="text-xs text-black font-bold">
+                {calculateDiscount(product.price, discount, _setting)}
+              </h4>
 
               {!!discount && (
                 <Box color="grey.600">
                   <del>{currency(product.price, _setting)}</del>
                 </Box>
               )}
-            </FlexBox>
+            </div>
 
             <RadioGroup
               value={size}
@@ -353,12 +349,7 @@ const AddToCardModel: FC<CartModelProps> = ({
                         <Remove fontSize="small" />
                       </IconButton>
 
-                      <Box
-                        sx={{
-                          margin: "0 10px",
-                          textAlign: "center",
-                        }}
-                      >
+                      <div className="text-center mx-2">
                         <Chip
                           label={qty || 1}
                           sx={{
@@ -366,13 +357,15 @@ const AddToCardModel: FC<CartModelProps> = ({
                             fontSize: "20px",
                           }}
                         />
-                      </Box>
+                      </div>
 
                       <IconButton
                         sx={{
                           py: 0.1,
                           px: 0.1,
                           border: "1px solid #d5d5d5",
+                          background: "black",
+                          color: "white",
                         }}
                         disabled={qty >= (stock || 0)}
                         onClick={() => setQty(qty + 1)}
@@ -385,21 +378,21 @@ const AddToCardModel: FC<CartModelProps> = ({
               </FlexBetween>
             )}
           </Stack>
-        </Grid>
+        </div>
         <IconButton
           size="medium"
           onClick={toggleDrawer}
           sx={{
             position: "absolute",
-            right: -25,
-            top: 0,
+            right: -5,
+            top: -15,
             zIndex: 3,
           }}
         >
           <Close fontSize="medium" sx={{ color: "black" }} />
         </IconButton>
-      </Grid>
-    </Box>
+      </div>
+    </div>
   );
 };
 

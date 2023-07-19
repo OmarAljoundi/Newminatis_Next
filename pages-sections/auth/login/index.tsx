@@ -82,7 +82,7 @@ export default function LoginClientPage() {
               value={values.email}
               onChange={handleChange}
               label="Email"
-              placeholder="exmple@mail.com"
+              placeholder="example@mail.com"
               error={!!touched.email && !!errors.email}
               helperText={(touched.email && errors.email) as string}
             />
@@ -114,7 +114,7 @@ export default function LoginClientPage() {
               href="/auth/forget-password"
               className="font-normal text-xs mt-2 leading-6 text-gray-400 hover:text-gray-700 hover:underline"
             >
-              Forget your password?
+              Forgot your password?
             </Link>
 
             <LoadingButton
@@ -135,7 +135,7 @@ export default function LoginClientPage() {
             Not a member?{" "}
             <Link
               href="/auth/register"
-              className="font-semibold leading-6 text-gray-400 hover:text-gray-700 hover:underline"
+              className="font-semibold leading-6  text-gray-700 underline"
             >
               Create your account here
             </Link>

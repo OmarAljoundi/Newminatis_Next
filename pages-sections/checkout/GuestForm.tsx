@@ -130,7 +130,7 @@ const GuestForm: FC = () => {
       <form onSubmit={handleSubmit}>
         <Card sx={{ mb: 4 }} elevation={1} role={"drawer"}>
           <FlexBetween alignItems={"flex-start"} mb={2}>
-            <H3 mb={2}>Shipping Address</H3>
+            <H3 mb={2}>Shipping Information</H3>
           </FlexBetween>
           <div className="grid ">
             <div className="grid">
@@ -299,7 +299,7 @@ const GuestForm: FC = () => {
               />
               <TextField
                 fullWidth
-                label="Delivery Instruction"
+                label="Delivery Instruction(s)"
                 onBlur={handleBlur}
                 onChange={handleChange}
                 sx={{ mb: 3 }}

@@ -1,4 +1,3 @@
-import { IProductResponse } from "@/interface/IProductResponse";
 import { InstgramResponse } from "@/interface/InstgramResponse";
 import AboutSection from "@/pages-sections/home/AboutSection";
 import BestSellerSection from "@/pages-sections/home/BestSellerSection";

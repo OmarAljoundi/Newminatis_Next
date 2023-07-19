@@ -9,6 +9,7 @@ import Breadcrumb from "@/pages-sections/shop/Breadcrumb";
 import ProductRelatedSection from "@/pages-sections/product/ProductRelatedSection";
 import { Metadata, ResolvingMetadata } from "next";
 import { MapColors } from "@/helpers/Extensions";
+import NotFoundSupport from "@/app/not-found";
 
 type Params = {
   params: {
@@ -48,46 +49,54 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const slug = params.slug;
   const { data } = await getProduct(slug);
   const { product } = data;
-  const p_name = product.friendlyName ?? product.name;
+  if (product) {
+    const p_name = product?.friendlyName ?? product.name;
+    return {
+      title: product?.friendlyName,
+      description: product?.shortDescription,
+      openGraph: {
+        title: p_name.charAt(0).toUpperCase() + p_name.slice(1).toLowerCase(),
+        description: product.shortDescription.toLowerCase(),
+        url: `https://newminatis.com/product/${product.name.toLowerCase()}-0${
+          product.color
+        }`,
+        type: "website",
+        images: product.productImages?.map((x) => x.imageUrl),
+        siteName: "Newminatis",
+      },
+      keywords: product.tags,
 
+      other: {
+        "og:price:amount": product.price.toString(),
+        "og:price:currency": "USD",
+        "product:brand": "Newminatis",
+        "product:gender":
+          product.categoryId == 34
+            ? "Unisex"
+            : product.categoryId == 11
+            ? "Female"
+            : "Male",
+        "product:price:amount": product.price.toString(),
+        "product:price:currency": "USD",
+        "product:retailer_item_id": `NM-${product.name.replace(/ /g, "")}-0${
+          product.color
+        }`,
+        "product:category": "5388",
+        "product:condition": "new",
+      },
+    };
+  }
   return {
-    title: product?.friendlyName,
-    description: product?.shortDescription,
-    openGraph: {
-      title: p_name.charAt(0).toUpperCase() + p_name.slice(1).toLowerCase(),
-      description: product.shortDescription.toLowerCase(),
-      url: `https://newminatis.com/product/${product.name.toLowerCase()}-0${
-        product.color
-      }`,
-      type: "website",
-      images: product.productImages?.map((x) => x.imageUrl),
-      siteName: "Newminatis",
-    },
-    keywords: product.tags,
-
-    other: {
-      "og:price:amount": product.price.toString(),
-      "og:price:currency": "USD",
-      "product:brand": "Newminatis",
-      "product:gender":
-        product.categoryId == 34
-          ? "Unisex"
-          : product.categoryId == 11
-          ? "Female"
-          : "Male",
-      "product:price:amount": product.price.toString(),
-      "product:price:currency": "USD",
-      "product:retailer_item_id": `NM-${product.name.replace(/ /g, "")}-0${
-        product.color
-      }`,
-      "product:category": "5388",
-      "product:condition": "new",
-    },
+    title: "Error - Product not found",
   };
 }
 
 export default async function SingleProductPage({ params: { slug } }: Params) {
   const _response = await getProduct(slug);
+
+  if (_response.data.product == null) {
+    return <NotFoundSupport />;
+  }
 
   return (
     <div className="mx-auto max-w-2xl  py-4 px-0 sm:py-6 lg:max-w-7xl lg:px-8">

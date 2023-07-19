@@ -242,7 +242,7 @@ const EditAddressForm: FC<EditAddressFormProps> = ({ initialValues }) => {
                 />
                 <TextField
                   fullWidth
-                  label="Delivery Instruction"
+                  label="Delivery Instruction(s)"
                   onBlur={handleBlur}
                   onChange={handleChange}
                   sx={{ mb: 3 }}

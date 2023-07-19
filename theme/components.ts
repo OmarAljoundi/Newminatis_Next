@@ -141,11 +141,8 @@ export const components: Components = {
         "& .MuiFormHelperText-root.Mui-error": {
           width: "100%",
           background: "#ffe7e7",
-          borderBottomLeftRadius: "7px",
           color: "red",
-          borderBottomRightRadius: "7px",
           padding: " 5px 10px",
-          boxShadow: " inset rgb(255 0 0 / 30%) 2px -2px 15px 0px",
           fontWeight: "800",
           margin: "0px",
           position: "relative",

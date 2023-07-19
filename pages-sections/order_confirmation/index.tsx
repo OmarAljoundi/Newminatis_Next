@@ -84,7 +84,7 @@ export const OrderReviewClient = () => {
 
                       <div className="py-6">
                         <h2 className="text-black font-bold text-base">
-                          Shipping Address
+                          Shipping Information
                         </h2>
                         <p className="mt-4 text-sm font-normal">
                           {" "}

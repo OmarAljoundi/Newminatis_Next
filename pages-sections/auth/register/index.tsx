@@ -86,7 +86,7 @@ export default function RegisterClientPage() {
               value={values.email}
               onChange={handleChange}
               label="Email"
-              placeholder="exmple@mail.com"
+              placeholder="example@mail.com"
               error={!!touched.email && !!errors.email}
               helperText={(touched.email && errors.email) as string}
             />
@@ -159,8 +159,8 @@ export default function RegisterClientPage() {
                   <H6 sx={{ color: "black", fontSize: "12px" }}>
                     {" "}
                     By signing up, you agree to
-                    <a
-                      href="/terms-and-conditions"
+                    <Link
+                      href="/support-related/terms-and-conditions"
                       target="_blank"
                       rel="noreferrer noopener"
                     >
@@ -171,7 +171,7 @@ export default function RegisterClientPage() {
                       >
                         Terms & Condtion
                       </Span>
-                    </a>
+                    </Link>
                   </H6>
                   {touched.agreement && errors.agreement && (
                     <Span
@@ -205,17 +205,15 @@ export default function RegisterClientPage() {
             >
               Create Account
             </LoadingButton>
-
-            {/* <SocialButtons
-        onClose={onClose}
-        message="Registered successfully"
-        setLoad={setLoad}
-      /> */}
-            <FlexRowCenter mt="1.25rem">
-              <Box>Already have an account?</Box>
-
-              <Link href={"/auth/login"}>Login</Link>
-            </FlexRowCenter>
+            <p className="mt-10 text-center text-sm text-gray-500">
+              Already have an account?{" "}
+              <Link
+                href="/auth/login"
+                className="font-semibold leading-6  text-gray-700 underline"
+              >
+                Login
+              </Link>
+            </p>
           </form>
         </div>
       </div>

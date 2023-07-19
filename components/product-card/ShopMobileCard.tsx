@@ -78,7 +78,7 @@ const ShopMobileCard: FC<ProductCardProps> = ({
         anchor="bottom"
         onClose={toggleCartModel}
         PaperProps={{
-          sx: { height: "70vw", width: "100%" },
+          sx: { paddingBottom: "35px", width: "100%" },
         }}
       >
         <AddToCardModel

@@ -71,7 +71,7 @@ export default function ProductInfoSection({ response }) {
             </p>
             <p
               title={shortDescription.toUpperCase()}
-              className="title text-sm font-medium"
+              className="text-sm font-medium"
             >
               {shortDescription.toUpperCase().toUpperCase()}
             </p>
@@ -228,7 +228,7 @@ export default function ProductInfoSection({ response }) {
               )}
             </Disclosure>
 
-            <Disclosure as="div" className="mt-2" defaultOpen>
+            <Disclosure as="div" className="mt-2">
               {({ open }) => (
                 <>
                   <Disclosure.Button
@@ -255,7 +255,7 @@ export default function ProductInfoSection({ response }) {
                 </>
               )}
             </Disclosure>
-            <Disclosure as="div" className="mt-2" defaultOpen>
+            <Disclosure as="div" className="mt-2">
               {({ open }) => (
                 <>
                   <Disclosure.Button
