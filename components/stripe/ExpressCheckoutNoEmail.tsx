@@ -334,7 +334,7 @@ export const ExpressCheckoutNoEmail: FC<{ showLoader?: boolean }> = ({
         duration: 5000,
       });
     } else {
-      if (process.env.NODE_ENV === "production") {
+      if (process.env.NEXT_PUBLIC_ENABLE_PIXELS === "true") {
         ReactGA.event("purchase", {
           currency: "USD",
           transaction_id: order_create.depoterOrderId,
@@ -361,7 +361,7 @@ export const ExpressCheckoutNoEmail: FC<{ showLoader?: boolean }> = ({
         content_name: "Newminatis New Order",
       };
 
-      if (process.env.NODE_ENV === "production") {
+      if (process.env.NEXT_PUBLIC_ENABLE_PIXELS === "true") {
         import("react-facebook-pixel")
           .then((x) => x.default)
           .then((ReactPixel) => {

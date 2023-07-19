@@ -37,7 +37,7 @@ const CartSlice = createSlice({
         });
       });
 
-      if (process.env.NODE_ENV !== "development") {
+      if (process.env.NEXT_PUBLIC_ENABLE_PIXELS === "true") {
         ReactGA.event("add_to_cart", {
           currency: "USD",
           value: action.payload.price,

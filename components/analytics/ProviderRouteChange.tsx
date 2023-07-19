@@ -8,7 +8,7 @@ import React, { useEffect } from "react";
 export default function ProviderRouteChange() {
   const { data: authedSession } = useSession();
   useEffect(() => {
-    if (process.env.NODE_ENV === "production") {
+    if (process.env.NEXT_PUBLIC_ENABLE_PIXELS === "true") {
       import("react-facebook-pixel")
         .then((x) => x.default)
         .then((ReactPixel) => {

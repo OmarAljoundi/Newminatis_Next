@@ -224,7 +224,7 @@ export const ExpressCheckoutWithEmail: FC<IExpressCheckout> = ({
     if (!order_create.success) {
       toast.error(order_create.message);
     } else {
-      if (process.env.NODE_ENV === "production") {
+      if (process.env.NEXT_PUBLIC_ENABLE_PIXELS === "true") {
         ReactGA.event("purchase", {
           currency: "USD",
           transaction_id: order_create.depoterOrderId,
@@ -249,7 +249,7 @@ export const ExpressCheckoutWithEmail: FC<IExpressCheckout> = ({
         num_items: contents.length,
         content_name: "Newminatis New Order",
       };
-      if (process.env.NODE_ENV !== "development") {
+      if (process.env.NEXT_PUBLIC_ENABLE_PIXELS === "true") {
         import("react-facebook-pixel")
           .then((x) => x.default)
           .then((ReactPixel) => {
@@ -304,7 +304,7 @@ export const ExpressCheckoutWithEmail: FC<IExpressCheckout> = ({
     if (!order_create.success) {
       toast.error(order_create.message);
     } else {
-      if (process.env.NODE_ENV === "production") {
+      if (process.env.NEXT_PUBLIC_ENABLE_PIXELS === "true") {
         ReactGA.event("purchase", {
           currency: "USD",
           transaction_id: order_create.depoterOrderId,
@@ -331,7 +331,7 @@ export const ExpressCheckoutWithEmail: FC<IExpressCheckout> = ({
         content_name: "Newminatis New Order",
       };
 
-      if (process.env.NODE_ENV === "production") {
+      if (process.env.NEXT_PUBLIC_ENABLE_PIXELS === "true") {
         import("react-facebook-pixel")
           .then((x) => x.default)
           .then((ReactPixel) => {
