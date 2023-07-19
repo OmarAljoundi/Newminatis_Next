@@ -409,7 +409,7 @@ export const ExpressCheckoutNoEmail = () => {
 
   return (
     <>
-      {loading ? (
+      {loading && (
         <div className="flex justify-center items-center w-full mb-4 lg:hidden">
           <fieldset className="border p-4 max-w-7xl w-full">
             <legend className="text-center font-bold text-xl">
@@ -417,23 +417,23 @@ export const ExpressCheckoutNoEmail = () => {
             </legend>
             <Skeleton height={60} />
           </fieldset>
-        </div> ? (
-          paymentRequest(
-            <div className="flex justify-center items-center w-full mb-4 lg:hidden">
-              <fieldset className="border p-4 max-w-7xl w-full">
-                <legend className="text-center font-bold text-xl">
-                  Express Checkout
-                </legend>
-                <PaymentRequestButtonElement
-                  options={{
-                    paymentRequest: paymentRequest,
-                  }}
-                />
-              </fieldset>
-            </div>
-          )
-        ) : null
-      ) : null}
+        </div>
+      )}
+
+      {paymentRequest && !loading && (
+        <div className="flex justify-center items-center w-full mb-4">
+          <fieldset className="border p-4 max-w-7xl w-full">
+            <legend className="text-center font-bold text-xl">
+              Express Checkout
+            </legend>
+            <PaymentRequestButtonElement
+              options={{
+                paymentRequest: paymentRequest,
+              }}
+            />
+          </fieldset>
+        </div>
+      )}
     </>
   );
   {

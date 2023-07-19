@@ -58,9 +58,9 @@ export default function CartClientPage() {
             </div>
           </div>
 
-          <div className="lg:col-span-2 lg:top-6 lg:sticky bg-zinc-900">
+          <div className="lg:col-span-2 lg:top-6 lg:sticky flex flex-col lg:flex-col-reverse ">
+            <EDD />
             <div className="border border-gray-200 border-opacity-90 bg-white p-3 divide-y divide-zinc-200">
-              <EDD />
               <div className="py-3 grid grid-cols-2 px-3">
                 <div className="grid gap-y-1">
                   <span className="text-xs xl:text-sm font-medium">
