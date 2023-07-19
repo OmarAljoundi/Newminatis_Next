@@ -55,37 +55,11 @@ const AuthForm: FC = () => {
         await update({
           userAddress: [...authedSession.user.userAddress, result.userAddress],
         });
-      //dispatch(AddUserAddress(result.userAddress));
-      if (process.env.NODE_ENV != "development") {
-        // await pushFacebookEvent();
-      }
+
       setLoading(false);
       router.push("/payment");
     }
   };
-
-  // const pushFacebookEvent = async () => {
-  //   var items = cart?.map((i) => ({
-  //     id: i.sku,
-  //     quantity: i.qty,
-  //     item_price: i.price,
-  //   }));
-  //   await FacebookService.pushEvent({
-  //     data: [
-  //       {
-  //         event_name: InitiateCheckoutEvent,
-  //         user_data: grapUserData(auth),
-  //         event_source_url: window.location.href,
-  //         custom_data: {
-  //           content_category: "product",
-  //           currency: "USD",
-  //           value: getTotalPrice(cart).toString(),
-  //           contents: items,
-  //         },
-  //       },
-  //     ],
-  //   });
-  // };
 
   const deleteAddress = async (id: number) => {
     const result = (await onDeleteAddress(id)) as IBaseResponse;
@@ -122,10 +96,6 @@ const AuthForm: FC = () => {
       selectedAddress: selected || 0,
       userAddress: authedSession?.user.userAddress,
     });
-    //dispatch(SelectUserAddress(selected || 0));
-    if (process.env.NODE_ENV != "development") {
-      //await pushFacebookEvent();
-    }
     setLoading(false);
     router.push("/payment");
   };

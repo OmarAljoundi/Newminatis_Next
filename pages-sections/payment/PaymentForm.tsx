@@ -129,7 +129,7 @@ export default function PaymentForm({ totalAfterDiscount, guestUser }) {
       setIsLoading(false);
       toast.error(order_create.message);
     } else {
-      if (process.env.NODE_ENV !== "development") {
+      if (process.env.NEXT_PUBLIC_ENABLE_PIXELS === "true") {
         ReactGA.event("purchase", {
           currency: "USD",
           transaction_id: order_create.depoterOrderId,
@@ -147,7 +147,7 @@ export default function PaymentForm({ totalAfterDiscount, guestUser }) {
         });
       });
 
-      if (process.env.NODE_ENV !== "development") {
+      if (process.env.NEXT_PUBLIC_ENABLE_PIXELS === "true") {
         var _Purchase: Purchase = {
           contents: contents,
           content_type: "product",
@@ -211,7 +211,7 @@ export default function PaymentForm({ totalAfterDiscount, guestUser }) {
       setIsLoading(false);
       toast.error(order_create.message);
     } else {
-      if (process.env.NODE_ENV !== "development") {
+      if (process.env.NEXT_PUBLIC_ENABLE_PIXELS === "true") {
         ReactGA.event("purchase", {
           currency: "USD",
           transaction_id: order_create.depoterOrderId,
@@ -229,7 +229,7 @@ export default function PaymentForm({ totalAfterDiscount, guestUser }) {
         });
       });
 
-      if (process.env.NODE_ENV !== "development") {
+      if (process.env.NEXT_PUBLIC_ENABLE_PIXELS === "true") {
         var _Purchase: Purchase = {
           contents: contents,
           content_type: "product",
