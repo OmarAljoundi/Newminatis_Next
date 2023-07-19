@@ -34,6 +34,15 @@ export const CategorySections: FC<CategorySectionsProp> = ({
               </Link>
             </li>
           ))}
+          <li key={"Explore All"} className="flex">
+            <Link
+              href={`/shop/${category.description.toLowerCase()}`}
+              className="hover:text-gray-800"
+              onClick={() => close()}
+            >
+              Explore All
+            </Link>
+          </li>
         </ul>
       </div>
     </div>

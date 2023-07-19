@@ -1,5 +1,5 @@
 "use client";
-import { Box } from "@mui/material";
+import { Box, Skeleton } from "@mui/material";
 import {
   useStripe,
   useElements,
@@ -42,6 +42,7 @@ export const ExpressCheckoutNoEmail = () => {
   const stripe = useStripe();
   const elements = useElements();
   const [paymentRequest, setPaymentRequest] = useState<any | null>(null);
+  const [loading, setLoading] = useState(false);
   const cart = useAppSelector((x) => x.Store.CartReducer?.CartItems);
   const _setting = useAppSelector((x) => x.Store.SettingReducer.setting);
   const dispatch = useAppDispatch();
@@ -60,6 +61,7 @@ export const ExpressCheckoutNoEmail = () => {
     if (!stripe || !elements) {
       return;
     }
+    setLoading(true);
 
     var items: Items[] = [];
     cart?.map((i) => {
@@ -103,11 +105,15 @@ export const ExpressCheckoutNoEmail = () => {
       },
     });
 
-    pr.canMakePayment().then((res) => {
-      if (res) {
-        setPaymentRequest(pr);
-      }
-    });
+    pr.canMakePayment()
+      .then((res) => {
+        if (res) {
+          setPaymentRequest(pr);
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
 
     pr.on("shippingaddresschange", async (ev) => {
       if (ev.shippingAddress.country) {
@@ -403,15 +409,52 @@ export const ExpressCheckoutNoEmail = () => {
 
   return (
     <>
-      {paymentRequest && (
-        <Box my={2}>
-          <PaymentRequestButtonElement
-            options={{
-              paymentRequest: paymentRequest,
-            }}
-          />
-        </Box>
-      )}
+      {loading ? (
+        <div className="flex justify-center items-center w-full mb-4 lg:hidden">
+          <fieldset className="border p-4 max-w-7xl w-full">
+            <legend className="text-center font-bold text-xl">
+              Express Checkout
+            </legend>
+            <Skeleton height={60} />
+          </fieldset>
+        </div> ? (
+          paymentRequest(
+            <div className="flex justify-center items-center w-full mb-4 lg:hidden">
+              <fieldset className="border p-4 max-w-7xl w-full">
+                <legend className="text-center font-bold text-xl">
+                  Express Checkout
+                </legend>
+                <PaymentRequestButtonElement
+                  options={{
+                    paymentRequest: paymentRequest,
+                  }}
+                />
+              </fieldset>
+            </div>
+          )
+        ) : null
+      ) : null}
     </>
   );
+  {
+    /* </div>
+    <div className="p-3 border border-zinc-400 relative mt-6 mb-4">
+      <h2 className="absolute -top-1/2 translate-y-1/2  bg-[#f4f4f4] font-bold">
+        Express Checkout
+      </h2>
+      {!loading ? (
+        <Skeleton height={60} />
+      ) : (
+        paymentRequest && (
+          <Box my={2}>
+            <PaymentRequestButtonElement
+              options={{
+                paymentRequest: paymentRequest,
+              }}
+            />
+          </Box>
+        )
+      )}
+    </div> */
+  }
 };
