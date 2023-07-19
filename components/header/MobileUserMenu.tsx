@@ -19,13 +19,15 @@ export default function MobileUserMenu() {
                               transition-all duration-300"
             >
               <Avatar
-                title="OMAR JUNDI"
-                alt="OMAR JUNDI"
+                title={session.user.email}
+                alt={session.user.email}
                 className="-mr-1 h-5 w-5"
                 aria-hidden="true"
                 sx={{ width: 35, height: 35 }}
               >
-                <span className="text-black text-sm">OM</span>
+                <span className="text-black text-sm">
+                  {session.user.email.substring(0, 2).toUpperCase()}
+                </span>
               </Avatar>
             </Menu.Button>
           </div>

@@ -130,6 +130,11 @@ export default function CheckoutClientPage() {
 
   return (
     <div>
+      {
+        <Elements stripe={stripePromise}>
+          <ExpressCheckoutNoEmail />
+        </Elements>
+      }
       {userLoad == false && orderLoad == false ? (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-4 gap-y-2">
           <div>
@@ -144,10 +149,6 @@ export default function CheckoutClientPage() {
             />
           </div>
           <div className="col-span-1 lg:col-span-2">
-            <Elements stripe={stripePromise}>
-              <ExpressCheckoutNoEmail />
-            </Elements>
-
             {status == "loading" && <AddressFormSkeleton />}
 
             {status == "authenticated" ? (

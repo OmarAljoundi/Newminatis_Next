@@ -55,54 +55,40 @@ export const ShippingInfo = () => {
   const SI = useAppSelector((x) => x.Store.ContentReducer?.Content);
   const rows = [
     createData("Dubai, Sharjah", "SAME DAY", "FREE"),
-    createData("GCC and Middle East", "3-5 Business Days ", "FREE"),
-    createData("All other regions", "4-7 Business Days ", "FREE"),
+    createData("GCC and Middle East", "3-5 Business Days ", "FREE Above $300"),
+    createData("All other regions", "4-7 Business Days ", "FREE Above $300"),
   ];
   return (
-    <div>
-      <TableContainer>
-        <Table
-          sx={{ minWidth: 200 }}
-          size="small"
-          aria-label="customized table"
-        >
-          <TableHead>
-            <StyledTableRow>
-              <StyledTableCell>LOCATION</StyledTableCell>
-              <StyledTableCell align="left">DELIVERY TIME</StyledTableCell>
-              <StyledTableCell align="left">COST</StyledTableCell>
-            </StyledTableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row) => (
-              <StyledTableRow
-                key={row.LOCATION}
-                sx={{
-                  "&:last-child td, &:last-child th": {
-                    border: 0,
-                  },
-                }}
+    <div className="relative overflow-x-auto">
+      <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+        <thead className="text-xs uppercase bg-gray-700 text-gray-400">
+          <tr>
+            <th scope="col" className="px-2 py-3 text-xs">
+              LOCATION
+            </th>
+            <th scope="col" className="px-2 py-3 text-xs">
+              DELIVERY TIME
+            </th>
+            <th scope="col" className="px-2 py-3 text-xs">
+              COST
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+              <th
+                scope="row"
+                className="px-2 py-1 font-medium text-gray-900 whitespace-nowrap dark:text-white text-xs"
               >
-                <StyledTableCell align="left">{row.LOCATION}</StyledTableCell>
-                <StyledTableCell align="left">
-                  {row.DELIVERY_TIME}
-                </StyledTableCell>
-                <StyledTableCell align="left">{row.COST}</StyledTableCell>
-              </StyledTableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      {SI?.ourStory?.shippingInfoSingle && (
-        <Box mt={2} textAlign={"left"}>
-          <Paragraph
-            fontWeight={"700"}
-            dangerouslySetInnerHTML={{
-              __html: SI?.ourStory?.shippingInfoSingle,
-            }}
-          ></Paragraph>
-        </Box>
-      )}
+                {row.LOCATION}
+              </th>
+              <td className="px-2 py-1 text-xs">{row.DELIVERY_TIME}</td>
+              <td className="px-2 py-1 text-xs">{row.COST}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };

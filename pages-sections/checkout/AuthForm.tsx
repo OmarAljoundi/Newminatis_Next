@@ -234,7 +234,7 @@ const AuthForm: FC = () => {
         <Card sx={{ mb: 4 }} elevation={1} role={"drawer"}>
           {selected === null && (
             <>
-              <H2 mb={2}>Shipping Address</H2>
+              <H2 mb={2}>Shipping Information</H2>
               <Grid item xs={12}>
                 <FlexBetween>
                   <TextField
@@ -410,7 +410,7 @@ const AuthForm: FC = () => {
                   />
                   <TextField
                     fullWidth
-                    label="Delivery Instruction"
+                    label="Delivery Instruction(s)"
                     onBlur={handleBlur}
                     onChange={handleChange}
                     sx={{ mb: 3 }}

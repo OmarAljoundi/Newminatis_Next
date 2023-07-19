@@ -89,7 +89,7 @@ const ForgetPasswordClient = () => {
               value={values.email}
               onChange={handleChange}
               label="Email"
-              placeholder="exmple@mail.com"
+              placeholder="example@mail.com"
               error={!!touched.email && !!errors.email}
               helperText={(touched.email && errors.email) as string}
             />

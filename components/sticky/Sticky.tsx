@@ -38,7 +38,9 @@ export const StyledBox = styled<FC<StyledBoxProps>>(
   "& .hold": {
     zIndex: 5,
     boxShadow: "none",
-    position: "relative",
+    left: 0,
+    right: 0,
+    position: "fixed",
   },
 
   "& .fixed": {
@@ -46,12 +48,9 @@ export const StyledBox = styled<FC<StyledBoxProps>>(
     right: 0,
     zIndex: 3,
     position: "fixed",
-    top: `${fixedOn}px`,
     boxShadow: theme.shadows[2],
-    transition: "all 350ms ease-in-out",
-    animation: `${slideDown} 350ms ${theme.transitions.easing.sharp}`,
   },
-  "& + .section-after-sticky": { paddingTop: fixed ? componentHeight : 0 },
+  "& + .section-after-sticky": { paddingTop: "95px" },
 }));
 
 const Sticky: FC<StickyProps> = ({
