@@ -15,6 +15,7 @@ export default function ProductImagesSection({ product }) {
           clickable: true,
         }}
         navigation={false}
+        loop={true}
       >
         <>
           {product?.productImages.map((slide, i) => (

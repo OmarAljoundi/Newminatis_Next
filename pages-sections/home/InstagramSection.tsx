@@ -1,6 +1,6 @@
 "use client";
 import { AxiosResponse } from "axios";
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
@@ -14,18 +14,9 @@ import { InstgramResponse } from "@/interface/InstgramResponse";
 import { TInstagram } from "@/types/TInstagram";
 import { BlurImage } from "@/components/BlurImage";
 
-export const InstagramSection = () => {
-  const [instagramFeeds, setInstagramFeeds] = useState<TInstagram[]>([]);
-  const fetchInstagramData = async () => {
-    const response =
-      (await SettingService.getInstgramFeed()) as AxiosResponse<InstgramResponse>;
-
-    setInstagramFeeds(response.data.instagram);
-  };
-  useEffect(() => {
-    fetchInstagramData();
-  }, []);
-
+export const InstagramSection: FC<{ instagramFeeds: TInstagram[] }> = ({
+  instagramFeeds,
+}) => {
   return (
     <>
       <div className="relative">

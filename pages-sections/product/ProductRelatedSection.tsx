@@ -50,8 +50,8 @@ const ProductRelatedSection: FC<RelatedProductsProps> = ({ related, id }) => {
   return (
     <article className="mt-5 md:mt-10 pt-3">
       {relatedProducts?.length > 0 && (
-        <h2 className="px-3 lg:px-0 text-lg lg:text-2xl mb-3">
-          Related Products
+        <h2 className="px-3 lg:px-0 text-2xl lg:text-4xl mb-3 text-center mt-0 md:my-6">
+          You might also like
         </h2>
       )}
 

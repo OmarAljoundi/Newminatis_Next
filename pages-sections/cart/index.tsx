@@ -41,6 +41,11 @@ export default function CartClientPage() {
 
   return (
     <div className="max-w-7xl">
+      {!load && (
+        <Elements stripe={stripePromise}>
+          <ExpressCheckoutNoEmail />
+        </Elements>
+      )}
       <div className="mx-auto">
         <div className="grid grid-cols-1  lg:gap-x-16 lg:grid-cols-6 items-start  gap-y-10">
           <div className="md:col-span-3 lg:col-span-4 ">
@@ -93,23 +98,6 @@ export default function CartClientPage() {
                   >
                     Checkout Now
                   </Button>{" "}
-                  {!load && (
-                    <Elements
-                      stripe={stripePromise}
-                      options={{
-                        loader: "auto",
-                        appearance: {
-                          disableAnimations: false,
-                          variables: {
-                            borderRadius: "8px",
-                          },
-                          theme: "stripe",
-                        },
-                      }}
-                    >
-                      <ExpressCheckoutNoEmail />
-                    </Elements>
-                  )}
                 </div>
               </div>
             </div>

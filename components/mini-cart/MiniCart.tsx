@@ -309,7 +309,7 @@ const MiniCart: FC<MiniCartProps> = ({ toggleSidenav, open }) => {
                           Checkout
                         </Link>
                         <Elements stripe={stripePromise}>
-                          <ExpressCheckoutNoEmail />
+                          <ExpressCheckoutNoEmail showLoader={false} />
                         </Elements>
                       </div>
                       <div className="mt-2 flex justify-center text-center text-sm text-gray-500">

@@ -38,7 +38,9 @@ import SettingService from "@/service/SettingService";
 import { TShoppingSession } from "@/types/TCheckoutSessionRequest";
 import { IShoppingSessionResponse } from "@/interface/IShoppingSessionResponse";
 
-export const ExpressCheckoutNoEmail = () => {
+export const ExpressCheckoutNoEmail: FC<{ showLoader?: boolean }> = ({
+  showLoader = true,
+}) => {
   const stripe = useStripe();
   const elements = useElements();
   const [paymentRequest, setPaymentRequest] = useState<any | null>(null);
@@ -407,35 +409,52 @@ export const ExpressCheckoutNoEmail = () => {
     return result.clientSecret;
   };
 
-  return (
-    <>
-      {loading && (
-        <div className="flex justify-center items-center w-full mb-4 lg:hidden">
-          <fieldset className="border p-4 max-w-7xl w-full">
-            <legend className="text-center font-bold text-xl">
-              Express Checkout
-            </legend>
-            <Skeleton height={60} />
-          </fieldset>
-        </div>
-      )}
+  if (showLoader) {
+    return (
+      <>
+        {loading && (
+          <div className="flex justify-center items-center w-full mb-4 lg:hidden">
+            <fieldset className="border p-4 max-w-7xl w-full">
+              <legend className="text-center font-bold text-xl">
+                Express Checkout
+              </legend>
+              <Skeleton height={60} />
+            </fieldset>
+          </div>
+        )}
 
-      {paymentRequest && !loading && (
-        <div className="flex justify-center items-center w-full mb-4">
-          <fieldset className="border p-4 max-w-7xl w-full">
-            <legend className="text-center font-bold text-xl">
-              Express Checkout
-            </legend>
+        {paymentRequest && !loading && (
+          <div className="flex justify-center items-center w-full mb-4">
+            <fieldset className="border p-4 max-w-7xl w-full">
+              <legend className="text-center font-bold text-xl">
+                Express Checkout
+              </legend>
+              <PaymentRequestButtonElement
+                options={{
+                  paymentRequest: paymentRequest,
+                }}
+              />
+            </fieldset>
+          </div>
+        )}
+      </>
+    );
+  } else {
+    return (
+      <div>
+        {paymentRequest && (
+          <Box my={2}>
             <PaymentRequestButtonElement
               options={{
                 paymentRequest: paymentRequest,
               }}
             />
-          </fieldset>
-        </div>
-      )}
-    </>
-  );
+          </Box>
+        )}
+      </div>
+    );
+  }
+
   {
     /* </div>
     <div className="p-3 border border-zinc-400 relative mt-6 mb-4">
@@ -445,15 +464,7 @@ export const ExpressCheckoutNoEmail = () => {
       {!loading ? (
         <Skeleton height={60} />
       ) : (
-        paymentRequest && (
-          <Box my={2}>
-            <PaymentRequestButtonElement
-              options={{
-                paymentRequest: paymentRequest,
-              }}
-            />
-          </Box>
-        )
+       
       )}
     </div> */
   }
