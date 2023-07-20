@@ -145,7 +145,7 @@ const Header = () => {
                               selected
                                 ? "border-gray-600 text-gray-600"
                                 : "border-transparent text-gray-900",
-                              "flex-1 whitespace-nowrap border-b-2 px-1 py-4 text-base font-medium"
+                              "flex-1 whitespace-nowrap border-b-2 px-1 py-4 text-base font-medium uppercase"
                             )
                           }
                         >
@@ -164,24 +164,37 @@ const Header = () => {
                           close={closeMenu}
                           category={category}
                         />
-                        <FeaturedProducts
+                        {/* <FeaturedProducts
                           close={closeMenu}
                           category={category}
-                        />
+                        /> */}
                       </Tab.Panel>
                     ))}
                   </Tab.Panels>
                 </Tab.Group>
 
                 <div className="space-y-6 border-t border-gray-200 px-4 py-6">
-                  {navigation.pages.map((page) => (
+                  {navigation.specialLinks?.map((page) => (
                     <div key={page.name} className="flow-root">
-                      <a
+                      <Link
                         href={page.href}
-                        className="-m-2 block p-2 font-medium text-gray-900"
+                        className="-m-2 block p-2 font-medium text-gray-900 uppercase"
                       >
                         {page.name}
-                      </a>
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="space-y-6 border-t border-gray-200 px-4 py-6">
+                  {navigation.pages.map((page) => (
+                    <div key={page.name} className="flow-root">
+                      <Link
+                        href={page.href}
+                        className="-m-2 block p-2 font-medium text-gray-900 uppercase"
+                      >
+                        {page.name}
+                      </Link>
                     </div>
                   ))}
                 </div>
@@ -227,7 +240,7 @@ const Header = () => {
                 </Link>
               </div>
               <Popover.Group className="hidden lg:ml-8 lg:block lg:self-stretch">
-                <div className="flex h-full space-x-8">
+                <div className="flex h-full space-x-4 xl:space-x-8">
                   {categories?.map((category) => (
                     <Popover key={category.name} className="flex">
                       {({ open, close }) => (
@@ -238,7 +251,7 @@ const Header = () => {
                                 open
                                   ? "border-gray-600-600 text-gray-600"
                                   : "border-transparent text-gray-700 hover:text-gray-800",
-                                "title relative z-10 -mb-px flex items-center border-b-2 pt-px text-sm font-medium transition-colors duration-200 ease-out"
+                                "title relative z-10 -mb-px flex items-center border-b-2 pt-px text-xs xl:text-sm font-medium transition-colors duration-200 ease-out uppercase"
                               )}
                             >
                               {category.name}
@@ -246,7 +259,7 @@ const Header = () => {
                           </div>
                           <Fade in={open} exit={!open} unmountOnExit>
                             <div>
-                              <Popover.Panel className="absolute inset-x-0 top-full text-sm text-gray-500">
+                              <Popover.Panel className="absolute inset-x-0 top-full text-xs xl:text-sm text-gray-500">
                                 {/* Presentational element used to render the bottom shadow, if we put the shadow on the actual panel it pokes out the top, so we use this shorter element to hide the top of the shadow */}
                                 <div
                                   className="absolute inset-0 top-1/2 bg-white shadow"
@@ -275,11 +288,21 @@ const Header = () => {
                     </Popover>
                   ))}
 
+                  {navigation.specialLinks.map((page) => (
+                    <Link
+                      key={page.name}
+                      href={page.href}
+                      className="title flex items-center text-xs xl:text-sm font-medium text-gray-700 hover:text-gray-800 uppercase"
+                    >
+                      {page.name}
+                    </Link>
+                  ))}
+
                   {navigation.pages.map((page) => (
                     <Link
                       key={page.name}
                       href={page.href}
-                      className="title flex items-center text-sm font-medium text-gray-700 hover:text-gray-800"
+                      className="title flex items-center text-xs xl:text-sm font-medium text-gray-700 hover:text-gray-800 uppercase"
                     >
                       {page.name}
                     </Link>
@@ -296,7 +319,7 @@ const Header = () => {
                   ) : (
                     <Link
                       href="/auth/login"
-                      className="title text-sm font-medium text-gray-700 hover:text-gray-800"
+                      className="title text-xs xl:text-sm font-medium text-gray-700 hover:text-gray-800"
                     >
                       Sign in
                     </Link>
@@ -305,7 +328,7 @@ const Header = () => {
                   {status === "unauthenticated" && (
                     <Link
                       href="/auth/register"
-                      className="title text-sm font-medium text-gray-700 hover:text-gray-800"
+                      className="title text-xs xl:text-sm font-medium text-gray-700 hover:text-gray-800"
                     >
                       Create account
                     </Link>

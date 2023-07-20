@@ -32,4 +32,7 @@ export const navigation = {
     { name: "About Us", href: "/about" },
     { name: "Blogs", href: "/blogs" },
   ],
+  specialLinks: [
+    { name: "Latest Collection", href: "/shop/latest-collection" },
+  ],
 };

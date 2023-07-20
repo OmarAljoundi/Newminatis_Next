@@ -19,7 +19,6 @@ const SocialButtons: FC<SocialButtonsProps> = ({ message, setLoad }) => {
       redirect: false,
     })
       .then((callback) => {
-        alert(JSON.stringify(callback));
         if (callback?.ok) {
           toast.success(message);
         }

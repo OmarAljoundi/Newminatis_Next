@@ -53,15 +53,23 @@ export default function ProductSection() {
       MemberName: "Status",
     });
     if (params?.category && isFetched == true) {
-      SearchQuery.FilterByOptions.push({
-        MemberName: "category",
-        FilterFor: categories?.find(
-          (x) =>
-            x.description.toLowerCase() ==
-            (params?.category as string).toLowerCase()
-        )?.name,
-        FilterOperator: eFilterOperator.Equal,
-      });
+      if (params?.category == "latest-collection") {
+        SearchQuery.FilterByOptions.push({
+          MemberName: "tags",
+          FilterFor: "Latest Collection",
+          FilterOperator: eFilterOperator.Equal,
+        });
+      } else {
+        SearchQuery.FilterByOptions.push({
+          MemberName: "category",
+          FilterFor: categories?.find(
+            (x) =>
+              x.description.toLowerCase() ==
+              (params?.category as string).toLowerCase()
+          )?.name,
+          FilterOperator: eFilterOperator.Equal,
+        });
+      }
     }
     if (params?.subCategory) {
       SearchQuery.FilterByOptions.push({

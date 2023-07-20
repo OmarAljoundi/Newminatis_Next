@@ -93,99 +93,51 @@ export default function ProductInfoSection({ response }) {
           <ProductSizeSection product={product} />
         </div>
 
-        <Box sx={{ width: "100%" }}>
-          <Box sx={{ width: "100%" }}>
-            {closeDay != "" ? (
-              <Box
-                py={1}
-                sx={{
-                  borderRadius: "4px",
-                  background: "white",
-                }}
-              >
-                <FlexBetween
-                  alignItems={"center"}
-                  justifyContent={"flex-start"}
-                >
-                  <MdOutlineWatchLater
-                    color="black"
-                    size={25}
-                    style={{ margin: "0px 0px 0px 14px" }}
-                  />
-                  <H6
-                    textAlign={"left"}
-                    display={"inline-block"}
-                    color="black"
-                    sx={{ textTransform: "uppercase" }}
-                    px={1}
-                  >
-                    Receive you order <strong>{closeDay} </strong> if you order
-                    within <strong>{hours} hours </strong>
-                  </H6>
-                </FlexBetween>
-              </Box>
-            ) : (
-              <Box
-                py={1}
-                sx={{
-                  borderRadius: "4px",
-                  background: "white",
-                }}
-              >
-                <FlexBetween
-                  alignItems={"flex-start"}
-                  justifyContent={"flex-start"}
-                >
-                  <MdOutlineWatchLater
-                    color="black"
-                    size={40}
-                    style={{ margin: "0px 0px 0px 14px" }}
-                  />
-                  <H6
-                    textAlign={"left"}
-                    display={"inline-block"}
-                    color="black"
-                    px={1}
-                    sx={{ textTransform: "uppercase" }}
-                  >
+        <div className="shadow-lg bg-white divide-y-2 divide-zinc-500 divide-opacity-50 border-t-4 border-b-4 ">
+          <div className={`flex items-start py-4`}>
+            <div className="rounded-full justify-center items-center flex-shrink-0 w-8 h-8 flex">
+              <span className="text-white font-semibold text-lg">
+                <MdOutlineWatchLater color="black" size={25} />
+              </span>
+            </div>
+            <div className="ml-4">
+              <p className="text-black text-base font-semibold">
+                {closeDay !== "" ? (
+                  <span>
+                    Receive you order{" "}
+                    <strong className="text-green-700">{closeDay} </strong> if
+                    you order within{" "}
+                    <strong className="text-red-500">{hours} hours </strong>
+                  </span>
+                ) : (
+                  <span>
                     Receive you order{" "}
                     <span
                       dangerouslySetInnerHTML={{
                         __html: getDatesBetween(minEdd, maxEdd, currentDate),
                       }}
                     ></span>{" "}
-                    if you order within <strong>{hours} hours </strong>
-                  </H6>
-                </FlexBetween>
-              </Box>
-            )}
-          </Box>
-          <Box
-            py={1}
-            sx={{
-              borderRadius: "4px",
-              background: "white",
-            }}
-          >
-            <FlexBetween alignItems={"center"} justifyContent={"flex-start"}>
-              <FiPackage
-                color="black"
-                size={25}
-                style={{ margin: "0px 0px 0px 14px" }}
-              />
-              <H6
-                textAlign={"left"}
-                display={"inline-block"}
-                fontFamily={"GlacialIndifference-Bold"}
-                color="black"
-                className="text-14"
-                px={1}
-              >
-                FREE WORLDWIDE EXPRESS SHIPPING
-              </H6>
-            </FlexBetween>
-          </Box>
-        </Box>
+                    if you order within{" "}
+                    <strong className="text-red-500"> {hours} hours </strong>
+                  </span>
+                )}
+              </p>
+            </div>
+          </div>
+          <div className={`flex items-start py-4`}>
+            <div className="rounded-full justify-center items-center flex-shrink-0 w-8 h-8 flex">
+              <span className="text-white font-semibold text-lg">
+                <FiPackage color="black" size={25} />
+              </span>
+            </div>
+            <div className="ml-4">
+              <p className="text-black text-base font-semibold ">
+                FREE WORLDWIDE EXPRESS SHIPPING FOR ORDERS ABOVE $300
+              </p>
+            </div>
+          </div>
+        </div>
+
         <div className="w-full pt-4">
           <div className="mx-auto w-full bg-transparent p-0">
             <Disclosure>

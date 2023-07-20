@@ -183,7 +183,7 @@ export const getDatesBetween = (
   if (_maxEdd.getDate() == _currentDate.getDate()) {
     return "<strong>Today!</<strong>";
   } else {
-    return `between <strong>${_minEdd.toDateString()}</strong> and <strong>${_maxEdd.toDateString()}</strong>`;
+    return `between <strong class="text-green-700">${_minEdd.toDateString()}</strong> and <strong class="text-green-700">${_maxEdd.toDateString()}</strong>`;
   }
 };
 

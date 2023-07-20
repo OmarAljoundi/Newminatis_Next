@@ -241,6 +241,7 @@ export const variants = [
     label: "S",
     value: "S",
   },
+
   {
     label: "M",
     value: "M",
@@ -249,9 +250,18 @@ export const variants = [
     label: "L",
     value: "L",
   },
+
   {
     label: "XL",
     value: "XL",
+  },
+  {
+    label: "S/M",
+    value: "S/M",
+  },
+  {
+    label: "L/XL",
+    value: "L/XL",
   },
   {
     label: "FREE SIZE",

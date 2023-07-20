@@ -2,44 +2,51 @@
 import { BlurImage } from "@/components/BlurImage";
 import CategorySectionCreator from "@/components/CategorySectionCreator";
 import { H2 } from "@/components/Typography";
-import { Grid } from "@mui/material";
+import { Button, Grid } from "@mui/material";
 import Image from "next/legacy/image";
 import Link from "next/link";
+import { useState } from "react";
 const images = [
   {
-    photo: "/assets/images/custom/pic_1.jpg",
-    text: "Men",
+    photo: "/assets/images/custom/pic_3.jpg",
+    text: "Shop Men",
     url: `shop/men`,
     offset: "0",
     delay: "0",
     type: "fade-left",
+    cc: "mx-auto",
   },
   {
     photo: "/assets/images/custom/pic_4.jpg",
-    text: "Women",
+    text: "Shop Women",
     url: `shop/women`,
     offset: "0",
     delay: "400",
     type: "fade-right",
+    cc: "mx-auto",
   },
   {
-    photo: "/assets/images/custom/Collection(Dune).jpg",
-    text: "DUNE",
-    url: "shop/dune",
-    offset: "0",
-    delay: "800",
-    type: "fade-left",
-  },
-  {
-    photo: "/assets/images/custom/unisex2.jpg",
-    text: "UNISEX",
+    photo: "/assets/images/custom/pic_2.jpg",
+    text: "Shop UNISEX",
     url: "shop/unisex",
     offset: "0",
     delay: "1200",
     type: "fade-right",
+    cc: "mx-auto",
   },
+  // {
+  //   photo: "/assets/images/custom/Collection(Dune).jpg",
+  //   text: "Shop DUNE",
+  //   url: "shop/dune",
+  //   offset: "0",
+  //   delay: "800",
+  //   type: "fade-left",
+  //   cc: "md:ml-0 md:mr-auto mx-auto",
+  // },
 ];
+
 const CollectionSection = () => {
+  const [isLoading, setLoading] = useState(true);
   return (
     <CategorySectionCreator
       alignItems={"baseline"}
@@ -49,48 +56,46 @@ const CollectionSection = () => {
     >
       <section className="">
         <div className="max-w-7xl mx-auto ">
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
             {images.map((item, index) => (
-              <div
-                className="relative overflow-hidden h-56 md:h-96"
-                key={index}
-              >
-                <div className="absolute top-0 left-0 right-0 bottom-0">
-                  <BlurImage
-                    image={item.photo}
-                    title={item.text}
-                    loading="eager"
-                    priority="low"
-                    q={85}
-                  />
-                </div>
+              <div className="relative aspect-[1/1] md:aspect-[2/2] overflow-hidden  bg-gray-200 w-full h-full">
+                <Image
+                  alt={"banner"}
+                  src={item.photo}
+                  title={"banner"}
+                  layout="fill"
+                  fetchPriority={"high"}
+                  loading={"eager"}
+                  objectFit="cover"
+                  quality={80}
+                  className={`duration-700 ease-in-out group-hover:opacity-75 ${
+                    isLoading
+                      ? "scale-110 blur-2xl grayscale"
+                      : "scale-100 blur-0 grayscale-0"
+                  })`}
+                  onLoad={() => setLoading(false)}
+                />
 
-                <div
-                  className="p-6 relative h-full hover:backdrop-blur-sm bg-white/30 transition-all duration-500"
-                  style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
+                <div className="absolute bg-gray-800 opacity-50 w-full h-full"></div>
+                <H2
+                  color={"white"}
+                  className={`w-2/4 text-2xl ${item.cc}`}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: "100%",
+                    flexDirection: "column",
+                    textTransform: "uppercase",
+                    textAlign: "center",
+                  }}
                 >
-                  <div className="grid items-end h-full mt-7">
-                    <p className="font-bold text-xs md:text-lg text-white  text-center h-auto">
-                      {item.text}
-                    </p>
-                    <div className="text-center h-full">
-                      <Link
-                        href={item.url}
-                        title=""
-                        className="text-xs transition-all duration-300 font-semibold
-                     text-white px-2 py-1 bg-zinc-900 border-transparent border 
-                      justify-center items-center inline-flex hover:bg-white hover:text-black"
-                        role="button"
-                      >
-                        Shop Now
-                        <span
-                          className="absolute right-0 left-0 top-0 bottom-0"
-                          aria-hidden="true"
-                        ></span>
-                      </Link>
-                    </div>
-                  </div>
-                </div>
+                  <Link href={"/shop"} className=" mt-4">
+                    <Button color="secondary" className="w-32">
+                      <span className="font-bold text-xs">{item.text}</span>
+                    </Button>
+                  </Link>
+                </H2>
               </div>
             ))}
           </div>

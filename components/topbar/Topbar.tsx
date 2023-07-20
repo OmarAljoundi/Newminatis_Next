@@ -63,14 +63,14 @@ const Topbar: FC<TopbarProps> = ({ bgColor }) => {
         <SwiperSlide className="swiper-slider-section">
           <FlexBetween alignItems={"flex-start"} justifyContent={"center"}>
             <span className="marquee_span text-sm block mt-2 text-left font-semibold">
-              FREE WORLDWIDE EXPRESS SHIPPING
+              FREE WORLDWIDE EXPRESS SHIPPING FOR ORDERS ABOVE $300
             </span>
           </FlexBetween>
         </SwiperSlide>
         <SwiperSlide className="swiper-slider-section">
           <FlexBetween alignItems={"flex-start"} justifyContent={"center"}>
             <span className="marquee_span text-sm block mt-2 text-left font-semibold">
-              SAME DAY DELIVERY IN UAE
+              FREE SAME DAY DELIVERY IN UAE
             </span>
           </FlexBetween>
         </SwiperSlide>

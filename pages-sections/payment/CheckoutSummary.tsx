@@ -230,10 +230,10 @@ const CheckoutSummary: FC<Props> = ({
                       )}
                     </del>
                   </Tiny>
-                )}
-              </span>
-              <span className="text-[8px] font-bold text-gray-500">
-                * VAT Inclusive
+                )}{" "}
+                <span className="text-[8px] font-bold text-green-600">
+                  (VAT Inclusive)
+                </span>
               </span>
             </div>
 
@@ -255,33 +255,44 @@ const CheckoutSummary: FC<Props> = ({
 
       <div className="py-3 grid grid-cols-2">
         <div className="grid gap-y-1">
-          <span className="text-xs font-medium">SubTotal</span>
+          <span className="text-xs font-medium uppercase">SubTotal</span>
           {!!TotalDiscount && (
-            <span className="text-xs font-medium text-red-500">Discount</span>
+            <span className="text-xs font-medium text-red-500 uppercase">
+              Discount
+            </span>
           )}
           {!!TotalDiscount && (
-            <span className="text-xs font-medium text-red-500">
+            <span className="text-xs font-medium text-red-500 uppercase">
               Voucher Applied
             </span>
           )}
-          <span className="text-xs font-medium">Shipping & handling</span>
-          {!!DutyCost && <span className="text-xs font-medium">Duties</span>}
+          <span className="text-xs font-medium uppercase">
+            Shipping & handling
+          </span>
+          {!!DutyCost && (
+            <span className="text-xs font-medium uppercase">Custom Duties</span>
+          )}
         </div>
         <div className="grid justify-items-end gap-y-1">
-          <span className="text-xs font-medium">
+          <span className="text-xs font-medium uppercase">
             {currency(getTotalPriceAfterTax(state, TaxRate || 0), _setting)}
           </span>
           {!!TotalDiscount && (
-            <span className="text-xs font-medium text-red-500">
+            <span className="text-xs font-medium text-red-500 uppercase">
               -{currency(TotalDiscount, _setting)}
             </span>
           )}
           {!!TotalDiscount && (
-            <span className="text-xs font-medium text-red-500"> {Voucher}</span>
+            <span className="text-xs font-medium text-red-500 uppercase">
+              {" "}
+              {Voucher}
+            </span>
           )}
-          <span className="text-xs font-medium">{getShippingLabel()}</span>
+          <span className="text-xs font-medium uppercase">
+            {getShippingLabel()}
+          </span>
           {!!DutyCost && (
-            <span className="text-xs font-medium">
+            <span className="text-xs font-medium uppercase">
               {currency(DutyCost!, _setting)}
             </span>
           )}
@@ -290,12 +301,7 @@ const CheckoutSummary: FC<Props> = ({
 
       <div className="py-3 grid grid-cols-2 border-t-2 border-gray-400">
         <div className="grid gap-y-1">
-          <span className="text-lg font-bold">
-            Total{" "}
-            <span className="text-sm font-bold text-gray-400">
-              (VAT Inclusive)
-            </span>
-          </span>
+          <span className="text-lg font-bold uppercase">Total </span>
         </div>
         <div className="grid justify-items-end gap-y-1">
           <span className="text-lg font-bold">
@@ -306,10 +312,10 @@ const CheckoutSummary: FC<Props> = ({
 
       <AddressInfo guestAddress={guestAddress} />
 
-      <div className="grid grid-cols-2  pt-3 gap-x-2">
-        <div className="min-w-[65%]">
+      <div className="grid grid-cols-3  pt-3 gap-x-2">
+        <div className="col-span-2">
           <TextField
-            placeholder="Voucher"
+            placeholder="VOUCHER"
             variant="outlined"
             size="small"
             value={_Voucher}
@@ -342,7 +348,7 @@ const CheckoutSummary: FC<Props> = ({
           color="primary"
           variant="contained"
         >
-          <span className="text-xs font-medium">Apply Voucher</span>
+          <span className="text-xs font-medium">Apply </span>
         </LoadingButton>
       </div>
     </Card>

@@ -3,8 +3,10 @@ import { FC, useEffect, useState } from "react";
 import { Box, Container, Grid } from "@mui/material";
 import { H2, H5 } from "@/components/Typography";
 import { BlurImage } from "@/components/BlurImage";
+import Image from "next/legacy/image";
 
 const AboutSection: FC = () => {
+  const [isLoading, setLoading] = useState(true);
   return (
     <Container
       maxWidth={false}
@@ -28,54 +30,44 @@ const AboutSection: FC = () => {
         zIndex: "2",
       }}
     >
-      <Container sx={{ paddingX: "15px" }}>
-        <Grid container spacing={3} alignItems={"start"} pb={0}>
-          <Grid
-            item
-            sm={12}
-            xs={12}
-            md={6}
-            sx={{ textAlign: "center", margin: "0 auto" }}
-          >
+      <div className="max-w-7xl px-4 mx-auto my-0">
+        <div className="grid lg:grid-cols-2 gap-8 items-start ">
+          <div className="text-center ">
             <div
-              className=""
-              style={{ padding: "0 10px" }}
+              className="relative aspect-[1/1] md:aspect-[2/2] overflow-hidden  bg-gray-200 w-full h-full "
               data-aos="fade-left"
               data-aos-easing="linear"
               data-aos-duration="1000"
             >
-              <BlurImage
-                image={"/assets/images/custom/pic_2.jpg"}
-                title="RADICAL SELF-EXPRESSION"
-                q={80}
-                loading="lazy"
-                priority="low"
-                customAspect={"aspect-[1/1]"}
+              <Image
+                alt={"banner"}
+                src={"/assets/images/custom/Collection(Dune).jpg"}
+                title={"banner"}
+                layout="fill"
+                fetchPriority={"low"}
+                loading={"lazy"}
+                objectFit="cover"
+                quality={90}
+                className={`duration-700 ease-in-out group-hover:opacity-75 ${
+                  isLoading
+                    ? "scale-110 blur-2xl grayscale"
+                    : "scale-100 blur-0 grayscale-0"
+                })`}
+                onLoad={() => setLoading(false)}
               />
+
+              <div className="absolute bg-gray-800 opacity-20 w-full h-full"></div>
             </div>
-          </Grid>
-          <Grid item sm={12} xs={12} md={6}>
-            <Box
-              sx={{
-                textAlign: "left",
-                mt: 3,
-                px: {
-                  xs: "5px",
-                  sm: "5px",
-                  md: "10px",
-                },
-              }}
-            >
+          </div>
+          <div>
+            <div className="text-left px-1 md:px-2">
               <div data-aos="fade-right">
                 <h1 className="title-sub-font text-xl md:text-2xl whitespace-break-spaces">
                   RADICAL SELF-EXPRESSION
                 </h1>
                 <p color={"black"} className="text-base md:text-lg">
                   The idea of expressing oneself authentically and creatively,
-                  without fear of judgment or criticism from others. It
-                  encourages you to push past your comfort zone and explore your
-                  true identity through various forms of art, fashion, music,
-                  and other creative outlets.
+                  without fear of judgment or criticism from others.
                 </p>
               </div>
               <br />
@@ -87,9 +79,6 @@ const AboutSection: FC = () => {
                 <p color={"black"} className="text-base md:text-lg">
                   A style of fashion where the traditional structure and
                   construction of clothing is intentionally altered or undone.
-                  This style of fashion aims to challenge traditional notions of
-                  what clothing should look like and how it should be
-                  constructed.
                 </p>
               </div>
               <br />
@@ -101,16 +90,13 @@ const AboutSection: FC = () => {
                 <p className="text-base md:text-lg">
                   As an avant-garde community, Newminatis defies conventional
                   norms and pushes the limits of fashion by embracing
-                  creativity, innovation, and individuality. Through
-                  experimentation with diverse materials and techniques, we
-                  redefine the fashion landscape, nurturing a vibrant and
-                  supportive avant-garde community.
+                  creativity, innovation, and individuality.
                 </p>
               </div>
-            </Box>
-          </Grid>
-        </Grid>
-      </Container>
+            </div>
+          </div>
+        </div>
+      </div>
     </Container>
   );
 };
