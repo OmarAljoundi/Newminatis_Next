@@ -3,6 +3,7 @@ import {
   PaymentElement,
   useStripe,
   useElements,
+  LinkAuthenticationElement,
 } from "@stripe/react-stripe-js";
 import { StripePaymentElementOptions } from "@stripe/stripe-js";
 import Cookies from "js-cookie";
@@ -33,6 +34,7 @@ const Text =
 
 export default function PaymentForm({ totalAfterDiscount, guestUser }) {
   const stripe = useStripe();
+  const [email, setEmail] = useState("");
   const elements = useElements();
   const { data: authedSession } = useSession();
   const cart = useAppSelector((x) => x.Store.CartReducer?.CartItems);
@@ -272,12 +274,6 @@ export default function PaymentForm({ totalAfterDiscount, guestUser }) {
 
   const paymentElementOptions: StripePaymentElementOptions = {
     layout: "tabs",
-
-    wallets: {
-      applePay: "never",
-      googlePay: "never",
-    },
-
     terms: {
       card: "never",
     },
@@ -286,16 +282,17 @@ export default function PaymentForm({ totalAfterDiscount, guestUser }) {
   return (
     <Card elevation={5} role={"drawer"}>
       <form id="payment-form" onSubmit={handleSubmit}>
-        <>
-          <PaymentElement
-            options={paymentElementOptions}
-            className="payment-form-new"
-          />
-          <H6 sx={{ display: "inline-block" }} my={1.5}>
-            {Text}
-          </H6>
-        </>
-        {/* )} */}
+        <LinkAuthenticationElement
+          id="link-authentication-element"
+          onChange={(e) => setEmail(e.value.email)}
+        />
+        <PaymentElement
+          options={paymentElementOptions}
+          className="payment-form-new"
+        />
+        <H6 sx={{ display: "inline-block" }} my={1.5}>
+          {Text}
+        </H6>
 
         <LoadingButton
           size="small"
