@@ -1,4 +1,7 @@
+export const revalidate = 86400;
+import { PrepareSQObject } from "@/helpers/Extensions";
 import { InstgramResponse } from "@/interface/InstgramResponse";
+import { searchProducts } from "@/lib/serverActions";
 import AboutSection from "@/pages-sections/home/AboutSection";
 import BestSellerSection from "@/pages-sections/home/BestSellerSection";
 import CollectionSection from "@/pages-sections/home/CollectionSection";
@@ -6,9 +9,7 @@ import ContributionSection from "@/pages-sections/home/ContributionSection";
 import HeroSection from "@/pages-sections/home/HeroSection";
 import { InstagramSection } from "@/pages-sections/home/InstagramSection";
 import ValueSection from "@/pages-sections/home/ValueSection";
-import ProductService from "@/service/ProductService";
 import SettingService from "@/service/SettingService";
-import { Order, SearchQuery, eFilterOperator } from "@/types/TSearchQuery";
 import { AxiosResponse } from "axios";
 import { Metadata } from "next";
 import React from "react";
@@ -26,27 +27,6 @@ export const metadata: Metadata = {
   ],
 };
 
-const handleFetchProducts = async () => {
-  let SearchQuery: SearchQuery = {
-    FilterByOptions: [],
-    OrderByOptions: [],
-    PageIndex: 0,
-    PageSize: 8,
-  };
-  SearchQuery.FilterByOptions.push({
-    FilterFor: 1,
-    FilterOperator: eFilterOperator.Equal,
-    MemberName: "Status",
-  });
-
-  SearchQuery.OrderByOptions.push({
-    MemberName: "Priority",
-    SortOrder: Order.DESC,
-  });
-
-  return (await ProductService.searchShop(SearchQuery)).data;
-};
-
 const handleFetchInstagramData = async () => {
   const response =
     (await SettingService.getInstgramFeed()) as AxiosResponse<InstgramResponse>;
@@ -55,8 +35,9 @@ const handleFetchInstagramData = async () => {
 };
 
 export default async function Home() {
+  const _SQ = PrepareSQObject(undefined, 8);
   const [getBestSeller, instagramFees] = await Promise.all([
-    handleFetchProducts(),
+    searchProducts(_SQ),
     handleFetchInstagramData(),
   ]);
 

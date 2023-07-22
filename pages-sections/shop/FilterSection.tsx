@@ -84,8 +84,8 @@ const FilterSection: FC = () => {
 
   const { onGetCategories } = useProductService();
   const [value, setValue] = useState<number[]>([
-    (searchParams?.get("min") as unknown as number) ?? 0,
-    (searchParams?.get("max") as unknown as number) ?? 250,
+    (searchParams?.get("minprice") as unknown as number) ?? 0,
+    (searchParams?.get("maxprice") as unknown as number) ?? 250,
   ]);
 
   const handleChange = (event: Event, newValue: number | number[]) => {
@@ -94,7 +94,7 @@ const FilterSection: FC = () => {
 
   const onMouseUpSlides = () => {
     handleFilterChange(
-      ["min", "max"],
+      ["minprice", "maxprice"],
       [value[0] as unknown as string, value[1] as unknown as string]
     );
   };
@@ -118,15 +118,15 @@ const FilterSection: FC = () => {
 
   useEffect(() => {
     setValue([
-      (searchParams?.get("min") as unknown as number) ?? 0,
-      (searchParams?.get("max") as unknown as number) ?? 250,
+      (searchParams?.get("minprice") as unknown as number) ?? 0,
+      (searchParams?.get("maxprice") as unknown as number) ?? 250,
     ]);
   }, [searchParams]);
 
   const ClearFilter = (queryCleared: string) => {
     switch (queryCleared) {
       case "price":
-        handleFilterChange(["min", "max"], null);
+        handleFilterChange(["minprice", "maxprice"], null);
         break;
       case "color":
         handleFilterChange("color", null);
@@ -166,10 +166,8 @@ const FilterSection: FC = () => {
               </Disclosure.Button>
               <Collapse in={open}>
                 <Disclosure.Panel
-                  // as={Link}
-                  // href={`/shop/${item.description}/${i.description}`}
                   static
-                  className="pt-1 text-sm text-gray-500"
+                  className="pt-1 text-sm text-gray-500 cursor-pointer"
                   style={{ whiteSpace: "break-spaces" }}
                 >
                   <SubCategorySection
@@ -186,7 +184,7 @@ const FilterSection: FC = () => {
       <Divider sx={{ my: 2, borderColor: "white" }} />
       <FlexBetween alignItems={"flex-start"}>
         <H6 mb={2}>Price Range</H6>
-        {(searchParams?.get("min") || searchParams?.get("max")) && (
+        {(searchParams?.get("minprice") || searchParams?.get("maxprice")) && (
           <Tooltip title="clear">
             <IconButton
               onClick={() => ClearFilter("price")}

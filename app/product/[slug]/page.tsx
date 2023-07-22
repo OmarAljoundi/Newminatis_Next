@@ -1,3 +1,4 @@
+export const revalidate = 86400;
 import { IProductResponse } from "@/interface/IProductResponse";
 import ProductService from "@/service/ProductService";
 import { SearchQuery, eFilterOperator } from "@/types/TSearchQuery";

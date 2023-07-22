@@ -282,10 +282,6 @@ export default function PaymentForm({ totalAfterDiscount, guestUser }) {
   return (
     <Card elevation={5} role={"drawer"}>
       <form id="payment-form" onSubmit={handleSubmit}>
-        <LinkAuthenticationElement
-          id="link-authentication-element"
-          onChange={(e) => setEmail(e.value.email)}
-        />
         <PaymentElement
           options={paymentElementOptions}
           className="payment-form-new"
