@@ -1,4 +1,6 @@
 export const revalidate = 86400;
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-cache";
 import { PrepareSQObject, getSubCategories } from "@/helpers/Extensions";
 import { getCategories, searchProducts } from "@/lib/serverActions";
 import Breadcrumb from "@/pages-sections/shop/Breadcrumb";
@@ -27,13 +29,17 @@ export default async function ShopSubCategoryPage({
     )?.name,
     FilterOperator: eFilterOperator.Equal,
   });
-  _SQ.FilterByOptions.push({
-    MemberName: "subcategory",
-    FilterFor: getSubCategories(category as string, categories).find(
-      (x) => x.description == (subCategory as string)
-    )?.id,
-    FilterOperator: eFilterOperator.Equal,
-  });
+
+  if (category !== subCategory) {
+    _SQ.FilterByOptions.push({
+      MemberName: "subcategory",
+      FilterFor: getSubCategories(category as string, categories).find(
+        (x) =>
+          x.description.toLowerCase() == (subCategory.toLowerCase() as string)
+      )?.id,
+      FilterOperator: eFilterOperator.Equal,
+    });
+  }
 
   const data = await Promise.all([searchProducts(_SQ)]);
   return (

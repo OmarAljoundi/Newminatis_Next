@@ -1,4 +1,5 @@
-export const revalidate = 86400;
+export const dynamic = "auto";
+export const revalidate = 3600;
 import { IProductResponse } from "@/interface/IProductResponse";
 import ProductService from "@/service/ProductService";
 import { SearchQuery, eFilterOperator } from "@/types/TSearchQuery";
@@ -11,6 +12,8 @@ import ProductRelatedSection from "@/pages-sections/product/ProductRelatedSectio
 import { Metadata, ResolvingMetadata } from "next";
 import { MapColors } from "@/helpers/Extensions";
 import NotFoundSupport from "@/app/not-found";
+import { getProductData } from "@/lib/serverActions";
+import { unstable_cache } from "next/cache";
 
 type Params = {
   params: {
@@ -41,14 +44,14 @@ async function getProduct(slug: string) {
     FilterOperator: eFilterOperator.Equal,
   });
 
-  return (await ProductService.searchOne(
-    SearchQuery
-  )) as AxiosResponse<IProductResponse>;
+  const data = await getProductData(SearchQuery);
+
+  return data;
 }
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const slug = params.slug;
-  const { data } = await getProduct(slug);
+  const data = await getProduct(slug);
   const { product } = data;
   if (product) {
     const p_name = product?.friendlyName ?? product.name;
@@ -95,7 +98,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 export default async function SingleProductPage({ params: { slug } }: Params) {
   const _response = await getProduct(slug);
 
-  if (_response.data.product == null) {
+  if (_response.product == null) {
     return <NotFoundSupport />;
   }
 
@@ -108,22 +111,22 @@ export default async function SingleProductPage({ params: { slug } }: Params) {
           link={[
             "/",
             "/shop",
-            `${_response?.data?.product?.name.toLowerCase()}-${
-              _response?.data?.product?.color
+            `${_response?.product?.name.toLowerCase()}-${
+              _response?.product?.color
             }`,
           ]}
-          title={["Home", "Shop", _response?.data?.product?.friendlyName]}
+          title={["Home", "Shop", _response?.product?.friendlyName]}
         />
       </div>
       <div className="md:divide-y-2">
         <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-2  lg:grid-cols-2 xl:gap-x-8">
-          <ProductImagesSection product={_response?.data?.product} />
-          <ProductInfoSection response={_response?.data} />
+          <ProductImagesSection product={_response?.product} />
+          <ProductInfoSection response={_response} />
         </div>
 
         <ProductRelatedSection
-          related={_response?.data?.product?.relatedProducts || ""}
-          id={_response?.data?.product?.id}
+          related={_response?.product?.relatedProducts || ""}
+          id={_response?.product?.id}
         />
       </div>
     </div>

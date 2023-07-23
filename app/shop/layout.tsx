@@ -54,7 +54,7 @@ const ShopRootLayout: FC<ShopRootLayoutProp> = ({ children }) => {
     let Titles: string[] = ["Home", "Shop"];
 
     if ((params as any)?.category) {
-      Links.push(params!.category as string);
+      Links.push(`/shop/${params!.category as string}`);
       Titles.push(params!.category as string);
     }
     if ((params as any)?.subCategory) {

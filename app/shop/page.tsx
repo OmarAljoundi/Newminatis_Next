@@ -1,4 +1,6 @@
 export const revalidate = 86400;
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-cache";
 import { PrepareSQObject } from "@/helpers/Extensions";
 import { getCategories, searchProducts } from "@/lib/serverActions";
 import Breadcrumb from "@/pages-sections/shop/Breadcrumb";
@@ -20,12 +22,13 @@ export type SP = {
   sort: string;
 };
 
-interface Props {
-  searchParams?: SP;
-}
-export default async function MainShop({ searchParams }: Props) {
-  const _SQ = PrepareSQObject(searchParams);
+type Params = {
+  params: any;
+  searchParams: SP;
+};
 
+export default async function MainShopPage({ searchParams }: Params) {
+  const _SQ = PrepareSQObject(searchParams);
   const data = await Promise.all([searchProducts(_SQ)]);
   return (
     <>
