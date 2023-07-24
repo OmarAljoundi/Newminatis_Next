@@ -1,3 +1,4 @@
+import { SP } from "@/app/shop/page";
 import { calculateDiscountAsNumber, currency } from "@/lib";
 import { CartItem } from "@/store/Model/CartItem";
 import { eOrderStatus } from "@/types/TOrder";
@@ -183,7 +184,7 @@ export const getDatesBetween = (
   if (_maxEdd.getDate() == _currentDate.getDate()) {
     return "<strong>Today!</<strong>";
   } else {
-    return `between <strong>${_minEdd.toDateString()}</strong> and <strong>${_maxEdd.toDateString()}</strong>`;
+    return `between <strong class="text-green-700">${_minEdd.toDateString()}</strong> and <strong class="text-green-700">${_maxEdd.toDateString()}</strong>`;
   }
 };
 
@@ -411,3 +412,52 @@ export const getTotalPriceAfterTax = (
         item.qty,
     0
   );
+
+export const PrepareSQObject = (
+  searchParams?: SP | undefined,
+  PageSize: number = 0
+) => {
+  var _SQ: SearchQuery = {
+    FilterByOptions: [
+      {
+        FilterFor: 1,
+        FilterOperator: eFilterOperator.Equal,
+        MemberName: "Status",
+      },
+    ],
+    OrderByOptions: [
+      {
+        MemberName: "Priority",
+        SortOrder: Order.DESC,
+      },
+    ],
+    PageIndex: 0,
+    PageSize: PageSize,
+  };
+  if (searchParams) {
+    Object.keys(searchParams).forEach((key) => {
+      const value = searchParams[key];
+      if (key == "sort") {
+        _SQ.OrderByOptions = [];
+        if (value == "low" || value == "high") {
+          _SQ.OrderByOptions.push({
+            SortOrder: value == "low" ? Order.ASC : Order.DESC,
+            MemberName: "Price",
+          });
+        } else if (value == "newest") {
+          _SQ.OrderByOptions.push({
+            MemberName: "CreatedDate",
+            SortOrder: Order.DESC,
+          });
+        }
+      } else {
+        _SQ.FilterByOptions.push({
+          FilterFor: value,
+          FilterOperator: eFilterOperator.Equal,
+          MemberName: key,
+        });
+      }
+    });
+  }
+  return _SQ;
+};

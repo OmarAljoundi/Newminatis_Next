@@ -5,12 +5,18 @@ import { Dialog, Disclosure, Menu, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { FunnelIcon } from "@heroicons/react/20/solid";
 import ProductSection from "@/pages-sections/shop/ProductSection";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import Link from "next/link";
 import { AiOutlineArrowRight } from "react-icons/ai";
 import FilterSection from "@/pages-sections/shop/FilterSection";
 import Sidenav from "@/components/Sidenav";
 import { AdjustmentsHorizontalIcon } from "@heroicons/react/20/solid";
+import Breadcrumb from "@/pages-sections/shop/Breadcrumb";
 
 type ShopRootLayoutProp = {
   children: ReactNode;
@@ -29,6 +35,7 @@ function classNames(...classes) {
 const ShopRootLayout: FC<ShopRootLayoutProp> = ({ children }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const params = useParams();
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const createQueryString = useCallback((name: string, value: string) => {
     const params = new URLSearchParams();
@@ -40,6 +47,22 @@ const ShopRootLayout: FC<ShopRootLayoutProp> = ({ children }) => {
     var path = "";
     path += createQueryString("sort", e);
     router.push(("?" + path.slice(0, -1)) as any);
+  };
+
+  const BuildBread = () => {
+    let Links: string[] = ["/", "/shop"];
+    let Titles: string[] = ["Home", "Shop"];
+
+    if ((params as any)?.category) {
+      Links.push(`/shop/${params!.category as string}`);
+      Titles.push(params!.category as string);
+    }
+    if ((params as any)?.subCategory) {
+      Links.push(params!.subCategory as string);
+      Titles.push(params!.subCategory as string);
+    }
+
+    return <Breadcrumb link={Links} title={Titles} />;
   };
   return (
     <div>
@@ -55,7 +78,7 @@ const ShopRootLayout: FC<ShopRootLayoutProp> = ({ children }) => {
 
       <main className="mx-auto max-w-7xl px-0 sm:px-6 lg:px-8">
         <div className="flex justify-between border-b border-gray-200  pt-6 items-start">
-          <h1 className="tracking-tight">{children}</h1>
+          <h1 className="tracking-tight">{BuildBread()}</h1>
 
           <div className="flex items-start gap-x-4">
             <Menu as="div" className="relative inline-block text-left">
@@ -124,10 +147,7 @@ const ShopRootLayout: FC<ShopRootLayoutProp> = ({ children }) => {
               <FilterSection />
             </div>
 
-            {/* Product grid */}
-            <div className="lg:col-span-3">
-              <ProductSection />
-            </div>
+            <div className="lg:col-span-3">{children}</div>
           </div>
         </section>
       </main>

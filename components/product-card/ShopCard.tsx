@@ -13,13 +13,6 @@ import {
 } from "@mui/material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import { FlexBetween, FlexBox } from "../flex-box";
-import {
-  ContentWrapper,
-  ImageWrapper,
-  StyledCustomCard,
-  StyledChip,
-  ProductCardWrapper,
-} from "./StyledComponents";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper";
 import { Add, Remove } from "@mui/icons-material";
@@ -347,7 +340,7 @@ const ShopCard: FC<ProductCardProps> = ({
         >
           <div
             className={`grid grid-cols-${
-              product.subSku?.split(",").length + 2
+              product.subSku?.split(",").length + 1
             } gap-4`}
           >
             {product.subSku?.split(",")?.map((size) => (

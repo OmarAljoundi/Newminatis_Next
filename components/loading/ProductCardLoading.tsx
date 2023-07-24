@@ -1,3 +1,4 @@
+"use client";
 import { Box, Card, Grid, Skeleton, Theme, useMediaQuery } from "@mui/material";
 import { FC } from "react";
 import { FlexBox } from "../flex-box";

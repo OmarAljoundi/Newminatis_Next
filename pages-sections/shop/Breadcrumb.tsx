@@ -1,6 +1,7 @@
 "use clinet";
 import Link from "next/link";
-import React, { FC } from "react";
+import { usePathname } from "next/navigation";
+import React, { FC, useEffect } from "react";
 
 const Breadcrumb: FC<{ title?: string[]; link?: string[] }> = ({
   title,

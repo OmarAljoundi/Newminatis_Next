@@ -1,6 +1,10 @@
 "use client";
 import { FC, useEffect, useState } from "react";
-import { Elements, PaymentElement } from "@stripe/react-stripe-js";
+import {
+  Elements,
+  PaymentElement,
+  PaymentMethodMessagingElement,
+} from "@stripe/react-stripe-js";
 import Cookies from "js-cookie";
 import useStripePayment from "@/hooks/useStripePayment";
 import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
@@ -203,6 +207,20 @@ const PaymentClientPage: FC = () => {
                   totalAfterDiscount={checkoutSummary?.Total}
                   guestUser={guestAddress}
                 />
+                {/* <PaymentMethodMessagingElement
+                  options={{
+                    amount: checkoutSummary?.Total || 0,
+                    currency: "USD",
+                    paymentMethodTypes: [
+                      "klarna",
+                      "afterpay_clearpay",
+                      "affirm",
+                    ],
+                    countryCode: "US",
+
+                  }}
+
+                /> */}
               </Elements>
             )}
           </div>

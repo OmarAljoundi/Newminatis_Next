@@ -27,7 +27,7 @@ export const CategorySections: FC<CategorySectionsProp> = ({
             <li key={item.description} className="flex">
               <Link
                 href={`/shop/${category.description.toLowerCase()}/${item.description.toLowerCase()}`}
-                className="hover:text-gray-800"
+                className="hover:text-gray-800 uppercase"
                 onClick={() => close()}
               >
                 {item.name}
@@ -37,7 +37,7 @@ export const CategorySections: FC<CategorySectionsProp> = ({
           <li key={"Explore All"} className="flex">
             <Link
               href={`/shop/${category.description.toLowerCase()}`}
-              className="hover:text-gray-800"
+              className="hover:text-gray-800 uppercase"
               onClick={() => close()}
             >
               Explore All

@@ -3,7 +3,8 @@ import { Fragment } from "react";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { Avatar } from "@mui/material";
-
+import PersonIcon from "@mui/icons-material/Person";
+import { UserCircleIcon } from "@heroicons/react/24/outline";
 export default function MobileUserMenu() {
   const { data: session } = useSession();
 
@@ -21,9 +22,8 @@ export default function MobileUserMenu() {
               <Avatar
                 title={session.user.email}
                 alt={session.user.email}
-                className="-mr-1 h-5 w-5"
+                className="-mr-1 h-8 w-8 mt-[6px]"
                 aria-hidden="true"
-                sx={{ width: 35, height: 35 }}
               >
                 <span className="text-black text-sm">
                   {session.user.email.substring(0, 2).toUpperCase()}
@@ -80,14 +80,13 @@ export default function MobileUserMenu() {
         <div>
           <Menu.Button
             className="inline-flex w-full justify-center 
-                             text-white   text-sm font-medium
+                                text-sm font-medium
                              hover:bg-white hover:text-black 
                               transition-all duration-300"
           >
-            <Avatar
-              className="-mr-1 h-5 w-5"
+            <UserCircleIcon
+              className="-mr-1 h-8 w-8 mt-[6px] text-gray-400"
               aria-hidden="true"
-              sx={{ width: 35, height: 35 }}
             />
           </Menu.Button>
         </div>

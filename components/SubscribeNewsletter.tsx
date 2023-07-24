@@ -172,9 +172,6 @@ const SubscribeNewsletter = () => {
                 GET MY 10% OFF
               </Span>
             </LoadingButton>
-            <H5 color={"black"} mt={2}>
-              * We offer FREE WORLDWIDE EXPRESS SHIPPING
-            </H5>
           </form>
         </DialogContent>
       </Dialog>

@@ -82,10 +82,10 @@ const FilterSection: FC = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  const { onGetCategories, onGetTags } = useProductService();
+  const { onGetCategories } = useProductService();
   const [value, setValue] = useState<number[]>([
-    (searchParams?.get("min") as unknown as number) ?? 0,
-    (searchParams?.get("max") as unknown as number) ?? 250,
+    (searchParams?.get("minprice") as unknown as number) ?? 0,
+    (searchParams?.get("maxprice") as unknown as number) ?? 250,
   ]);
 
   const handleChange = (event: Event, newValue: number | number[]) => {
@@ -94,7 +94,7 @@ const FilterSection: FC = () => {
 
   const onMouseUpSlides = () => {
     handleFilterChange(
-      ["min", "max"],
+      ["minprice", "maxprice"],
       [value[0] as unknown as string, value[1] as unknown as string]
     );
   };
@@ -102,14 +102,6 @@ const FilterSection: FC = () => {
   const { data: categories } = useQuery(
     "Categories",
     () => onGetCategories() as Promise<TProductCategory[]>,
-    {
-      enabled: true,
-      cacheTime: 60000,
-    }
-  );
-  const { data: productTags } = useQuery(
-    "Tags",
-    () => onGetTags() as Promise<TProductTags[]>,
     {
       enabled: true,
       cacheTime: 60000,
@@ -126,15 +118,15 @@ const FilterSection: FC = () => {
 
   useEffect(() => {
     setValue([
-      (searchParams?.get("min") as unknown as number) ?? 0,
-      (searchParams?.get("max") as unknown as number) ?? 250,
+      (searchParams?.get("minprice") as unknown as number) ?? 0,
+      (searchParams?.get("maxprice") as unknown as number) ?? 250,
     ]);
   }, [searchParams]);
 
   const ClearFilter = (queryCleared: string) => {
     switch (queryCleared) {
       case "price":
-        handleFilterChange(["min", "max"], null);
+        handleFilterChange(["minprice", "maxprice"], null);
         break;
       case "color":
         handleFilterChange("color", null);
@@ -174,10 +166,8 @@ const FilterSection: FC = () => {
               </Disclosure.Button>
               <Collapse in={open}>
                 <Disclosure.Panel
-                  // as={Link}
-                  // href={`/shop/${item.description}/${i.description}`}
                   static
-                  className="pt-1 text-sm text-gray-500"
+                  className="pt-1 text-sm text-gray-500 cursor-pointer"
                   style={{ whiteSpace: "break-spaces" }}
                 >
                   <SubCategorySection
@@ -194,7 +184,7 @@ const FilterSection: FC = () => {
       <Divider sx={{ my: 2, borderColor: "white" }} />
       <FlexBetween alignItems={"flex-start"}>
         <H6 mb={2}>Price Range</H6>
-        {(searchParams?.get("min") || searchParams?.get("max")) && (
+        {(searchParams?.get("minprice") || searchParams?.get("maxprice")) && (
           <Tooltip title="clear">
             <IconButton
               onClick={() => ClearFilter("price")}
@@ -338,7 +328,7 @@ const FilterSection: FC = () => {
               )}
             </RadioGroup.Option>
           ))}
-          <RadioGroup.Option
+          {/* <RadioGroup.Option
             key={"remove-size"}
             value={""}
             className={({ active }) =>
@@ -351,62 +341,7 @@ const FilterSection: FC = () => {
             <RadioGroup.Label as="span">
               <MdOutlineRemove />
             </RadioGroup.Label>
-          </RadioGroup.Option>
-        </div>
-      </RadioGroup>
-
-      <Divider sx={{ mt: 2, mb: 3, borderColor: "white" }} />
-
-      <H6 mb={1.25}>Tags</H6>
-
-      <RadioGroup
-        onChange={(e: any) => handleFilterChange("tag", e.name?.toLowerCase())}
-        className="mt-4"
-      >
-        <div className={`grid grid-cols-2 gap-4`}>
-          {productTags?.map((tag, index) => (
-            <RadioGroup.Option
-              key={tag.name}
-              value={tag}
-              className={({ active }) =>
-                classNames(
-                  "cursor-pointer bg-white text-gray-900 shadow-sm",
-                  searchParams?.get(`tag`) == tag.name?.toLowerCase()
-                    ? "ring-2 ring-indigo-500"
-                    : "",
-                  "group relative flex items-center justify-center rounded-md border py-2 px-2 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1"
-                )
-              }
-            >
-              {({ active, checked }) => (
-                <>
-                  <RadioGroup.Label as="span">{tag.name}</RadioGroup.Label>
-                  <span
-                    className={classNames(
-                      active ? "border" : "border-2",
-                      "border-transparent",
-                      "pointer-events-none absolute -inset-px rounded-md"
-                    )}
-                    aria-hidden="true"
-                  />
-                </>
-              )}
-            </RadioGroup.Option>
-          ))}
-          <RadioGroup.Option
-            key={"remove-tag"}
-            value={""}
-            className={({ active }) =>
-              classNames(
-                "cursor-pointer bg-white text-gray-900 shadow-sm",
-                "group relative flex items-center justify-center rounded-md border py-2 px-2 text-sm font-medium uppercase hover:bg-gray-50 focus:outline-none sm:flex-1"
-              )
-            }
-          >
-            <RadioGroup.Label as="span">
-              <MdOutlineRemove />
-            </RadioGroup.Label>
-          </RadioGroup.Option>
+          </RadioGroup.Option> */}
         </div>
       </RadioGroup>
     </Card>
@@ -427,7 +362,7 @@ const colorList = [
     value: eColor.Gray,
   },
   {
-    color: "beige",
+    color: "#D3C4AB",
     value: eColor.Beige,
   },
 ];
