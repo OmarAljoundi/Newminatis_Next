@@ -1,4 +1,3 @@
-export const revalidate = 3600; // revalidate every hour
 import { IProductResponse } from "@/interface/IProductResponse";
 import ProductService from "@/service/ProductService";
 import { SearchQuery } from "@/types/TSearchQuery";
@@ -19,7 +18,7 @@ export const getProductData = async (searchQuery: SearchQuery) => {
   const result = await fetch(
     "https://api_v2.newminatis.com/api/Product/GetOne",
     {
-      next: { revalidate: 3600, tags: ["Omar"] },
+      next: { revalidate: 3600 },
       method: "POST",
       body: JSON.stringify(searchQuery),
       headers: {

@@ -1,19 +1,14 @@
-export const dynamic = "auto";
 export const revalidate = 3600;
-import { IProductResponse } from "@/interface/IProductResponse";
-import ProductService from "@/service/ProductService";
 import { SearchQuery, eFilterOperator } from "@/types/TSearchQuery";
-import { AxiosResponse } from "axios";
 import React from "react";
 import ProductImagesSection from "@/pages-sections/product/ProductImagesSection";
 import ProductInfoSection from "@/pages-sections/product/ProductInfoSection";
 import Breadcrumb from "@/pages-sections/shop/Breadcrumb";
 import ProductRelatedSection from "@/pages-sections/product/ProductRelatedSection";
-import { Metadata, ResolvingMetadata } from "next";
-import { MapColors } from "@/helpers/Extensions";
+import { Metadata } from "next";
 import NotFoundSupport from "@/app/not-found";
 import { getProductData } from "@/lib/serverActions";
-import { unstable_cache } from "next/cache";
+import ProductService from "@/service/ProductService";
 
 type Params = {
   params: {
@@ -97,7 +92,6 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
 export default async function SingleProductPage({ params: { slug } }: Params) {
   const _response = await getProduct(slug);
-
   if (_response.product == null) {
     return <NotFoundSupport />;
   }
@@ -133,21 +127,22 @@ export default async function SingleProductPage({ params: { slug } }: Params) {
   );
 }
 
-// export async function generateStaticParams() {
-//   const SearchQuery: SearchQuery = {
-//     FilterByOptions: [],
-//     OrderByOptions: [],
-//     PageIndex: 0,
-//     PageSize: 0,
-//   };
-//   SearchQuery.FilterByOptions.push({
-//     FilterFor: 1,
-//     MemberName: "Status",
-//     FilterOperator: eFilterOperator.Equal,
-//   });
-//   const products = await ProductService.searchShop(SearchQuery);
+export async function generateStaticParams() {
+  const SearchQuery: SearchQuery = {
+    FilterByOptions: [],
+    OrderByOptions: [],
+    PageIndex: 0,
+    PageSize: 0,
+  };
+  SearchQuery.FilterByOptions.push({
+    FilterFor: 1,
+    MemberName: "Status",
+    FilterOperator: eFilterOperator.Equal,
+  });
 
-//   return products?.data?.products.map((product) => ({
-//     slug: `${product.name.toLowerCase()}-${product.color.toString()}`,
-//   }));
-// }
+  const response = await ProductService.searchShop(SearchQuery);
+
+  return response.data.products.map((product) => ({
+    slug: `${product.name.toLowerCase()}-0${product.color.toString()}`,
+  }));
+}
