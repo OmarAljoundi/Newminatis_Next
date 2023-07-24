@@ -1,4 +1,4 @@
-export const revalidate = 60;
+export const revalidate = false;
 import { PrepareSQObject } from "@/helpers/Extensions";
 import { InstgramResponse } from "@/interface/InstgramResponse";
 import { searchProducts } from "@/lib/serverActions";
