@@ -1,4 +1,4 @@
-export const revalidate = 3600;
+export const revalidate = 60;
 import { SearchQuery, eFilterOperator } from "@/types/TSearchQuery";
 import React from "react";
 import ProductImagesSection from "@/pages-sections/product/ProductImagesSection";
@@ -97,7 +97,7 @@ export default async function SingleProductPage({ params: { slug } }: Params) {
   }
 
   return (
-    <div className="mx-auto max-w-2xl  py-4 px-0 sm:py-6 lg:max-w-7xl lg:px-8">
+    <div className="mx-auto max-w-2xl py-4 px-0 sm:py-6 lg:max-w-7xl lg:px-8">
       {/* <ReviewModel product={_response.product} /> */}
 
       <div>

@@ -37,7 +37,7 @@ export const HeroImage: FC<{
         fetchPriority={"high"}
         loading={"eager"}
         objectFit="cover"
-        quality={80}
+        quality={65}
         className={`duration-700 ease-in-out group-hover:opacity-75 ${
           isLoading
             ? "scale-110 blur-2xl grayscale"

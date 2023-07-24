@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import { revalidatePath } from "next/cache";
 
 export default async function handler(
   req: NextApiRequest,

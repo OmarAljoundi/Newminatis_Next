@@ -1,5 +1,4 @@
 "use client";
-import { BlurImage } from "@/components/BlurImage";
 import CategorySectionCreator from "@/components/CategorySectionCreator";
 import { H2 } from "@/components/Typography";
 import { Button, Grid } from "@mui/material";
@@ -34,15 +33,6 @@ const images = [
     type: "fade-right",
     cc: "mx-auto",
   },
-  // {
-  //   photo: "/assets/images/custom/Collection(Dune).jpg",
-  //   text: "Shop DUNE",
-  //   url: "shop/dune",
-  //   offset: "0",
-  //   delay: "800",
-  //   type: "fade-left",
-  //   cc: "md:ml-0 md:mr-auto mx-auto",
-  // },
 ];
 
 const CollectionSection = () => {
@@ -58,7 +48,10 @@ const CollectionSection = () => {
         <div className="max-w-7xl mx-auto ">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
             {images.map((item, index) => (
-              <div className="relative aspect-[1/1] md:aspect-[2/2] overflow-hidden  bg-gray-200 w-full h-full">
+              <Link
+                href={item.url}
+                className="relative aspect-[1/1] md:aspect-[2/2] overflow-hidden  bg-gray-200 w-full h-full"
+              >
                 <Image
                   alt={"banner"}
                   src={item.photo}
@@ -90,13 +83,13 @@ const CollectionSection = () => {
                     textAlign: "center",
                   }}
                 >
-                  <Link href={"/shop"} className=" mt-4">
+                  <Link href={item.url} className=" mt-4">
                     <Button color="secondary" className="w-32">
                       <span className="font-bold text-xs">{item.text}</span>
                     </Button>
                   </Link>
                 </H2>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
