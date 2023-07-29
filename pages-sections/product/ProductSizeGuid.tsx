@@ -17,17 +17,11 @@ type SizeGuidProp = {
 };
 const ProductSizeGuid: FC<SizeGuidProp> = ({ product }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const closeModal = () => {
-    setIsOpen(false);
-  };
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <span
-          className="text-sm font-medium text-gray-700 hover:text-gray-300 cursor-pointer"
-          onClick={() => setIsOpen(true)}
-        >
+        <span className="text-sm font-medium text-gray-700 hover:text-gray-300 cursor-pointer">
           Size Guide{" "}
           <StraightenIcon
             sx={{ transform: " rotate(45deg)", fontSize: "0.875rem" }}
