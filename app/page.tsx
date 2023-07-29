@@ -1,4 +1,5 @@
-export const revalidate = false;
+export const revalidate = 86400;
+export const dynamic = "auto";
 import { PrepareSQObject } from "@/helpers/Extensions";
 import { InstgramResponse } from "@/interface/InstgramResponse";
 import { searchProducts } from "@/lib/serverActions";

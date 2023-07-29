@@ -10,8 +10,7 @@ export default async function handler(
   }
 
   const path = req.query.path as string;
-
-  await res.revalidate(path);
+  await res.revalidate("/product/agartha-2");
 
   return res.json({ revalidated: true });
 }

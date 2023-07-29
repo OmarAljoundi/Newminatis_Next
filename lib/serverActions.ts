@@ -18,7 +18,6 @@ export const getProductData = async (searchQuery: SearchQuery) => {
   const result = await fetch(
     "https://api_v2.newminatis.com/api/Product/GetOne",
     {
-      next: { revalidate: 3600 },
       method: "POST",
       body: JSON.stringify(searchQuery),
       headers: {

@@ -1,4 +1,5 @@
-export const revalidate = 60;
+export const revalidate = 3600;
+export const dynamic = "auto";
 import { SearchQuery, eFilterOperator } from "@/types/TSearchQuery";
 import React from "react";
 import ProductImagesSection from "@/pages-sections/product/ProductImagesSection";
