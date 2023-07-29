@@ -24,9 +24,11 @@ import { FiPackage } from "react-icons/fi";
 import { ShippingInfo } from "@/components/Policies/ShippingInfo";
 import ProductSizeSection from "./ProductSizeSection";
 import ProductSpecialIcons from "./ProductSpecialIcons";
+import { IProductResponse } from "@/interface/IProductResponse";
 
 export default function ProductInfoSection({ response }) {
-  const { product, closeDay, hours, minEdd, maxEdd, currentDate } = response;
+  const { product, closeDay, hours, minEdd, maxEdd, currentDate } =
+    response as IProductResponse;
 
   const {
     name,
@@ -78,7 +80,7 @@ export default function ProductInfoSection({ response }) {
             <div className="flex justify-between">
               <FlexBox alignItems="center" gap={1}>
                 <p className="title text-sm font-bold mt-4">
-                  {calculateDiscount(price, salePrice, _setting)}
+                  {calculateDiscount(price, salePrice || 0, _setting)}
                 </p>
 
                 {!!salePrice && (
@@ -90,7 +92,9 @@ export default function ProductInfoSection({ response }) {
             </div>
           </div>
 
-          <ProductSizeSection product={product} />
+          {product.productSizeGuide.length > 0 && (
+            <ProductSizeSection product={product} />
+          )}
         </div>
 
         <div className="shadow-lg bg-white divide-y-2 divide-zinc-500 divide-opacity-50 border-t-4 border-b-4 ">

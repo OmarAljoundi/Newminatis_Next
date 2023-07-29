@@ -43,7 +43,6 @@ const ProductSizeGuid: FC<SizeGuidProp> = ({ product }) => {
             <div className="mt-2">
               <ProductSizeGuidTable
                 productSizeGuide={product?.productSizeGuide}
-                productType={product?.type}
               />
             </div>
           </DialogDescription>
