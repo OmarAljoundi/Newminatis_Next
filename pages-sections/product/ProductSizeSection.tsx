@@ -152,8 +152,9 @@ const ProductSizeSection: FC<ProductSizeSectionProp> = ({ product }) => {
     <div className="lg:border-t-0 border-t-4">
       <div className="flex items-center justify-between pt-2">
         <h4 className="text-sm font-medium text-gray-900">Size</h4>
-
-        <ProductSizeGuid product={product} />
+        {product.productSizeGuide.length > 0 && (
+          <ProductSizeGuid product={product} />
+        )}
       </div>
 
       <RadioGroup

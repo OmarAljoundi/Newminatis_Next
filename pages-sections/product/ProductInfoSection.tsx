@@ -92,9 +92,7 @@ export default function ProductInfoSection({ response }) {
             </div>
           </div>
 
-          {product.productSizeGuide.length > 0 && (
-            <ProductSizeSection product={product} />
-          )}
+          <ProductSizeSection product={product} />
         </div>
 
         <div className="shadow-lg bg-white divide-y-2 divide-zinc-500 divide-opacity-50 border-t-4 border-b-4 ">
