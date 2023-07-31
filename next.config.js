@@ -7,11 +7,16 @@ const nextConfig = {
         source: "/api/(.*)",
         headers: getCorsHeaders(),
       },
+      {
+        source: "/(.*)",
+        headers: getCacheHeaders(),
+      },
     ];
   },
   swcMinify: true,
   images: {
     minimumCacheTTL: 86400,
+    deviceSizes: [640, 750, 828, 1080, 1200],
     remotePatterns: [
       {
         protocol: "https",
@@ -41,6 +46,11 @@ const nextConfig = {
   },
 };
 const getCorsHeaders = () => {
+  const headers = {};
+  headers["Cache-Control"] = "public, s-maxage=86400";
+  return Object.entries(headers).map(([key, value]) => ({ key, value }));
+};
+const getCacheHeaders = () => {
   const headers = {};
 
   headers["Access-Control-Allow-Origin"] = "*";
