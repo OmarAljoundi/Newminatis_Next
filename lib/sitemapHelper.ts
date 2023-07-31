@@ -11,7 +11,7 @@ export const getAllPaths = async () => {
   ]);
   return [
     {
-      loc: `https://www.newminatis.com`,
+      loc: `${process.env.SITE_URL}`,
       lastmod: new Date(),
       changefreq: "daily",
       priority: 1.0,
@@ -38,7 +38,9 @@ const getAllProductPages = async () => {
   const response = await ProductService.searchShop(SearchQuery);
 
   return response.data.products.map((product) => ({
-    loc: `https://www.newminatis.com/product/${product.name.toLowerCase()}-0${product.color.toString()}`,
+    loc: `${
+      process.env.SITE_URL
+    }/product/${product.name.toLowerCase()}-0${product.color.toString()}`,
     lastmod: product.ModifiedDate || new Date(),
     changefreq: "daily",
     priority: 0.8,
@@ -49,7 +51,9 @@ const getAllCategoriesPages = (categories): Promise<any[]> => {
   return new Promise((resolve, reject) => {
     resolve(
       categories.map((category) => ({
-        loc: `https://www.newminatis.com/shop/${category.description.toLowerCase()}`,
+        loc: `${
+          process.env.SITE_URL
+        }/shop/${category.description.toLowerCase()}`,
         lastmod: category.modifiedDate || new Date(),
         changefreq: "daily",
         priority: 0.8,
@@ -64,7 +68,9 @@ const getAllSubCategoriesPages = (categories): Promise<any[]> => {
     categories.map((c) => {
       c.productSubCategory.map((s) => {
         subs.push({
-          loc: `https://www.newminatis.com/shop/${c.description.toLowerCase()}/${s.description.toLowerCase()}`,
+          loc: `${
+            process.env.SITE_URL
+          }/shop/${c.description.toLowerCase()}/${s.description.toLowerCase()}`,
           lastmod: c.modifiedDate || new Date(),
           changefreq: "daily",
           priority: 0.8,

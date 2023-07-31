@@ -1,13 +1,26 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL,
+  siteUrl: process.env.SITE_URL,
   generateRobotsTxt: true,
   changefreq: "daily",
   priority: 0.8,
-  exclude: ["/server-sitemap.xml"], // <= exclude here
+  exclude: [
+    "/server-sitemap.xml",
+    "/payment",
+    "/order_confirmation",
+    "/checkout",
+  ],
   robotsTxtOptions: {
-    additionalSitemaps: [
-      process.env.NEXT_PUBLIC_SITE_URL + "/server-sitemap.xml", // <==== Add here
+    policies: [
+      {
+        userAgent: "*",
+        allow: "/",
+      },
+      {
+        userAgent: "black-listed-bot",
+        disallow: ["/payment", "/order_confirmation", "/checkout"],
+      },
     ],
+    additionalSitemaps: [process.env.SITE_URL + "/server-sitemap.xml"],
   },
 };
