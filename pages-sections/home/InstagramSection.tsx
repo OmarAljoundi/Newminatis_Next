@@ -72,7 +72,7 @@ export const InstagramSection: FC<{ instagramFeeds: TInstagram[] }> = ({
                         image={item.media_url}
                         height={400}
                         title={item.permalink}
-                        loading={"eager"}
+                        loading={"lazy"}
                         priority="high"
                         q={50}
                       />
