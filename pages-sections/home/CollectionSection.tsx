@@ -58,7 +58,7 @@ const CollectionSection = () => {
                   title={"banner"}
                   height={545}
                   width={545}
-                  fetchPriority={"auto"}
+                  fetchPriority={"high"}
                   loading={"lazy"}
                   objectFit="cover"
                   quality={60}

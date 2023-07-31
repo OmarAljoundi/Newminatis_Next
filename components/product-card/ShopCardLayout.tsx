@@ -95,7 +95,7 @@ export const ShopCardLayout: FC<ShopCardLayoutProp> = ({
                   <BlurImage
                     image={slide.reducedImage}
                     title={product.friendlyName}
-                    loading={"eager"}
+                    loading={"lazy"}
                     priority={"high"}
                     aspect={true}
                     q={80}
