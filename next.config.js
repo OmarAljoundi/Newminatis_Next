@@ -16,6 +16,7 @@ const nextConfig = {
   swcMinify: true,
   images: {
     minimumCacheTTL: 86400,
+    deviceSizes: [640, 750, 828, 1080, 1200],
     remotePatterns: [
       {
         protocol: "https",

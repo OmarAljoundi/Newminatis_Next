@@ -56,11 +56,12 @@ const CollectionSection = () => {
                   alt={"banner"}
                   src={item.photo}
                   title={"banner"}
-                  layout="fill"
-                  fetchPriority={"high"}
-                  loading={"eager"}
+                  height={545}
+                  width={545}
+                  fetchPriority={"auto"}
+                  loading={"lazy"}
                   objectFit="cover"
-                  quality={80}
+                  quality={60}
                   className={`duration-700 ease-in-out group-hover:opacity-75 ${
                     isLoading
                       ? "scale-110 blur-2xl grayscale"
@@ -69,10 +70,10 @@ const CollectionSection = () => {
                   onLoad={() => setLoading(false)}
                 />
 
-                <div className="absolute bg-gray-800 opacity-50 w-full h-full"></div>
+                <div className="absolute bg-gray-800 opacity-50 w-full h-full top-0"></div>
                 <H2
                   color={"white"}
-                  className={`w-2/4 text-2xl ${item.cc}`}
+                  className={`w-2/4 text-2xl ${item.cc} absolute top-0 right-0 left-0`}
                   sx={{
                     display: "flex",
                     alignItems: "center",
