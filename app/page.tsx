@@ -13,8 +13,7 @@ import ValueSection from "@/pages-sections/home/ValueSection";
 import SettingService from "@/service/SettingService";
 import { AxiosResponse } from "axios";
 import { Metadata } from "next";
-import React from "react";
-
+import React, { Suspense } from "react";
 export const metadata: Metadata = {
   title: "Newminatis | Unique alternative and concept clothing",
   description:
