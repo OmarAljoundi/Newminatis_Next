@@ -9,10 +9,20 @@ export const getCategories = async () => {
   return result.data;
 };
 
-export const searchProducts = cache(async (searchQuery: SearchQuery) => {
-  const result = await ProductService.searchShop(searchQuery);
-  return result.data;
-});
+export const searchProducts = async (searchQuery: SearchQuery) => {
+  const result = await fetch(
+    "https://api_v2.newminatis.com/api/Product/SearchShop",
+    {
+      method: "POST",
+      body: JSON.stringify(searchQuery),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  const data = await result.json();
+  return data as IProductResponse;
+};
 
 export const getProductData = async (searchQuery: SearchQuery) => {
   const result = await fetch(
