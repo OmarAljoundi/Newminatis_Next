@@ -142,7 +142,9 @@ const ProductSizeSection: FC<ProductSizeSectionProp> = ({ product }) => {
           downMd ? "bottom-center" : "top-center"
         );
       } else {
-        toast.error("You have reach maximum amount for adding this item");
+        toast.error("You have reach maximum amount for adding this item", {
+          duration: 3000,
+        });
       }
     }
   };

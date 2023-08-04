@@ -50,8 +50,8 @@ export default function ProductInfoSection({ response }) {
   const Share = async () => {
     try {
       await navigator.share({
-        text: "Follow me to get more web development content.",
-        url: "https://ilxanlar.medium.com",
+        text: `Check out ${friendlyName} At Newminatis!`,
+        url: window.location.href,
       });
     } catch (error) {
       console.log("Sharing failed!", error);
