@@ -19,6 +19,7 @@ export default function CartClientPage() {
   const _setting = useAppSelector(
     (state) => state.Store.SettingReducer.setting
   );
+  const [stripeObject, setStripeObject] = useState<any | null>(null);
   const dispatch = useAppDispatch();
   useEffect(() => {
     window.scroll(0, 0);
@@ -39,10 +40,19 @@ export default function CartClientPage() {
     );
   }
 
+  useEffect(() => {
+    fetchStripeObject();
+  }, []);
+
+  const fetchStripeObject = async () => {
+    const res = await stripePromise();
+    setStripeObject(res);
+  };
+
   return (
     <div className="max-w-7xl">
       {!load && (
-        <Elements stripe={stripePromise}>
+        <Elements stripe={stripeObject}>
           <ExpressCheckoutNoEmail />
         </Elements>
       )}

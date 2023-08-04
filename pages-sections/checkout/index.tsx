@@ -37,6 +37,7 @@ export default function CheckoutClientPage() {
   const route = useRouter();
   const dispatch = useAppDispatch();
   const { data: authedSession, status } = useSession();
+  const [stripeObject, setStripeObject] = useState<any>(null);
   const [checkoutSummary, setCheckoutSummary] =
     useState<CheckoutSummaryProps | null>(null);
 
@@ -128,10 +129,19 @@ export default function CheckoutClientPage() {
     dispatch(updateCart(cart || []));
   }, [cart]);
 
+  useEffect(() => {
+    fetchStripeObject();
+  }, []);
+
+  const fetchStripeObject = async () => {
+    const res = await stripePromise();
+    // When we have got the Stripe object, pass it into our useState.
+    setStripeObject(res);
+  };
   return (
     <div>
       {
-        <Elements stripe={stripePromise}>
+        <Elements stripe={stripeObject}>
           <ExpressCheckoutNoEmail />
         </Elements>
       }

@@ -38,6 +38,7 @@ const MiniCart: FC<MiniCartProps> = ({ toggleSidenav, open }) => {
   const _setting = useAppSelector((x) => x.Store.SettingReducer.setting);
 
   const dispatch = useAppDispatch();
+  const [stripeObject, setStripeObject] = useState<any | null>(null);
 
   useEffect(() => {
     dispatch(updateCart(cartList || []));
@@ -53,7 +54,18 @@ const MiniCart: FC<MiniCartProps> = ({ toggleSidenav, open }) => {
       }
     };
   }, []);
-  //const { enqueueSnackbar } = useSnackbar();
+
+  useEffect(() => {
+    if (open) {
+      fetchStripeObject();
+    }
+  }, [open]);
+
+  const fetchStripeObject = async () => {
+    const res = await stripePromise();
+    setStripeObject(res);
+  };
+
   const handleCartAmountChange =
     (amount: number, product: CartItem, type: "remove" | "add" | "update") =>
     () => {
@@ -340,7 +352,7 @@ const MiniCart: FC<MiniCartProps> = ({ toggleSidenav, open }) => {
                           >
                             Checkout
                           </Link>
-                          <Elements stripe={stripePromise}>
+                          <Elements stripe={stripeObject}>
                             <ExpressCheckoutNoEmail showLoader={false} />
                           </Elements>
                         </div>
