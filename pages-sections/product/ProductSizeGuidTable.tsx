@@ -135,6 +135,14 @@ const SizeColums = [
     value: "bottom",
   },
   {
+    key: "Bottom Opening",
+    value: "bottomOpening",
+  },
+  {
+    key: "Inseam",
+    value: "inseam",
+  },
+  {
     key: "Front Crotch",
     value: "frontCrotch",
   },

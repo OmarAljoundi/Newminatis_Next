@@ -1,25 +1,12 @@
-"use client";
-import { FC, useEffect, useState } from "react";
-import { Box, Grid, Theme, useMediaQuery } from "@mui/material";
-import "swiper/css";
-import "swiper/css/pagination";
-import "swiper/css/navigation";
-import { TProduct } from "@/types/TProduct";
-import useWindowSize from "@/hooks/useWindowSize";
-import useProductService from "@/hooks/useProductService";
-import { IProductResponse } from "@/interface/IProductResponse";
 import CategorySectionCreator from "@/components/CategorySectionCreator";
-import ShopMobileCard from "@/components/product-card/ShopMobileCard";
-import ShopCard from "@/components/product-card/ShopCard";
-import { ProductCardLoading } from "@/components/loading/ProductCardLoading";
 import Image from "next/image";
+import BestSellerSectionClient from "./BestSelletSectionClient";
+import { PrepareSQObject } from "@/helpers/Extensions";
+import { searchProducts } from "@/lib/serverActions";
 
-const BestSellerSection: FC<{ productResponse: IProductResponse }> = ({
-  productResponse,
-}) => {
-  const width = useWindowSize();
-  const downSm = useMediaQuery((theme: Theme) => theme.breakpoints.down("md"));
-
+export default async function BestSellerSection() {
+  const _SQ = PrepareSQObject(undefined, 8);
+  const _productResponse = await searchProducts(_SQ, 86400);
   return (
     <CategorySectionCreator
       alignItems={"baseline"}
@@ -34,35 +21,7 @@ const BestSellerSection: FC<{ productResponse: IProductResponse }> = ({
       title="BEST SELLERS"
       seeMoreLink="/shop"
     >
-      {width > 0 && (
-        <Box mb={3.5} sx={{ position: "relative" }}>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-y-5 gap-x-2">
-            {productResponse?.products?.map((item, index) => (
-              <div>
-                {item ? (
-                  <Box py={0.5} sx={{ height: "100%" }}>
-                    {!downSm ? (
-                      <ShopCard
-                        discount={(item.salePrice as unknown as number) ?? 0}
-                        product={item}
-                      />
-                    ) : (
-                      <ShopMobileCard
-                        discount={(item.salePrice as unknown as number) ?? 0}
-                        product={item}
-                      />
-                    )}
-                  </Box>
-                ) : (
-                  <ProductCardLoading />
-                )}
-              </div>
-            ))}
-          </div>
-        </Box>
-      )}
+      <BestSellerSectionClient productResponse={_productResponse} />
     </CategorySectionCreator>
   );
-};
-
-export default BestSellerSection;
+}
