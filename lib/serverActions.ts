@@ -22,6 +22,7 @@ export const searchProducts = async (
       next: {
         revalidate: revalidate || 30,
       },
+      cache: "no-store",
       headers: {
         "Content-Type": "application/json",
       },
@@ -43,7 +44,7 @@ export const getProductData = async (searchQuery: SearchQuery) => {
       next: {
         revalidate: 3600,
       },
-      cache: "default",
+      cache: "no-store",
     }
   );
   const data = await result.json();
