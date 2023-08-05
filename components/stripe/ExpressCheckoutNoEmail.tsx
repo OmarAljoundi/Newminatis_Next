@@ -217,10 +217,20 @@ export const ExpressCheckoutNoEmail: FC<{ showLoader?: boolean }> = ({
         createdDate: null,
         modifiedDate: null,
       };
-      const { guest, message } = (await onCreateGuest(
+      const { guest, success, message } = (await onCreateGuest(
         newGuestUser
       )) as IUserResponse;
 
+      if (!success) {
+        toast.error(
+          `A problem occurred while creating your order: ${message}`,
+          {
+            duration: 5000,
+          }
+        );
+        e.complete("fail");
+        return;
+      }
       const Session = Cookies.get("Session");
       let session: TShoppingSession = {
         id: Session ? (Session as unknown as number) : 0,

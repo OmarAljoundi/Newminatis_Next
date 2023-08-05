@@ -7,7 +7,7 @@ import { ContentWrapper } from "@/components/product-card/StyledComponents";
 import { FlexBetween, FlexBox } from "@/components/flex-box";
 import { H4, H5, H6 } from "@/components/Typography";
 import { calculateDiscount, calculateDiscountAsNumber, currency } from "@/lib";
-import { TooltipError, TooltipStock } from "@/components/Tooltips";
+import { TooltipError, TooltipInfo, TooltipStock } from "@/components/Tooltips";
 import { Add, Remove } from "@mui/icons-material";
 import { useState, useEffect } from "react";
 import { ValueVsQuantity } from "@/types/TProductInventory";
@@ -20,11 +20,12 @@ import { Button, Collapse, Container, IconButton, Zoom } from "@mui/material";
 import { MdOutlineWatchLater } from "react-icons/md";
 import { Disclosure, Transition } from "@headlessui/react";
 import { ChevronUpIcon } from "@heroicons/react/24/outline";
-import { FiPackage } from "react-icons/fi";
+import { FiPackage, FiShare } from "react-icons/fi";
 import { ShippingInfo } from "@/components/Policies/ShippingInfo";
 import ProductSizeSection from "./ProductSizeSection";
 import ProductSpecialIcons from "./ProductSpecialIcons";
 import { IProductResponse } from "@/interface/IProductResponse";
+import { FaShareAlt } from "react-icons/fa";
 
 export default function ProductInfoSection({ response }) {
   const { product, closeDay, hours, minEdd, maxEdd, currentDate } =
@@ -45,6 +46,17 @@ export default function ProductInfoSection({ response }) {
 
   const Content = useAppSelector((x) => x.Store.ContentReducer?.Content);
   const _setting = useAppSelector((x) => x.Store.SettingReducer.setting);
+
+  const Share = async () => {
+    try {
+      await navigator.share({
+        text: `Check out ${friendlyName} At Newminatis!`,
+        url: window.location.href,
+      });
+    } catch (error) {
+      console.log("Sharing failed!", error);
+    }
+  };
 
   return (
     <Grid
@@ -77,7 +89,7 @@ export default function ProductInfoSection({ response }) {
             >
               {shortDescription.toUpperCase().toUpperCase()}
             </p>
-            <div className="flex justify-between">
+            <div className="flex justify-between items-baseline">
               <FlexBox alignItems="center" gap={1}>
                 <p className="title text-sm font-bold mt-4">
                   {calculateDiscount(price, salePrice || 0, _setting)}
@@ -89,6 +101,14 @@ export default function ProductInfoSection({ response }) {
                   </Box>
                 )}
               </FlexBox>
+              <TooltipInfo title="Share" arrow>
+                <div>
+                  <FaShareAlt
+                    onClick={() => Share()}
+                    className="cursor-pointer hover:opacity-50 text-xl"
+                  />
+                </div>
+              </TooltipInfo>
             </div>
           </div>
 
@@ -96,14 +116,17 @@ export default function ProductInfoSection({ response }) {
         </div>
 
         <div className="shadow-lg bg-white divide-y-2 divide-zinc-500 divide-opacity-50 border-t-4 border-b-4 ">
-          <div className={`flex items-start py-4`}>
+          <div className={`flex items-start py-4 px-3`}>
             <div className="rounded-full justify-center items-center flex-shrink-0 w-8 h-8 flex">
               <span className="text-white font-semibold text-lg">
-                <MdOutlineWatchLater color="black" size={25} />
+                <MdOutlineWatchLater
+                  color="black"
+                  className="w-5 h-5 md:h-6 md:w-6"
+                />
               </span>
             </div>
             <div className="ml-4">
-              <p className="text-black text-base font-semibold">
+              <p className="text-black text-xs md:text-base font-semibold">
                 {closeDay !== "" ? (
                   <span>
                     Receive you order{" "}
@@ -126,14 +149,14 @@ export default function ProductInfoSection({ response }) {
               </p>
             </div>
           </div>
-          <div className={`flex items-start py-4`}>
+          <div className={`flex items-start py-4 px-3`}>
             <div className="rounded-full justify-center items-center flex-shrink-0 w-8 h-8 flex">
-              <span className="text-white font-semibold text-lg">
-                <FiPackage color="black" size={25} />
+              <span className="text-white font-semibold text-base">
+                <FiPackage color="black" className="w-5 h-5 md:h-6 md:w-6" />
               </span>
             </div>
             <div className="ml-4">
-              <p className="text-black text-base font-semibold ">
+              <p className="text-black text-xs md:text-base font-semibold ">
                 FREE WORLDWIDE EXPRESS SHIPPING FOR ORDERS ABOVE $300
               </p>
             </div>

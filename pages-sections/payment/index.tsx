@@ -42,6 +42,7 @@ const PaymentClientPage: FC = () => {
   const [checkoutSummary, setCheckoutSummary] =
     useState<CheckoutSummaryProps | null>(null);
 
+  const [stripeObject, setStripeObject] = useState<any | null>(null);
   const { CreateCheckoutSession, orderLoad } = useOrderService();
   const { onGetGuest, userLoad } = useUserService();
 
@@ -177,6 +178,16 @@ const PaymentClientPage: FC = () => {
     dispatch(updateCart(cart!));
   }, [cart]);
 
+  useEffect(() => {
+    fetchStripeObject();
+  }, []);
+
+  const fetchStripeObject = async () => {
+    const res = await stripePromise();
+    // When we have got the Stripe object, pass it into our useState.
+    setStripeObject(res);
+  };
+
   return (
     <div>
       {loading && <CreditCardSkeleton />}
@@ -193,7 +204,7 @@ const PaymentClientPage: FC = () => {
           <div className="col-span-1 lg:col-span-2">
             {clientSecret && (
               <Elements
-                stripe={stripePromise}
+                stripe={stripeObject}
                 options={{
                   clientSecret: clientSecret,
                 }}

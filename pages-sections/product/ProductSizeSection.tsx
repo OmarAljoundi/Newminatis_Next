@@ -25,6 +25,8 @@ import { toasterSuccess } from "@/service/toasterService";
 import { useRouter } from "next/navigation";
 import { TooltipError } from "@/components/Tooltips";
 import ProductSizeGuid from "./ProductSizeGuid";
+import { ProductQuantity } from "@/components/ProductQuantity";
+import { toast } from "react-hot-toast";
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -47,10 +49,21 @@ const ProductSizeSection: FC<ProductSizeSectionProp> = ({ product }) => {
   const downMd = useMediaQuery((theme: Theme) => theme.breakpoints.down("md"));
   useEffect(() => {
     setLoadStock(true);
-    executeAllLongRunningTasks().then((res) => {
-      setValueVsQuantity(res as ValueVsQuantity[]);
-      setLoadStock(false);
-    });
+    var currentSize: string | null = null;
+    executeAllLongRunningTasks()
+      .then((res) => {
+        setValueVsQuantity(res as ValueVsQuantity[]);
+        setLoadStock(false);
+
+        (res as ValueVsQuantity[]).map((x) => {
+          if (x.quantity > 0 && !currentSize) {
+            currentSize = x.variable;
+          }
+        });
+      })
+      .finally(() => {
+        setSelectedSize(currentSize);
+      });
   }, []);
 
   const executeLongRunningtask = async (value: string) => {
@@ -82,11 +95,14 @@ const ProductSizeSection: FC<ProductSizeSectionProp> = ({ product }) => {
     return valueVsQuantity?.find((x) => x.variable == value)?.quantity == 0;
   };
 
+  const handleSetQuantity = (q: number) => {
+    setQty(q);
+  };
+
   useEffect(() => {
     if (selectedSize) {
-      //handleToolClose();
       var _Stock = valueVsQuantity.find(
-        (x) => x.variable == GetSKU(name, color, selectedSize)
+        (x) => x.variable == selectedSize
       )?.quantity;
       setStock(_Stock ?? null);
       setQty(1);
@@ -97,6 +113,8 @@ const ProductSizeSection: FC<ProductSizeSectionProp> = ({ product }) => {
 
   const handleCartAmountChange = () => {
     if (selectedSize) {
+      var currentAddedToCart =
+        cartItem?.find((x) => x.sku == selectedSize)?.qty || 0;
       var __price =
         salePrice && salePrice > 0
           ? calculateDiscountAsNumber(price, salePrice)
@@ -106,7 +124,7 @@ const ProductSizeSection: FC<ProductSizeSectionProp> = ({ product }) => {
         name: name,
         price: __price,
         salePrice: salePrice || 0,
-        qty: qty,
+        qty: qty + currentAddedToCart,
         slug: name,
         imgUrl: mainImage || "",
         sku: selectedSize,
@@ -116,30 +134,17 @@ const ProductSizeSection: FC<ProductSizeSectionProp> = ({ product }) => {
           valueVsQuantity.find((x) => x.variable == selectedSize)?.quantity ||
           0,
       };
-      setStock(cart.stock);
 
-      if (!cartItem?.find((x) => x.sku == selectedSize)) {
+      if (stock! >= currentAddedToCart + qty) {
         dispatch(AddItem(cart));
         toasterSuccess(
-          currency(getTotalPrice(cartItem || []) + __price, _setting),
-          downMd ? "bottom-center" : "top-center"
-        );
-      } else if (qty != 0) {
-        var qttyy =
-          valueVsQuantity.find((x) => x.variable == selectedSize)?.quantity ??
-          0;
-        if (qty > qttyy) {
-          //enqueueSnackbar(`Only avaliable ${qttyy} pieces you can't add more`);
-          return;
-        }
-        dispatch(UpdateItem(cart));
-
-        toasterSuccess(
-          currency(getTotalPrice(cartItem || []) + __price, _setting),
+          currency(getTotalPrice(cartItem || []) + __price * qty, _setting),
           downMd ? "bottom-center" : "top-center"
         );
       } else {
-        dispatch(RemoveItem(cart));
+        toast.error("You have reach maximum amount for adding this item", {
+          duration: 3000,
+        });
       }
     }
   };
@@ -227,46 +232,12 @@ const ProductSizeSection: FC<ProductSizeSectionProp> = ({ product }) => {
         </div>
       </RadioGroup>
       <div className="mt-4 grid gap-x-6 gap-y-10  grid-cols-2 xl:gap-x-8 md:justify-items-end justify-items-between">
-        <div className="flex items-center justify-start">
-          <IconButton
-            disabled={qty == 1}
-            onClick={() => setQty(qty - 1)}
-            sx={{
-              py: 0.1,
-              px: 0.1,
-              border: "1px solid #d5d5d5",
-            }}
-          >
-            <Remove fontSize="small" />
-          </IconButton>
-
-          <Box
-            sx={{
-              margin: "0 10px",
-              textAlign: "center",
-            }}
-          >
-            <Chip
-              label={qty || 1}
-              sx={{
-                background: "white",
-                fontSize: "20px",
-              }}
-            />
-          </Box>
-
-          <IconButton
-            sx={{
-              py: 0.1,
-              px: 0.1,
-              border: "1px solid #d5d5d5",
-            }}
-            disabled={qty >= (stock || 0)}
-            onClick={() => setQty(qty + 1)}
-          >
-            <Add fontSize="small" />
-          </IconButton>
-        </div>
+        <ProductQuantity
+          quantity={qty}
+          handleSetQuantity={handleSetQuantity}
+          size={selectedSize}
+          maxQuantity={stock || 0}
+        />
         <TooltipError
           arrow
           TransitionComponent={Zoom}

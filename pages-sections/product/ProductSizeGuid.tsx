@@ -16,8 +16,6 @@ type SizeGuidProp = {
   product: TProduct;
 };
 const ProductSizeGuid: FC<SizeGuidProp> = ({ product }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
   return (
     <Dialog>
       <DialogTrigger asChild>
