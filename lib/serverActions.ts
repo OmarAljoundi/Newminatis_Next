@@ -40,6 +40,9 @@ export const getProductData = async (searchQuery: SearchQuery) => {
       headers: {
         "Content-Type": "application/json",
       },
+      next: {
+        revalidate: 3600,
+      },
     }
   );
   const data = await result.json();
