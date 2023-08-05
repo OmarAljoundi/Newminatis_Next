@@ -43,6 +43,7 @@ export const getProductData = async (searchQuery: SearchQuery) => {
       next: {
         revalidate: 3600,
       },
+      cache: "default",
     }
   );
   const data = await result.json();
