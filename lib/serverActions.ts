@@ -20,7 +20,7 @@ export const searchProducts = async (
       method: "POST",
       body: JSON.stringify(searchQuery),
       next: {
-        revalidate: revalidate || 30,
+        revalidate: 0,
       },
       cache: "no-store",
       headers: {
@@ -42,7 +42,7 @@ export const getProductData = async (searchQuery: SearchQuery) => {
         "Content-Type": "application/json",
       },
       next: {
-        revalidate: 3600,
+        revalidate: 0,
       },
       cache: "no-store",
     }
