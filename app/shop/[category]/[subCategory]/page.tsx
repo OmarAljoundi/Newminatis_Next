@@ -1,6 +1,5 @@
-export const revalidate = 86400;
+export const revalidate = false;
 export const dynamic = "force-dynamic";
-export const fetchCache = "force-cache";
 import { PrepareSQObject, getSubCategories } from "@/helpers/Extensions";
 import { getCategories, searchProducts } from "@/lib/serverActions";
 import Breadcrumb from "@/pages-sections/shop/Breadcrumb";
