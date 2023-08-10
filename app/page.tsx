@@ -10,9 +10,9 @@ import ValueSection from "@/pages-sections/home/ValueSection";
 import { Metadata } from "next";
 import React, { Suspense } from "react";
 export const metadata: Metadata = {
-  title: "Newminatis | Unique alternative and concept clothing",
+  title: "Newminatis: Shop for the Latest Fashion Trends",
   description:
-    "Newminatis | Unique Rave Clothing | Tech-wear | Festival Fashion | Men, Women & Unisex | Music | Art | People",
+    "Shop the latest fashion trends at Newminatis. We offer a wide variety of clothing for men and women at affordable prices. Check out our selection today!",
   keywords: [
     "Rave clothing",
     "Tech wear",
