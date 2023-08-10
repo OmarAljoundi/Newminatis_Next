@@ -57,7 +57,7 @@ const ShopLayout: FC<ShopLayoutProps> = ({ children }) => {
                 <Topbar bgColor={"#1e1e1e"} />
                 <Header />
               </Sticky>
-              <div className="section-after-sticky overflow-x-hidden">
+              <div className="section-after-sticky overflow-x-hidden ">
                 <ProviderRouteChange />
                 {children}
               </div>
