@@ -68,7 +68,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     };
   }
   return {
-    title: "Error - Product not found",
+    title: "Error - Product not found ",
   };
 }
 
