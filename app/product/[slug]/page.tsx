@@ -8,6 +8,8 @@ import { Metadata } from "next";
 import NotFoundSupport from "@/app/not-found";
 import { getProductData } from "@/lib/serverActions";
 import ProductService from "@/service/ProductService";
+import { ProductJsonLd } from "next-seo";
+import { MapColors } from "@/helpers/Extensions";
 
 type Params = {
   params: {
@@ -50,8 +52,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   if (product) {
     const p_name = product?.friendlyName ?? product.name;
     return {
-      title: product?.friendlyName,
-      description: product?.shortDescription,
+      title: product?.seoTitle,
+      description: product?.seoDescription,
       openGraph: {
         title: p_name.charAt(0).toUpperCase() + p_name.slice(1).toLowerCase(),
         description: product.shortDescription.toLowerCase(),
@@ -62,26 +64,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
         images: product.productImages?.map((x) => x.imageUrl),
         siteName: "Newminatis",
       },
-      keywords: product.tags,
-
-      other: {
-        "og:price:amount": product.price.toString(),
-        "og:price:currency": "USD",
-        "product:brand": "Newminatis",
-        "product:gender":
-          product.categoryId == 34
-            ? "Unisex"
-            : product.categoryId == 11
-            ? "Female"
-            : "Male",
-        "product:price:amount": product.price.toString(),
-        "product:price:currency": "USD",
-        "product:retailer_item_id": `NM-${product.name.replace(/ /g, "")}-0${
-          product.color
-        }`,
-        "product:category": "5388",
-        "product:condition": "new",
-      },
+      keywords: product.seoTags,
     };
   }
   return {
@@ -95,8 +78,34 @@ export default async function SingleProductPage({ params: { slug } }: Params) {
     return <NotFoundSupport />;
   }
 
+  const { product } = _response;
+
   return (
     <div className="mx-auto max-w-2xl py-4 px-0 sm:py-6 lg:max-w-7xl lg:px-8">
+      <ProductJsonLd
+        category="5388"
+        sku={product.sku}
+        productName={product?.friendlyName ?? product.name}
+        images={product.productImages?.map((x) => x.imageUrl)}
+        description={product.shortDescription}
+        brand="Newminatis"
+        color={MapColors(product.color)?.toLowerCase()}
+        releaseDate={new Date().toDateString()}
+        productionDate={new Date().toDateString()}
+        purchaseDate={new Date().toDateString()}
+        useAppDir={true}
+        offers={[
+          {
+            price: product.price,
+            priceCurrency: "USD",
+            itemCondition: "https://schema.org/NewCondition",
+            availability: "https://schema.org/InStock",
+            url: `https://www.newminatis.com/product/${product.name.toLowerCase()}-0${
+              product.color
+            }`,
+          },
+        ]}
+      />
       {/* <ReviewModel product={_response.product} /> */}
 
       <div>

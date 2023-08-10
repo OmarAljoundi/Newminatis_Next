@@ -29,6 +29,9 @@ export type TProduct = {
   images: string[] | null;
   mainImage: string | null;
   Instock?: boolean;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
+  seoTags?: string | null;
   type: string;
   productImages: TProductImages[] | null;
   productReview?: TProductReview[] | null;
