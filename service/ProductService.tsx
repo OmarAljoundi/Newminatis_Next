@@ -20,7 +20,9 @@ class ProductService {
   }
 
   getCategories() {
-    return http(axios.create()).get<TProductCategory[]>(`/Product/Category`);
+    return http(axios.create(), true).get<TProductCategory[]>(
+      `/Product/Category`
+    );
   }
 
   getTags() {

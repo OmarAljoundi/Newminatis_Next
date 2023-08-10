@@ -27,6 +27,7 @@ export const searchProducts = async (
       },
     }
   );
+
   const data = await result.json();
   return data as IProductResponse;
 };
