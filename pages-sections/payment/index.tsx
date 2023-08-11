@@ -193,32 +193,32 @@ const PaymentClientPage: FC = () => {
       {loading && <CreditCardSkeleton />}
 
       {!loading && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-4 gap-y-2 ">
-          <div>
+        <div>
+          {/* <div>
             <CheckoutSummary
               guestAddress={guestAddress}
               setCheckoutSummary={setCheckoutSummary}
               {...checkoutSummary}
             />
-          </div>
-          <div className="col-span-1 lg:col-span-2">
-            {clientSecret && (
-              <Elements
-                stripe={stripeObject}
-                options={{
-                  clientSecret: clientSecret,
-                }}
-              >
-                <ExpressCheckoutWithEmail
-                  clientSecret={clientSecret}
-                  guestUser={guestAddress}
-                  checkoutSummary={checkoutSummary}
-                />
-                <PaymentForm
-                  totalAfterDiscount={checkoutSummary?.Total}
-                  guestUser={guestAddress}
-                />
-                {/* <PaymentMethodMessagingElement
+          </div> */}
+          {/* className="col-span-1 lg:col-span-2" */}
+          {clientSecret && (
+            <Elements
+              stripe={stripeObject}
+              options={{
+                clientSecret: clientSecret,
+              }}
+            >
+              <ExpressCheckoutWithEmail
+                clientSecret={clientSecret}
+                guestUser={guestAddress}
+                checkoutSummary={checkoutSummary}
+              />
+              <PaymentForm
+                totalAfterDiscount={checkoutSummary?.Total}
+                guestUser={guestAddress}
+              />
+              {/* <PaymentMethodMessagingElement
                   options={{
                     amount: checkoutSummary?.Total || 0,
                     currency: "USD",
@@ -232,9 +232,8 @@ const PaymentClientPage: FC = () => {
                   }}
 
                 /> */}
-              </Elements>
-            )}
-          </div>
+            </Elements>
+          )}
         </div>
       )}
     </div>

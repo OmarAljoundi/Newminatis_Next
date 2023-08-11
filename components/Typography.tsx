@@ -1,5 +1,6 @@
 import { FC } from "react";
-import { Box, BoxProps, styled } from "@mui/material";
+import { styled } from "@mui/material/styles";
+import Box, { BoxProps } from "@mui/material/Box";
 import clsx from "clsx";
 
 const StyledBox = styled(Box, {

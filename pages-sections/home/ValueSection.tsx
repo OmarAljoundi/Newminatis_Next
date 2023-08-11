@@ -1,6 +1,6 @@
 "use client";
 import { FC } from "react";
-import { Container } from "@mui/material";
+import Container from "@mui/material/Container";
 import Image from "next/image";
 
 const ValueSection: FC<{ mode?: "light" | "dark"; extraClass?: string }> = ({

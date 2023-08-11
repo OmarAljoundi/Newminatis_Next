@@ -1,5 +1,6 @@
 "use client";
-import { Box, Skeleton } from "@mui/material";
+import Box from "@mui/material/Box";
+import Skeleton from "@mui/material/Skeleton";
 import {
   useStripe,
   useElements,

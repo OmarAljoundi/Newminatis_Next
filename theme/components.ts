@@ -1,6 +1,7 @@
-import { Components, Theme } from "@mui/material";
 import { dark, grey } from "./themeColors";
 import { fontSize } from "./typography";
+
+import { Theme, Components } from "@mui/material/styles";
 
 // ========================================================
 declare module "@mui/material/Button" {

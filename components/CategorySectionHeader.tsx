@@ -1,7 +1,7 @@
 import { FC, ReactNode } from "react";
-import { H2, H3 } from "./Typography";
+import { H3 } from "./Typography";
 import { FlexBetween, FlexBox } from "./flex-box";
-import { Button } from "@mui/material";
+import Button from "@mui/material/Button";
 import Link from "next/link";
 
 // ===================================================

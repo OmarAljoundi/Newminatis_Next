@@ -1,14 +1,10 @@
 import { FC, useEffect } from "react";
-import {
-  Avatar,
-  Box,
-  Button,
-  Chip,
-  Divider,
-  IconButton,
-  styled,
-  useTheme,
-} from "@mui/material";
+
+import Avatar from "@mui/material/Avatar";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+
 import { Add, Close, Remove, ShoppingBagOutlined } from "@mui/icons-material";
 import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";

@@ -1,7 +1,5 @@
-import { MapColors } from "@/helpers/Extensions";
 import useProductService from "@/hooks/useProductService";
 import { IProductResponse } from "@/interface/IProductResponse";
-import { TProduct } from "@/types/TProduct";
 import { TProductCategory } from "@/types/TProductCategory";
 import {
   FilterByOptions,
@@ -9,7 +7,7 @@ import {
   OrderByOptions,
   eFilterOperator,
 } from "@/types/TSearchQuery";
-import { Button, Skeleton } from "@mui/material";
+import Skeleton from "@mui/material/Skeleton";
 import Image from "next/image";
 import Link from "next/link";
 import { FC } from "react";

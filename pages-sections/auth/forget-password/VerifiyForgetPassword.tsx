@@ -1,10 +1,9 @@
-import { H3 } from "@/components/Typography";
 import useUserService from "@/hooks/useUserService";
 import { IUserResponse } from "@/interface/IUserResponse";
 import { LoadingButton } from "@mui/lab";
-import { Button, TextField } from "@mui/material";
+import TextField from "@mui/material/TextField";
 import { useFormik } from "formik";
-import { Dispatch, FC, SetStateAction, useState } from "react";
+import { Dispatch, FC, SetStateAction } from "react";
 import { useSpring, animated } from "react-spring";
 
 const VerifiyForgetPassword: FC<{

@@ -1,5 +1,7 @@
 import { FC, ReactNode, useEffect } from "react";
-import { Container, Grid } from "@mui/material";
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
+
 import Navigations from "./Navigations";
 import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/hooks/useRedux";

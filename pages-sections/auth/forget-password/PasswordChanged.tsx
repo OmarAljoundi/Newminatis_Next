@@ -1,4 +1,4 @@
-import { Box, Button } from "@mui/material";
+import Button from "@mui/material/Button";
 import { useSpring, animated } from "react-spring";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { FC } from "react";

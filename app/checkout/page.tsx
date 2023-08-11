@@ -1,4 +1,5 @@
 import CheckoutClientPage from "@/pages-sections/checkout";
+import CheckoutPage2 from "@/pages-sections/checkout/index2";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -7,7 +8,7 @@ export const metadata: Metadata = {
 export default function CheckoutPage() {
   return (
     <div>
-      <CheckoutClientPage />
+      <CheckoutPage2 />
     </div>
   );
 }

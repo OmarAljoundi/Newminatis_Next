@@ -1,13 +1,13 @@
 import React, { FC, Fragment, useEffect, useState } from "react";
-import {
-  Autocomplete,
-  Button,
-  Dialog,
-  DialogContent,
-  Grid,
-  TextField,
-  Typography,
-} from "@mui/material";
+
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import Autocomplete from "@mui/material/Autocomplete";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+
 import { useFormik } from "formik";
 import { Country, ICountry, IState, State } from "country-state-city";
 import MuiPhoneNumber from "material-ui-phone-number-2";

@@ -1,5 +1,6 @@
 import { FC, Fragment, useEffect } from "react";
-import { Card, styled } from "@mui/material";
+import { styled } from "@mui/material/styles";
+import Card from "@mui/material/Card";
 import { CreditCard, Person, Place, Logout } from "@mui/icons-material";
 import ShoppingBagOutlined from "@mui/icons-material/ShoppingBagOutlined";
 import Cookies from "js-cookie";

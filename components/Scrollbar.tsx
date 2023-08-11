@@ -1,5 +1,5 @@
 import { FC, ReactNode } from "react";
-import { alpha, styled, SxProps } from "@mui/material";
+import { alpha, styled, SxProps } from "@mui/material/styles";
 import SimpleBar from "simplebar-react";
 import { Props } from "simplebar-react";
 import "simplebar-react/dist/simplebar.min.css";

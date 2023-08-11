@@ -1,4 +1,5 @@
-import { Card, CardProps, styled } from "@mui/material";
+import Card, { CardProps } from "@mui/material/Card";
+import { styled } from "@mui/material/styles";
 import { FC } from "react";
 
 const fbStyle = { background: "#3B5998", color: "white" };

@@ -3,7 +3,7 @@ import { isHTMLString } from "@/helpers/Extensions";
 import { useAppSelector } from "@/hooks/useRedux";
 import { Disclosure } from "@headlessui/react";
 import { ChevronUpIcon } from "@heroicons/react/20/solid";
-import { Collapse } from "@mui/material";
+import Collapse from "@mui/material/Collapse";
 import React from "react";
 
 export default function TermsAndCondition() {

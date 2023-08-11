@@ -1,6 +1,8 @@
 "use client";
 import { FC } from "react";
-import { Box, Theme, useMediaQuery } from "@mui/material";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { Theme } from "@mui/material/styles";
+import Box from "@mui/material/Box";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";

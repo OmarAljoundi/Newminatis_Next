@@ -1,6 +1,6 @@
 import { FC } from "react";
-import { Card, CardProps, styled } from "@mui/material";
-
+import Card, { CardProps } from "@mui/material/Card";
+import { styled } from "@mui/material/styles";
 // ===============================================
 interface CustomCardProps extends CardProps {
   hoverEffect?: boolean;

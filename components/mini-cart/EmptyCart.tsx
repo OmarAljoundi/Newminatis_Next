@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import Button from "@mui/material/Button";
 import Link from "next/link";
 import { BuildingStorefrontIcon } from "@heroicons/react/20/solid";
 

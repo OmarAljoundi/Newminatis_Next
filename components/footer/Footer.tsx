@@ -1,5 +1,5 @@
 import { FC, useState } from "react";
-import { TextField } from "@mui/material";
+import TextField from "@mui/material/TextField";
 import { AxiosResponse } from "axios";
 import EmailService from "@/service/EmailService";
 import { IBaseResponse } from "@/interface/IBaseResponse";

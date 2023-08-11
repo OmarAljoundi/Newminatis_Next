@@ -1,19 +1,10 @@
 "use client";
 import { FC, useEffect, useState } from "react";
-import {
-  Avatar,
-  Box,
-  Button,
-  Card,
-  Divider,
-  IconButton,
-  TextField,
-  Tooltip,
-  Typography,
-} from "@mui/material";
-import LoadingButton from "@mui/lab/LoadingButton";
+import Tooltip from "@mui/material/Tooltip";
+import IconButton from "@mui/material/IconButton";
+import Card from "@mui/material/Card";
 import Cookies from "js-cookie";
-import { Close, Delete } from "@mui/icons-material";
+import { Delete } from "@mui/icons-material";
 import { TUserGuest } from "@/types/TUserGuest";
 import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
 import useOrderService from "@/hooks/useOrderService";
@@ -22,21 +13,13 @@ import { CartItem } from "@/store/Model/CartItem";
 import { RemoveItem } from "@/store/CartItem/Cart-action";
 import { toast } from "react-hot-toast";
 import { TShoppingSession } from "@/types/TCheckoutSessionRequest";
-import {
-  calcualteQty,
-  calculateCart,
-  getTotalPrice,
-} from "@/helpers/Extensions";
+import { calcualteQty, getTotalPrice } from "@/helpers/Extensions";
 import { IShoppingSessionResponse } from "@/interface/IShoppingSessionResponse";
-import { FlexBetween } from "@/components/flex-box";
 import Link from "next/link";
-import { H6, ShortSpan, Span, Tiny } from "@/components/Typography";
-import { calculateDiscount, calculateDiscountAsNumber, currency } from "@/lib";
-import CheckVoucherIcon from "@/components/CheckVoucherIcon";
+import { Tiny } from "@/components/Typography";
+import { calculateDiscountAsNumber, currency } from "@/lib";
 import { useSession } from "next-auth/react";
-import AddressInfo from "../payment/AddressInfo";
 import { BlurImage } from "@/components/BlurImage";
-import { CheckCircleIcon, TruckIcon } from "@heroicons/react/20/solid";
 import {
   getShippingMessage,
   isEligableForFreeShipping,

@@ -1,13 +1,12 @@
 import ImCheck from "@/public/assets/icons/ImCheck";
 import ImLock from "@/public/assets/icons/ImLock";
 import ImUnlock from "@/public/assets/icons/ImUnlock";
-import {
-  StepConnector,
-  stepConnectorClasses,
-  StepIconProps,
-  styled,
-} from "@mui/material";
+import { StepIconProps } from "@mui/material/StepIcon";
 
+import StepConnector, {
+  stepConnectorClasses,
+} from "@mui/material/StepConnector";
+import { styled } from "@mui/material/styles";
 export const Steps = [
   {
     header: "Enter Your Email",

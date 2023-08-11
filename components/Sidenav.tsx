@@ -1,8 +1,9 @@
 import { cloneElement, FC, useEffect, useState, ReactNode } from "react";
 import clsx from "clsx";
-import { Box, Drawer, styled } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import Scrollbar from "./Scrollbar";
-
+import Box from "@mui/material/Box";
+import Drawer from "@mui/material/Drawer";
 // styled component
 const Wrapper = styled(Box)(() => ({ "& .handle": { cursor: "pointer" } }));
 

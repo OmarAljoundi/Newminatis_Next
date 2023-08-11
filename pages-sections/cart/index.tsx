@@ -4,7 +4,7 @@ import { getShippingLabel, getTotalPrice } from "@/helpers/Extensions";
 import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
 import { currency } from "@/lib";
 import { updateCart } from "@/store/CartItem/ThunkAPI";
-import { Grid, Card, Typography, Box, Divider, Button } from "@mui/material";
+import Button from "@mui/material/Button";
 import Link from "next/link";
 import React, { useEffect, useState, Fragment } from "react";
 import EDD from "./EDD";

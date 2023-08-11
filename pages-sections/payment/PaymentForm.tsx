@@ -22,12 +22,10 @@ import { IOrderResponse } from "@/interface/IOrderResponse";
 import FacebookService from "@/service/FacebookService";
 import { PurchaseEvent, grapUserData } from "@/helpers/FacebookEvent";
 import { TOrderRequestGuest } from "@/types/TOrderRequestGuest";
-import { Card } from "@mui/material";
-import { H6 } from "@/components/Typography";
 import { CartItem } from "@/store/Model/CartItem";
 import { EncryptData } from "@/helpers/Crypto";
 import { useSession } from "next-auth/react";
-import { TUser } from "@/types/TUser";
+import { H6 } from "@/components/Typography";
 
 const Text =
   "We will contribute 1% of your purchase to removing CO₂ from the atmosphere.";
@@ -280,7 +278,7 @@ export default function PaymentForm({ totalAfterDiscount, guestUser }) {
   };
 
   return (
-    <Card elevation={5} role={"drawer"}>
+    <div>
       <form id="payment-form" onSubmit={handleSubmit}>
         <PaymentElement
           options={paymentElementOptions}
@@ -312,6 +310,6 @@ export default function PaymentForm({ totalAfterDiscount, guestUser }) {
           Place Order
         </LoadingButton>
       </form>
-    </Card>
+    </div>
   );
 }

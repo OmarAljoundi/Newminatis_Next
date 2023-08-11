@@ -1,4 +1,4 @@
-import { IconButton } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
 import React, { FC } from "react";
 import BlurCircularIcon from "@mui/icons-material/BlurCircular";
 import { TBlogs } from "@/types/TBlog";

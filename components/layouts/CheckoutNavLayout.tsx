@@ -1,5 +1,8 @@
 import { FC, ReactNode, useEffect, useState } from "react";
-import { Box, Container, Grid } from "@mui/material";
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
+import Container from "@mui/material/Container";
+
 import Stepper, { Step } from "../stepper/Stepper";
 import { usePathname, useRouter } from "next/navigation";
 

@@ -1,6 +1,6 @@
 "use client";
 import { UserMenuItems } from "@/components/header/UserMenu";
-import { Skeleton } from "@mui/material";
+import Skeleton from "@mui/material/Skeleton";
 import { useSession } from "next-auth/react";
 
 import Link from "next/link";

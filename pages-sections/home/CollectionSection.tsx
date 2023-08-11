@@ -1,7 +1,7 @@
 "use client";
 import CategorySectionCreator from "@/components/CategorySectionCreator";
 import { H2 } from "@/components/Typography";
-import { Button, Grid } from "@mui/material";
+import Button from "@mui/material/Button";
 import Image from "next/legacy/image";
 import Link from "next/link";
 import { useState } from "react";

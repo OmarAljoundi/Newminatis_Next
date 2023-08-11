@@ -1,5 +1,7 @@
 import { FC, Fragment, useState } from "react";
-import { Grid, Pagination, Theme, useMediaQuery } from "@mui/material";
+import Grid from "@mui/material/Grid";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { Theme } from "@mui/material/styles";
 import { TProduct } from "@/types/TProduct";
 import ShopMobileCard from "@/components/product-card/ShopMobileCard";
 import ShopCard from "@/components/product-card/ShopCard";

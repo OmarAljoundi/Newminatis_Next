@@ -1,5 +1,7 @@
 "use client";
-import { Card, Container, Skeleton } from "@mui/material";
+import Skeleton from "@mui/material/Skeleton";
+import Card from "@mui/material/Card";
+import Container from "@mui/material/Container";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import "swiper/css";

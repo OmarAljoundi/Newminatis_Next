@@ -1,38 +1,25 @@
-import { FC, useCallback, useEffect, useRef, useState } from "react";
-import {
-  Box,
-  Button,
-  Card,
-  Checkbox,
-  Collapse,
-  Divider,
-  FormControlLabel,
-  IconButton,
-  Slider,
-  styled,
-  TextField,
-  Tooltip,
-} from "@mui/material";
+import { FC, useEffect, useState } from "react";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import Tooltip from "@mui/material/Tooltip";
+import IconButton from "@mui/material/IconButton";
+import Divider from "@mui/material/Divider";
+import Slider from "@mui/material/Slider";
+import { styled } from "@mui/material/styles";
 import ClearIcon from "@mui/icons-material/Clear";
 import { TProductCategory } from "@/types/TProductCategory";
-import { TProductTags } from "@/types/TProductTags";
-import useProductService from "@/hooks/useProductService";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { H6, Span } from "@/components/Typography";
+import { H6 } from "@/components/Typography";
 import { FlexBetween, FlexBox } from "@/components/flex-box";
 import { variants } from "@/utils/constants";
-import {
-  createUrlWithSearch,
-  eColor,
-  getSubCategories,
-} from "@/helpers/Extensions";
+import { createUrlWithSearch, eColor } from "@/helpers/Extensions";
 import { usePathname } from "next/navigation";
-import Link from "next/link";
 import { useQuery } from "react-query";
 import { Disclosure, RadioGroup } from "@headlessui/react";
-import { MdOutlineRemove } from "react-icons/md";
 import { ChevronUpIcon } from "@heroicons/react/24/outline";
 import SubCategorySection from "./SubCategorySection";
+import useProductService from "@/hooks/useProductService";
+import Collapse from "@mui/material/Collapse";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");

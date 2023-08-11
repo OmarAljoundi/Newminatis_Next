@@ -1,5 +1,9 @@
 import { FC, useState, useEffect } from "react";
-import { Box, Drawer, Fade, styled } from "@mui/material";
+
+import Box from "@mui/material/Box";
+import Drawer from "@mui/material/Drawer";
+import Fade from "@mui/material/Fade";
+import { styled } from "@mui/material/styles";
 import Cookies from "js-cookie";
 import { layoutConstant } from "@/utils/constants";
 import Link from "next/link";

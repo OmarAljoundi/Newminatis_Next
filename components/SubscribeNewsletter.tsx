@@ -1,14 +1,13 @@
 import { Close } from "@mui/icons-material";
 import LoadingButton from "@mui/lab/LoadingButton";
-import {
-  Box,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  TextField,
-  Zoom,
-} from "@mui/material";
+
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import IconButton from "@mui/material/IconButton";
+import TextField from "@mui/material/TextField";
+import Zoom from "@mui/material/Zoom";
+import Box from "@mui/material/Box";
 import { TransitionProps } from "@mui/material/transitions";
 import { forwardRef, useEffect, useState } from "react";
 import { H1, H2, H3, H5, Span } from "./Typography";

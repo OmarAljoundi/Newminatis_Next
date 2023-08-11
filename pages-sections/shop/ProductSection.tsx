@@ -1,7 +1,8 @@
 "use client";
 import { IProductResponse } from "@/interface/IProductResponse";
 import React, { FC } from "react";
-import { Theme, useMediaQuery } from "@mui/material";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { Theme } from "@mui/material/styles";
 import ShopMobileCard from "@/components/product-card/ShopMobileCard";
 import ShopCard from "@/components/product-card/ShopCard";
 import { ExclamationCircleIcon } from "@heroicons/react/20/solid";

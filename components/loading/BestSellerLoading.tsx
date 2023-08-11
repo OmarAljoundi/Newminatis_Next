@@ -1,5 +1,5 @@
 "use client";
-import { Box, Theme, useMediaQuery } from "@mui/material";
+import Box from "@mui/material/Box";
 
 import CategorySectionCreator from "../CategorySectionCreator";
 import Image from "next/image";

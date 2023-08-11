@@ -1,6 +1,7 @@
 "use client";
 import { FC, ReactNode } from "react";
-import { Box, BoxProps, Container } from "@mui/material";
+import Box, { BoxProps } from "@mui/material/Box";
+import Container from "@mui/material/Container";
 import CategorySectionHeader from "./CategorySectionHeader";
 
 // ==============================================================

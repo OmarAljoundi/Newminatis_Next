@@ -1,16 +1,14 @@
 import { useState } from "react";
 import { Close, Settings, ShoppingBagOutlined } from "@mui/icons-material";
-import {
-  Box,
-  styled,
-  Tooltip,
-  IconButton,
-  ClickAwayListener,
-  Badge,
-  Drawer,
-} from "@mui/material";
 
+import Box from "@mui/material/Box";
+import Tooltip from "@mui/material/Tooltip";
+import IconButton from "@mui/material/IconButton";
+import ClickAwayListener from "@mui/material/ClickAwayListener";
+import Badge from "@mui/material/Badge";
+import Drawer from "@mui/material/Drawer";
 import MiniCart from "./mini-cart/MiniCart";
+import { styled } from "@mui/material/styles";
 import { useAppSelector } from "@/hooks/useRedux";
 import { calcualteQty } from "@/helpers/Extensions";
 

@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { IconButton } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 // ===============================================================

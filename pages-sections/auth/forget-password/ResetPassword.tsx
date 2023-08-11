@@ -1,4 +1,4 @@
-import { Button, TextField } from "@mui/material";
+import TextField from "@mui/material/TextField";
 import { useFormik } from "formik";
 import { FC, useCallback, useState } from "react";
 import { useSpring, animated } from "react-spring";
@@ -6,7 +6,6 @@ import * as yup from "yup";
 import EyeToggleButton from "../shared/EyeToggleButton";
 import useUserService from "@/hooks/useUserService";
 import { IUserResponse } from "@/interface/IUserResponse";
-import { H3 } from "@/components/Typography";
 import { LoadingButton } from "@mui/lab";
 const ResetPassword: FC<{
   email: string;

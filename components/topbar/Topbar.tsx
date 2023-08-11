@@ -1,5 +1,7 @@
 import { FC } from "react";
-import { Box, styled } from "@mui/material";
+import Box from "@mui/material/Box";
+import { styled } from "@mui/material/styles";
+
 import "swiper/css/effect-fade";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectFade } from "swiper";

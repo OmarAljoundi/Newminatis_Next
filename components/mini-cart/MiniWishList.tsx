@@ -1,6 +1,14 @@
 import { FC, Fragment, useEffect } from "react";
-import { Avatar, Box, Button, Chip, IconButton, styled } from "@mui/material";
+
+import Avatar from "@mui/material/Avatar";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+
+import Chip from "@mui/material/Chip";
+import IconButton from "@mui/material/IconButton";
+import { styled } from "@mui/material/styles";
 import { Add, Remove } from "@mui/icons-material";
+
 import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
 import { AddItemWish, RemoveItemWish } from "@/store/Wishlist/Wishlist-action";
 import { updateWishlist } from "@/store/Wishlist/ThunkAPI";
@@ -238,4 +246,3 @@ const MiniWishList: FC<MiniWishListProps> = ({ toggleSidenav, open }) => {
 };
 
 export default MiniWishList;
-

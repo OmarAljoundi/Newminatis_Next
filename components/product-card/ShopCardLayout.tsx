@@ -9,13 +9,15 @@ import Link from "next/link";
 import { Navigation, Pagination } from "swiper";
 import { SwiperSlide, Swiper } from "swiper/react";
 import { BlurImage } from "../BlurImage";
-import { Box, Drawer, Tooltip, Zoom } from "@mui/material";
-import { FlexBetween, FlexBox } from "../flex-box";
-import { H4, H6 } from "../Typography";
+
+import Box from "@mui/material/Box";
+import Tooltip from "@mui/material/Tooltip";
+import Zoom from "@mui/material/Zoom";
+
+import { FlexBox } from "../flex-box";
 import { TooltipError } from "../Tooltips";
 import { calculateDiscount, currency } from "@/lib";
 import { VscHeart, VscHeartFilled } from "react-icons/vsc";
-import AddToCardModel from "../models/AddToCartModel";
 import { TProduct } from "@/types/TProduct";
 import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
 import { AddItemWish } from "@/store/Wishlist/Wishlist-action";

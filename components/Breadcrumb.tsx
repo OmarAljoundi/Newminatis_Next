@@ -1,7 +1,9 @@
 "use client";
 import * as React from "react";
 import BreadcrumbsMUI from "@mui/material/Breadcrumbs";
-import { Chip, emphasize, styled } from "@mui/material";
+import { styled, emphasize } from "@mui/material/styles";
+import Chip from "@mui/material/Chip";
+
 import { TProduct } from "@/types/TProduct";
 type BreadcrumbsProp = {
   product: TProduct;

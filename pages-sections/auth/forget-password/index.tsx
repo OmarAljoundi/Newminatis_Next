@@ -1,7 +1,10 @@
 "use client";
-import { Button, Step, StepLabel, Stepper, TextField } from "@mui/material";
+import Step from "@mui/material/Step";
+import StepLabel from "@mui/material/StepLabel";
+import Stepper from "@mui/material/Stepper";
+import TextField from "@mui/material/TextField";
 import { useFormik } from "formik";
-import { FC, useEffect, useState } from "react";
+import { useState } from "react";
 import { useSpring, animated } from "react-spring";
 import PasswordChange from "./PasswordChanged";
 import ResetPassword from "./ResetPassword";
@@ -9,7 +12,6 @@ import VerifiyForgetPassword from "./VerifiyForgetPassword";
 import * as yup from "yup";
 import useUserService from "@/hooks/useUserService";
 import { IUserResponse } from "@/interface/IUserResponse";
-import { H1 } from "@/components/Typography";
 import {
   ColorlibConnector,
   ColorlibStepIcon,

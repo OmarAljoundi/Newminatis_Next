@@ -1,5 +1,5 @@
 import { FlexBox } from "./flex-box";
-import { IconButton } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
 import { AiFillFacebook } from "react-icons/ai";
 import { FaTiktok } from "react-icons/fa";
 import { AiOutlineWhatsApp } from "react-icons/ai";

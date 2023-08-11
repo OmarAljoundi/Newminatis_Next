@@ -1,5 +1,5 @@
 "use client";
-import { SvgIcon, SvgIconProps } from "@mui/material";
+import SvgIcon, { SvgIconProps } from "@mui/material/SvgIcon";
 import React from "react";
 
 const Globe = (props: SvgIconProps) => {

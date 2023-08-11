@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { IconButton } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 // ===============================================================

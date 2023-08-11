@@ -2,8 +2,7 @@ import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
-import { Avatar } from "@mui/material";
-import PersonIcon from "@mui/icons-material/Person";
+import Avatar from "@mui/material/Avatar";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 export default function MobileUserMenu() {
   const { data: session } = useSession();

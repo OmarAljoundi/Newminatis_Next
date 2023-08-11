@@ -1,17 +1,15 @@
 import { Add, Close, Remove } from "@mui/icons-material";
-import {
-  Box,
-  Button,
-  Chip,
-  Grid,
-  IconButton,
-  Skeleton,
-  Stack,
-  Zoom,
-} from "@mui/material";
+
+import Chip from "@mui/material/Chip";
+import IconButton from "@mui/material/IconButton";
+import Skeleton from "@mui/material/Skeleton";
+
+import Stack from "@mui/material/Stack";
+import Zoom from "@mui/material/Zoom";
+import Box from "@mui/material/Box";
+
 import { FC, useEffect, useState } from "react";
 import { ValueVsQuantity } from "../../types/TProductInventory";
-import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import { TProduct } from "@/types/TProduct";
 import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
 import { calculateDiscount, calculateDiscountAsNumber, currency } from "@/lib";

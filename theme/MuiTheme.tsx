@@ -1,6 +1,6 @@
-import { createRef, FC, ReactNode, useEffect } from "react";
+import { FC, ReactNode, useEffect } from "react";
 import { merge } from "merge";
-import { CssBaseline } from "@mui/material";
+import CssBaseline from "@mui/material/CssBaseline";
 import {
   createTheme,
   responsiveFontSizes,

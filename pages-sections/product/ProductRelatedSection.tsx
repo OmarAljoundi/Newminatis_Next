@@ -1,6 +1,7 @@
 "use client";
 import { FC, useEffect, useState } from "react";
-import { Theme, useMediaQuery } from "@mui/material";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { Theme } from "@mui/material/styles";
 import { Navigation, Autoplay, Scrollbar, Keyboard } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";

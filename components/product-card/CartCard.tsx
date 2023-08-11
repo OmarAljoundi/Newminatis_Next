@@ -1,16 +1,14 @@
 "use client";
 import { FC, useEffect } from "react";
 import { Add, Remove } from "@mui/icons-material";
-import {
-  Box,
-  Button,
-  Card,
-  Chip,
-  IconButton,
-  Zoom,
-  styled,
-} from "@mui/material";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import Chip from "@mui/material/Chip";
+import IconButton from "@mui/material/IconButton";
+import Zoom from "@mui/material/Zoom";
+import { styled } from "@mui/material/styles";
+
 import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
 import { updateCart } from "@/store/CartItem/ThunkAPI";
 import { CartItem } from "@/store/Model/CartItem";
@@ -26,21 +24,9 @@ import { toast } from "react-hot-toast";
 import { AddItem, RemoveItem, UpdateItem } from "@/store/CartItem/Cart-action";
 import Link from "next/link";
 import { BlurImage } from "../BlurImage";
-import { FlexBetween, FlexBox } from "../flex-box";
-import { H4, Small, Span } from "../Typography";
-import { calculateDiscount, calculateDiscountAsNumber, currency } from "@/lib";
-import { ProductCardWrapper, StyledChip } from "./StyledComponents";
+import { calculateDiscount, currency } from "@/lib";
 import { TooltipError } from "../Tooltips";
-const Wrapper = styled(Card)(({ theme }) => ({
-  display: "flex",
-  overflow: "hidden",
-  alignItems: "center",
-  position: "relative",
-  borderRadius: "10px",
-  marginBottom: "1.5rem",
 
-  backgroundColor: theme.palette.background.paper,
-}));
 // =========================================================
 type ProductCardProps = {
   qty: number;

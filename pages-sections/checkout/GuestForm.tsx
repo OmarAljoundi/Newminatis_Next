@@ -1,36 +1,35 @@
 import { FC, useEffect, useState } from "react";
-import {
-  Button,
-  Card,
-  Checkbox,
-  FormControlLabel,
-  Grid,
-  TextField,
-} from "@mui/material";
+
+import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+
 import Autocomplete from "@mui/material/Autocomplete";
 import { Country, State, City } from "country-state-city";
 import { ICountry, IState, ICity } from "country-state-city";
 import MuiPhoneNumber from "material-ui-phone-number-2";
 import Cookies from "js-cookie";
 import LoadingButton from "@mui/lab/LoadingButton/LoadingButton";
-import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/hooks/useRedux";
 import { TUserGuest } from "@/types/TUserGuest";
 import useUserService from "@/hooks/useUserService";
 import { IUserResponse } from "@/interface/IUserResponse";
-import { toast } from "react-hot-toast";
 import FacebookService from "@/service/FacebookService";
 import { InitiateCheckoutEvent, grapUserData } from "@/helpers/FacebookEvent";
 import { getTotalPrice } from "@/helpers/Extensions";
 import { AddressValidationSchema } from "@/utils/schema";
-import { FlexBetween, FlexBox } from "@/components/flex-box";
-import { H3, H6 } from "@/components/Typography";
+
 import { ex_countries } from "@/utils/constants";
 import Link from "next/link";
 import { useFormik } from "formik";
+import { FlexBox } from "@/components/flex-box";
+import { H6 } from "@/components/Typography";
 
-const GuestForm: FC = () => {
-  const router = useRouter();
+const GuestForm: FC<{
+  createSession: () => Promise<void>;
+}> = ({ createSession }) => {
   const cart = useAppSelector((state) => state.Store.CartReducer?.CartItems);
   const [loading, setLoading] = useState(false);
   const [initialValues, setInitialValues] = useState<TUserGuest>({
@@ -56,9 +55,9 @@ const GuestForm: FC = () => {
     values.city = values.state;
     const result = (await onCreateGuest(values)) as IUserResponse;
     if (result.success) {
+      await createSession();
       await pushFacebookEvent(values);
       setLoading(false);
-      router.push("/payment");
     } else {
       setLoading(false);
       setFieldError("email", result.message);
@@ -128,10 +127,8 @@ const GuestForm: FC = () => {
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <Card sx={{ mb: 4 }} elevation={1} role={"drawer"}>
-          <FlexBetween alignItems={"flex-start"} mb={2}>
-            <H3 mb={2}>Shipping Information</H3>
-          </FlexBetween>
+        <div>
+          <div className="mb-3"></div>
           <div className="grid ">
             <div className="grid">
               <TextField
@@ -354,55 +351,54 @@ const GuestForm: FC = () => {
               />
             </div>
           </div>
-        </Card>
+          <Grid container spacing={4}>
+            <Grid item sm={6} xs={6}>
+              <Link href="/cart">
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  type="button"
+                  fullWidth
+                  sx={{
+                    fontSize: {
+                      xs: "11px",
+                      sm: "14px",
+                    },
+                  }}
+                >
+                  Back to Cart
+                </Button>
+              </Link>
+            </Grid>
 
-        <Grid container spacing={4}>
-          <Grid item sm={6} xs={6}>
-            <Link href="/cart">
-              <Button
-                variant="outlined"
-                color="secondary"
-                type="button"
+            <Grid item sm={6} xs={6}>
+              <LoadingButton
+                variant="contained"
+                color="primary"
+                loading={loading}
+                type={"submit"}
                 fullWidth
                 sx={{
                   fontSize: {
                     xs: "11px",
                     sm: "14px",
                   },
+                  paddingX: {
+                    xs: "0",
+                    sm: "0",
+                    md: "0",
+                    lg: "5px",
+                  },
+                  ":disabled": {
+                    opacity: "0.95",
+                  },
                 }}
               >
-                Back to Cart
-              </Button>
-            </Link>
+                Proceed to Payment
+              </LoadingButton>
+            </Grid>
           </Grid>
-
-          <Grid item sm={6} xs={6}>
-            <LoadingButton
-              variant="contained"
-              color="primary"
-              loading={loading}
-              type={"submit"}
-              fullWidth
-              sx={{
-                fontSize: {
-                  xs: "11px",
-                  sm: "14px",
-                },
-                paddingX: {
-                  xs: "0",
-                  sm: "0",
-                  md: "0",
-                  lg: "5px",
-                },
-                ":disabled": {
-                  opacity: "0.95",
-                },
-              }}
-            >
-              Proceed to Payment
-            </LoadingButton>
-          </Grid>
-        </Grid>
+        </div>
       </form>
     </>
   );

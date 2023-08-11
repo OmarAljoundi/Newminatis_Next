@@ -1,8 +1,6 @@
 "use client";
-import { FC, useEffect, useState } from "react";
-import { Box, Container, Grid } from "@mui/material";
-import { H2, H5 } from "@/components/Typography";
-import { BlurImage } from "@/components/BlurImage";
+import { FC, useState } from "react";
+import Container from "@mui/material/Container";
 import Image from "next/legacy/image";
 
 const AboutSection: FC = () => {

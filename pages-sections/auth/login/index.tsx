@@ -3,15 +3,15 @@ import EyeToggleButton from "@/pages-sections/auth/shared/EyeToggleButton";
 import { TUser } from "@/types/TUser";
 import { loginSchema } from "@/utils/schema";
 import { LoadingButton } from "@mui/lab";
-import { TextField } from "@mui/material";
+import TextField from "@mui/material/TextField";
 import { useFormik } from "formik";
 import { signIn } from "next-auth/react";
-import Image from "next/image";
 import React, { useCallback, useState } from "react";
 import { toast } from "react-hot-toast";
 import { Wrapper } from "../shared";
 import Link from "next/link";
 import SocialButtons from "@/pages-sections/auth/shared/SocialButtons";
+import Cookies from "js-cookie";
 
 export default function LoginClientPage() {
   const [loading, setLoading] = useState(false);
@@ -32,6 +32,7 @@ export default function LoginClientPage() {
     })
       .then(async (callback) => {
         if (callback?.ok) {
+          Cookies.remove("GUEST_EMAIL");
           toast.success("Logged in");
         }
         if (callback?.error) {

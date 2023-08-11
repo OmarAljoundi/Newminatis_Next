@@ -11,7 +11,7 @@ import {
 import { FC, useState } from "react";
 import { Tab } from "@headlessui/react";
 import { cn } from "@/lib/utils";
-import { Fade } from "@mui/material";
+import Fade from "@mui/material/Fade";
 
 type SizeGuidProp = {
   productSizeGuide: TProductSizeGuide[];

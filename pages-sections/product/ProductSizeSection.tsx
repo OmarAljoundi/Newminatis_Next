@@ -1,28 +1,20 @@
 "use client";
-import { FlexBox } from "@/components/flex-box";
-import { GetSKU, getSizeFromSKU, getTotalPrice } from "@/helpers/Extensions";
+import { getSizeFromSKU, getTotalPrice } from "@/helpers/Extensions";
 import ProductService from "@/service/ProductService";
 import { TProduct } from "@/types/TProduct";
 import { ValueVsQuantity } from "@/types/TProductInventory";
 import { RadioGroup } from "@headlessui/react";
-import { Add, Remove } from "@mui/icons-material";
-import {
-  Box,
-  Chip,
-  IconButton,
-  Skeleton,
-  Theme,
-  Zoom,
-  useMediaQuery,
-} from "@mui/material";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import Skeleton from "@mui/material/Skeleton";
+import Zoom from "@mui/material/Skeleton";
+import { Theme } from "@mui/material/styles";
+
 import React, { useEffect, useState, FC } from "react";
-import { Button } from "@mui/material";
 import { calculateDiscountAsNumber, currency } from "@/lib";
 import { CartItem } from "@/store/Model/CartItem";
 import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
-import { AddItem, RemoveItem, UpdateItem } from "@/store/CartItem/Cart-action";
+import { AddItem } from "@/store/CartItem/Cart-action";
 import { toasterSuccess } from "@/service/toasterService";
-import { useRouter } from "next/navigation";
 import { TooltipError } from "@/components/Tooltips";
 import ProductSizeGuid from "./ProductSizeGuid";
 import { ProductQuantity } from "@/components/ProductQuantity";

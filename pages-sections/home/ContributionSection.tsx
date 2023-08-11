@@ -1,7 +1,7 @@
 "use client";
 import { BlurImage } from "@/components/BlurImage";
 import { H1, Paragraph } from "@/components/Typography";
-import { Container } from "@mui/material";
+import Container from "@mui/material/Container";
 import Image from "next/image";
 import React from "react";
 

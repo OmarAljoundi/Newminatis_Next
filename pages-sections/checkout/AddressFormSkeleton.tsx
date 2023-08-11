@@ -1,4 +1,5 @@
-import { Card, Skeleton } from "@mui/material";
+import Skeleton from "@mui/material/Skeleton";
+import Card from "@mui/material/Card";
 import React from "react";
 
 export default function AddressFormSkeleton() {

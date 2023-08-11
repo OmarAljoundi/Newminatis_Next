@@ -1,10 +1,6 @@
-import { Box, Button } from "@mui/material";
-
+import Button from "@mui/material/Button";
 import { FC, useState } from "react";
-import { H2, H5 } from "./Typography";
-import { ArrowForward } from "@mui/icons-material";
 import Link from "next/link";
-import { BlurImage } from "./BlurImage";
 import Image from "next/legacy/image";
 
 export const HeroImage: FC<{

@@ -1,8 +1,10 @@
 "use client";
 import React, { useCallback, useState } from "react";
 import { Wrapper } from "../shared";
-import Image from "next/image";
-import { Box, Checkbox, FormControlLabel, TextField } from "@mui/material";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import TextField from "@mui/material/TextField";
+
 import EyeToggleButton from "@/pages-sections/auth/shared/EyeToggleButton";
 import { FlexBox, FlexRowCenter } from "@/components/flex-box";
 import { H6, Span } from "@/components/Typography";
@@ -15,6 +17,7 @@ import { LoadingButton } from "@mui/lab";
 import { signIn } from "next-auth/react";
 import { toast } from "react-hot-toast";
 import SocialButtons from "@/pages-sections/auth/shared/SocialButtons";
+import Cookies from "js-cookie";
 
 export default function RegisterClientPage() {
   const [loading, setLoading] = useState(false);
@@ -36,6 +39,7 @@ export default function RegisterClientPage() {
     })
       .then(async (callback) => {
         if (callback?.ok) {
+          Cookies.remove("GUEST_EMAIL");
           toast.success("Registered Successfully");
         }
         if (callback?.error) {

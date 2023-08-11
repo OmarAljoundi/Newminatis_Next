@@ -1,27 +1,21 @@
 import { FC, useEffect, useState } from "react";
-import {
-  Box,
-  Button,
-  Chip,
-  IconButton,
-  Skeleton,
-  styled,
-  Theme,
-  Tooltip,
-  useMediaQuery,
-  Zoom,
-} from "@mui/material";
-import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-import { FlexBetween, FlexBox } from "../flex-box";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from "swiper";
+
+import Box from "@mui/material/Box";
+import Chip from "@mui/material/Chip";
+import IconButton from "@mui/material/IconButton";
+import Skeleton from "@mui/material/Skeleton";
+
+import useMediaQuery from "@mui/material/useMediaQuery";
+import Zoom from "@mui/material/Zoom";
+import { Theme } from "@mui/material/styles";
+import { FlexBox } from "../flex-box";
 import { Add, Remove } from "@mui/icons-material";
 import { TProduct } from "@/types/TProduct";
 import { ValueVsQuantity } from "@/types/TProductInventory";
 import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
 import ProductService from "@/service/ProductService";
 import { CartItem } from "@/store/Model/CartItem";
-import { calculateDiscount, calculateDiscountAsNumber, currency } from "@/lib";
+import { calculateDiscountAsNumber, currency } from "@/lib";
 import {
   GetSKU,
   classNames,
@@ -29,15 +23,10 @@ import {
   getTotalPrice,
 } from "@/helpers/Extensions";
 import { AddItem, RemoveItem, UpdateItem } from "@/store/CartItem/Cart-action";
-import { AddItemWish } from "@/store/Wishlist/Wishlist-action";
-import { TooltipError, TooltipInfo } from "../Tooltips";
-import { H4, H6 } from "../Typography";
-import Link from "next/link";
-import { BlurImage } from "../BlurImage";
+import { TooltipError } from "../Tooltips";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
-import { VscHeart, VscHeartFilled } from "react-icons/vsc";
 import { RadioGroup } from "@headlessui/react";
 import { toasterSuccess } from "@/service/toasterService";
 import { toast } from "react-hot-toast";

@@ -1,19 +1,14 @@
 "use client";
 import { FC, useEffect, useState } from "react";
-import {
-  Avatar,
-  Box,
-  Button,
-  Card,
-  Divider,
-  IconButton,
-  TextField,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+
+import Card from "@mui/material/Card";
+import IconButton from "@mui/material/IconButton";
+import TextField from "@mui/material/TextField";
+import Tooltip from "@mui/material/Tooltip";
+
 import LoadingButton from "@mui/lab/LoadingButton";
 import Cookies from "js-cookie";
-import { Close, Delete } from "@mui/icons-material";
+import { Delete } from "@mui/icons-material";
 import { TUserGuest } from "@/types/TUserGuest";
 import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
 import useOrderService from "@/hooks/useOrderService";
@@ -24,13 +19,12 @@ import { toast } from "react-hot-toast";
 import { TShoppingSession } from "@/types/TCheckoutSessionRequest";
 import {
   calcualteQty,
-  calculateCart,
   getTotalPrice,
   getTotalPriceAfterTax,
   priceAfterTax,
 } from "@/helpers/Extensions";
 import { IShoppingSessionResponse } from "@/interface/IShoppingSessionResponse";
-import { calculateDiscountAsNumber, currency } from "@/lib";
+import { currency } from "@/lib";
 import CheckVoucherIcon from "@/components/CheckVoucherIcon";
 import { useSession } from "next-auth/react";
 import AddressInfo from "./AddressInfo";
@@ -177,11 +171,11 @@ const CheckoutSummary: FC<Props> = ({
   const getShippingLabel = () => {
     if (isEligableForFreeShipping(state)) {
       return "Free Shipping!";
-    }
-    if (pathname!.includes("payment")) return currency(ShippingCost!, _setting);
+    } else if (ShippingCost) return currency(ShippingCost!, _setting);
 
     return "Calculate at payment";
   };
+
   return (
     <Card elevation={1} role={"drawer"}>
       <div className="border-b-2 pb-3 border-gray-400 grid gap-y-3">
@@ -299,16 +293,18 @@ const CheckoutSummary: FC<Props> = ({
         </div>
       </div>
 
-      <div className="py-3 grid grid-cols-2 border-t-2 border-gray-400">
-        <div className="grid gap-y-1">
-          <span className="text-lg font-bold uppercase">Total </span>
+      {Total && (
+        <div className="py-3 grid grid-cols-2 border-t-2 border-gray-400">
+          <div className="grid gap-y-1">
+            <span className="text-lg font-bold uppercase">Total</span>
+          </div>
+          <div className="grid justify-items-end gap-y-1">
+            <span className="text-lg font-bold">
+              {currency(Total!, _setting)}
+            </span>
+          </div>
         </div>
-        <div className="grid justify-items-end gap-y-1">
-          <span className="text-lg font-bold">
-            {currency(Total!, _setting)}
-          </span>
-        </div>
-      </div>
+      )}
 
       <AddressInfo guestAddress={guestAddress} />
 
