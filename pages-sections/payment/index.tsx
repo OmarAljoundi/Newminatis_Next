@@ -194,14 +194,6 @@ const PaymentClientPage: FC = () => {
 
       {!loading && (
         <div>
-          {/* <div>
-            <CheckoutSummary
-              guestAddress={guestAddress}
-              setCheckoutSummary={setCheckoutSummary}
-              {...checkoutSummary}
-            />
-          </div> */}
-          {/* className="col-span-1 lg:col-span-2" */}
           {clientSecret && (
             <Elements
               stripe={stripeObject}
@@ -209,11 +201,6 @@ const PaymentClientPage: FC = () => {
                 clientSecret: clientSecret,
               }}
             >
-              <ExpressCheckoutWithEmail
-                clientSecret={clientSecret}
-                guestUser={guestAddress}
-                checkoutSummary={checkoutSummary}
-              />
               <PaymentForm
                 totalAfterDiscount={checkoutSummary?.Total}
                 guestUser={guestAddress}

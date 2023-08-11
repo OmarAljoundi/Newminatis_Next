@@ -47,6 +47,7 @@ import { IUserResponse } from "@/interface/IUserResponse";
 import useOrderService from "@/hooks/useOrderService";
 import { IShoppingSessionResponse } from "@/interface/IShoppingSessionResponse";
 import useWindowSize from "@/hooks/useWindowSize";
+import { useRouter } from "next/navigation";
 
 const CheckoutPage2 = () => {
   const [stripeObject, setStripeObject] = useState<any>(null);
@@ -60,6 +61,7 @@ const CheckoutPage2 = () => {
   const [guestUser, setGuestUser] = useState<TUserGuest | null>(null);
   const [accordingValue, setAccordingValue] = useState("Shipping Information");
   const ref = useRef<HTMLDivElement | null>(null);
+  const route = useRouter();
   useEffect(() => {
     const fetchStripeObject = async () => {
       const res = await stripePromise();
@@ -183,6 +185,9 @@ const CheckoutPage2 = () => {
     }
   };
   useEffect(() => {
+    if (state?.length == 0) {
+      route.replace("/cart");
+    }
     if (status == "loading") return;
 
     createSession(false);
