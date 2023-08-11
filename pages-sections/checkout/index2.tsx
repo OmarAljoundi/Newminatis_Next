@@ -467,19 +467,21 @@ const CheckoutPage2 = () => {
               </AccordionContent>
             </AccordionItem>
 
-            <AccordionItem
-              value="Payment Info"
-              onClick={() =>
-                window <= 1023
-                  ? ref.current?.scrollIntoView({ behavior: "smooth" })
-                  : {}
-              }
-            >
-              <AccordionTrigger> Payment Info</AccordionTrigger>
-              <AccordionContent className="px-2">
-                <PaymentClientPage />
-              </AccordionContent>
-            </AccordionItem>
+            {isPaymentFormEnable() && (
+              <AccordionItem
+                value="Payment Info"
+                onClick={() =>
+                  window <= 1023
+                    ? ref.current?.scrollIntoView({ behavior: "smooth" })
+                    : {}
+                }
+              >
+                <AccordionTrigger> Payment Info</AccordionTrigger>
+                <AccordionContent className="px-2">
+                  <PaymentClientPage />
+                </AccordionContent>
+              </AccordionItem>
+            )}
           </Accordion>
         </div>
       </div>
