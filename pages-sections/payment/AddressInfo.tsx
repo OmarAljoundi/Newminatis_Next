@@ -7,9 +7,8 @@ const AddressInfo: FC<{ guestAddress: TUserGuest | undefined }> = ({
   guestAddress,
 }) => {
   const { data: authedSession } = useSession();
-
-  if (authedSession?.user.userAddress.length == 0 && guestAddress == undefined)
-    return null;
+  if (guestAddress == undefined) return null;
+  if (authedSession?.user?.userAddress.length == 0) return null;
 
   return (
     <div className="grid grid-cols-2 border-t-2 border-gray-400 py-3  gap-y-2">

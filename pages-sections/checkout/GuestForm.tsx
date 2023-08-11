@@ -28,7 +28,7 @@ import { FlexBox } from "@/components/flex-box";
 import { H6 } from "@/components/Typography";
 
 const GuestForm: FC<{
-  createSession: () => Promise<void>;
+  createSession: (t?: boolean) => Promise<void>;
 }> = ({ createSession }) => {
   const cart = useAppSelector((state) => state.Store.CartReducer?.CartItems);
   const [loading, setLoading] = useState(false);
@@ -55,7 +55,7 @@ const GuestForm: FC<{
     values.city = values.state;
     const result = (await onCreateGuest(values)) as IUserResponse;
     if (result.success) {
-      await createSession();
+      await createSession(true);
       await pushFacebookEvent(values);
       setLoading(false);
     } else {

@@ -23,7 +23,7 @@ import IconButton from "@mui/material/IconButton";
 import TextField from "@mui/material/TextField";
 import { Elements } from "@stripe/react-stripe-js";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import AddressInfo from "../payment/AddressInfo";
 import CheckVoucherIcon from "@/components/CheckVoucherIcon";
@@ -46,6 +46,7 @@ import useUserService from "@/hooks/useUserService";
 import { IUserResponse } from "@/interface/IUserResponse";
 import useOrderService from "@/hooks/useOrderService";
 import { IShoppingSessionResponse } from "@/interface/IShoppingSessionResponse";
+import useWindowSize from "@/hooks/useWindowSize";
 
 const CheckoutPage2 = () => {
   const [stripeObject, setStripeObject] = useState<any>(null);
@@ -58,7 +59,7 @@ const CheckoutPage2 = () => {
     useState<CheckoutSummaryProps | null>(null);
   const [guestUser, setGuestUser] = useState<TUserGuest | null>(null);
   const [accordingValue, setAccordingValue] = useState("Shipping Information");
-
+  const ref = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     const fetchStripeObject = async () => {
       const res = await stripePromise();
@@ -76,6 +77,8 @@ const CheckoutPage2 = () => {
 
   const { onGetGuest, userLoad } = useUserService();
   const { CreateCheckoutSession, orderLoad } = useOrderService();
+
+  const window = useWindowSize();
 
   //Start Checkout Summary Handlers
   const handleCartAmountChange = (item: CartItem) => {
@@ -154,7 +157,6 @@ const CheckoutPage2 = () => {
     return session.userId ? session : null;
   };
   const createSession = async (forceMountPayment: boolean = true) => {
-    debugger;
     var _session = await CreateSessionObject();
     if (_session) {
       const result = (await CreateCheckoutSession(
@@ -172,8 +174,10 @@ const CheckoutPage2 = () => {
           TaxRate: result.shoppingSession.taxRate,
         });
 
-        if (isPaymentFormEnable() && forceMountPayment) {
+        if (isPaymentFormEnable() || forceMountPayment) {
           setAccordingValue("Payment Info");
+          if (window <= 1023)
+            ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
         }
       }
     }
@@ -232,230 +236,249 @@ const CheckoutPage2 = () => {
   //End Helpers
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-4 gap-y-2 items-start">
+    <>
       <Elements stripe={stripeObject}>
         <ExpressCheckoutNoEmail />
       </Elements>
-      <div className="shadow-xl bg-white p-4">
-        <div>
-          <div className="border-b-2 pb-3 border-gray-400 grid gap-y-3">
-            {state?.map((item) => (
-              <div
-                key={item.id}
-                className="grid grid-cols-4 gap-4 items-center rounded-lg"
-              >
-                <div className="grid">
-                  <Link
-                    href={`/product/${item.name.toLowerCase()}-${item.color.toString()}`}
-                  >
-                    <BlurImage
-                      image={item.imgUrl || ""}
-                      width={75}
-                      height={80}
-                      customAspect=" rounded-lg"
-                      q={100}
-                      loading="eager"
-                      priority="high"
-                    />
-                  </Link>
-                </div>
-                <div className="grid col-span-2 gap-y-1">
-                  <span className="text-xs font-medium">{item.name}</span>
-                  <span className="text-xs font-medium">
-                    {" "}
-                    Size: {item.size}
-                  </span>
-                  <span className="text-xs font-medium">
-                    {" "}
-                    Quantity: {item.qty}
-                  </span>
-                  <span className="text-xs font-medium">
-                    Price:{" "}
-                    {priceAfterTax(
-                      item.price,
-                      _setting,
-                      checkoutSummary?.TaxRate || 0,
-                      item.salePrice,
-                      item.qty
-                    )}
-                    {!!item.salePrice && (
-                      <Tiny
-                        sx={{ ml: 0.4, mb: 0.5, fontSize: "9px" }}
-                        color="#D3C4AB"
-                      >
-                        <del>
-                          {currency(
-                            item.price *
-                              ((checkoutSummary?.TaxRate || 0) / 100 + 1),
-                            _setting
-                          )}
-                        </del>
-                      </Tiny>
-                    )}{" "}
-                    <span className="text-[8px] font-bold text-green-600">
-                      {checkoutSummary?.TaxRate && "(VAT Inclusive)"}
-                    </span>
-                  </span>
-                </div>
 
-                <div>
-                  <Tooltip title="Remove Item">
-                    <IconButton
-                      size="small"
-                      sx={{ marginLeft: 2.5 }}
-                      onClick={() => handleCartAmountChange(item)}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-4 gap-y-2 items-start">
+        <div className="shadow-xl bg-white p-4">
+          <div>
+            <div className="border-b-2 pb-3 border-gray-400 grid gap-y-3">
+              {state?.map((item) => (
+                <div
+                  key={item.id}
+                  className="grid grid-cols-4 gap-4 items-center rounded-lg"
+                >
+                  <div className="grid">
+                    <Link
+                      href={`/product/${item.name.toLowerCase()}-${item.color.toString()}`}
                     >
-                      <Delete fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
+                      <BlurImage
+                        image={item.imgUrl || ""}
+                        width={75}
+                        height={80}
+                        customAspect=" rounded-lg"
+                        q={100}
+                        loading="eager"
+                        priority="high"
+                      />
+                    </Link>
+                  </div>
+                  <div className="grid col-span-2 gap-y-1">
+                    <span className="text-xs font-medium">{item.name}</span>
+                    <span className="text-xs font-medium">
+                      {" "}
+                      Size: {item.size}
+                    </span>
+                    <span className="text-xs font-medium">
+                      {" "}
+                      Quantity: {item.qty}
+                    </span>
+                    <span className="text-xs font-medium">
+                      Price:{" "}
+                      {priceAfterTax(
+                        item.price,
+                        _setting,
+                        checkoutSummary?.TaxRate || 0,
+                        item.salePrice,
+                        item.qty
+                      )}
+                      {!!item.salePrice && (
+                        <Tiny
+                          sx={{ ml: 0.4, mb: 0.5, fontSize: "9px" }}
+                          color="#D3C4AB"
+                        >
+                          <del>
+                            {currency(
+                              item.price *
+                                ((checkoutSummary?.TaxRate || 0) / 100 + 1),
+                              _setting
+                            )}
+                          </del>
+                        </Tiny>
+                      )}{" "}
+                      <span className="text-[8px] font-bold text-green-600">
+                        {checkoutSummary?.TaxRate && "(VAT Inclusive)"}
+                      </span>
+                    </span>
+                  </div>
+
+                  <div>
+                    <Tooltip title="Remove Item">
+                      <IconButton
+                        size="small"
+                        sx={{ marginLeft: 2.5 }}
+                        onClick={() => handleCartAmountChange(item)}
+                      >
+                        <Delete fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  </div>
                 </div>
-              </div>
-            ))}
-            {getShippingMessage(state, _setting)}
+              ))}
+              {getShippingMessage(state, _setting)}
+            </div>
           </div>
-        </div>
 
-        <div className="py-3 grid grid-cols-2">
-          <div className="grid gap-y-1">
-            <span className="text-xs font-medium uppercase">SubTotal</span>
-            {!!checkoutSummary?.TotalDiscount && (
-              <span className="text-xs font-medium text-red-500 uppercase">
-                Discount
-              </span>
-            )}
-            {!!checkoutSummary?.TotalDiscount && (
-              <span className="text-xs font-medium text-red-500 uppercase">
-                Voucher Applied
-              </span>
-            )}
-            <span className="text-xs font-medium uppercase">
-              Shipping & handling
-            </span>
-            {!!checkoutSummary?.DutyCost && (
-              <span className="text-xs font-medium uppercase">
-                Custom Duties
-              </span>
-            )}
-          </div>
-          <div className="grid justify-items-end gap-y-1">
-            <span className="text-xs font-medium uppercase">
-              {currency(
-                getTotalPriceAfterTax(state, checkoutSummary?.TaxRate || 0),
-                _setting
-              )}
-            </span>
-            {!!checkoutSummary?.TotalDiscount && (
-              <span className="text-xs font-medium text-red-500 uppercase">
-                -{currency(checkoutSummary.TotalDiscount, _setting)}
-              </span>
-            )}
-            {!!checkoutSummary?.TotalDiscount && (
-              <span className="text-xs font-medium text-red-500 uppercase">
-                {" "}
-                {checkoutSummary?.Voucher}
-              </span>
-            )}
-            <span className="text-xs font-medium uppercase">
-              {getShippingLabel()}
-            </span>
-            {!!checkoutSummary?.DutyCost && (
-              <span className="text-xs font-medium uppercase">
-                {currency(checkoutSummary.DutyCost!, _setting)}
-              </span>
-            )}
-          </div>
-        </div>
-
-        {checkoutSummary?.Total && (
-          <div className="py-3 grid grid-cols-2 border-t-2 border-gray-400">
+          <div className="py-3 grid grid-cols-2">
             <div className="grid gap-y-1">
-              <span className="text-lg font-bold uppercase">Total</span>
+              <span className="text-xs font-medium uppercase">SubTotal</span>
+              {!!checkoutSummary?.TotalDiscount && (
+                <span className="text-xs font-medium text-red-500 uppercase">
+                  Discount
+                </span>
+              )}
+              {!!checkoutSummary?.TotalDiscount && (
+                <span className="text-xs font-medium text-red-500 uppercase">
+                  Voucher Applied
+                </span>
+              )}
+              <span className="text-xs font-medium uppercase">
+                Shipping & handling
+              </span>
+              {!!checkoutSummary?.DutyCost && (
+                <span className="text-xs font-medium uppercase">
+                  Custom Duties
+                </span>
+              )}
             </div>
             <div className="grid justify-items-end gap-y-1">
-              <span className="text-lg font-bold">
-                {currency(checkoutSummary.Total!, _setting)}
+              <span className="text-xs font-medium uppercase">
+                {currency(
+                  getTotalPriceAfterTax(state, checkoutSummary?.TaxRate || 0),
+                  _setting
+                )}
               </span>
+              {!!checkoutSummary?.TotalDiscount && (
+                <span className="text-xs font-medium text-red-500 uppercase">
+                  -{currency(checkoutSummary.TotalDiscount, _setting)}
+                </span>
+              )}
+              {!!checkoutSummary?.TotalDiscount && (
+                <span className="text-xs font-medium text-red-500 uppercase">
+                  {" "}
+                  {checkoutSummary?.Voucher}
+                </span>
+              )}
+              <span className="text-xs font-medium uppercase">
+                {getShippingLabel()}
+              </span>
+              {!!checkoutSummary?.DutyCost && (
+                <span className="text-xs font-medium uppercase">
+                  {currency(checkoutSummary.DutyCost!, _setting)}
+                </span>
+              )}
             </div>
           </div>
-        )}
 
-        <AddressInfo guestAddress={guestUser ?? undefined} />
-
-        {checkoutSummary?.Total && (
-          <div className="grid grid-cols-3  pt-3 gap-x-2 items-start">
-            <div className="col-span-2">
-              <TextField
-                placeholder="VOUCHER"
-                variant="outlined"
-                size="small"
-                value={_Voucher}
-                defaultValue={checkoutSummary?.Voucher}
-                fullWidth
-                onChange={(e) => handleVoucherChange(e.target.value)}
-                error={ErrorMessage != ""}
-                helperText={ErrorMessage ?? ""}
-                onBlur={() => {
-                  setErrorMessage("");
-                  setOnError(false);
-                }}
-                InputProps={{
-                  endAdornment: (
-                    <CheckVoucherIcon
-                      show={show}
-                      onError={onError}
-                      onSuccess={onSuccess}
-                    />
-                  ),
-                }}
-              />
+          {checkoutSummary?.Total && (
+            <div className="py-3 grid grid-cols-2 border-t-2 border-gray-400">
+              <div className="grid gap-y-1">
+                <span className="text-lg font-bold uppercase">Total</span>
+              </div>
+              <div className="grid justify-items-end gap-y-1">
+                <span className="text-lg font-bold">
+                  {currency(checkoutSummary.Total!, _setting)}
+                </span>
+              </div>
             </div>
+          )}
 
-            <LoadingButton
-              loading={orderLoad}
-              onClick={handleVoucherApplied}
-              type="submit"
-              sx={{ py: "9px" }}
-              disabled={_Voucher == ""}
-              fullWidth
-              color="primary"
-              variant="contained"
+          <AddressInfo guestAddress={guestUser ?? undefined} />
+
+          {checkoutSummary?.Total && (
+            <div
+              className="grid grid-cols-3  pt-3 gap-x-2 items-start"
+              ref={ref}
             >
-              <span className="text-xs font-medium">Apply</span>
-            </LoadingButton>
-          </div>
-        )}
-      </div>
-      <div className="col-span-1 lg:col-span-2">
-        <Accordion
-          value={accordingValue}
-          onValueChange={setAccordingValue}
-          type="single"
-          defaultValue="Shipping Information"
-          className="w-full bg-white border-b border-gray-400
+              <div className="col-span-2">
+                <TextField
+                  placeholder="VOUCHER"
+                  variant="outlined"
+                  size="small"
+                  value={_Voucher}
+                  defaultValue={checkoutSummary?.Voucher}
+                  fullWidth
+                  onChange={(e) => handleVoucherChange(e.target.value)}
+                  error={ErrorMessage != ""}
+                  helperText={ErrorMessage ?? ""}
+                  onBlur={() => {
+                    setErrorMessage("");
+                    setOnError(false);
+                  }}
+                  InputProps={{
+                    endAdornment: (
+                      <CheckVoucherIcon
+                        show={show}
+                        onError={onError}
+                        onSuccess={onSuccess}
+                      />
+                    ),
+                  }}
+                />
+              </div>
+
+              <LoadingButton
+                loading={orderLoad}
+                onClick={handleVoucherApplied}
+                type="submit"
+                sx={{ py: "9px" }}
+                disabled={_Voucher == ""}
+                fullWidth
+                color="primary"
+                variant="contained"
+              >
+                <span className="text-xs font-medium">Apply</span>
+              </LoadingButton>
+            </div>
+          )}
+        </div>
+        <div className="col-span-1 lg:col-span-2">
+          <Accordion
+            value={accordingValue}
+            onValueChange={setAccordingValue}
+            type="single"
+            defaultValue="Shipping Information"
+            className="w-full bg-white border-b border-gray-400
                   px-4  shadow-lg text-left text-sm font-medium  
                   focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75 disabled:opacity-30"
-        >
-          <AccordionItem value="Shipping Information">
-            <AccordionTrigger> Shipping Information</AccordionTrigger>
-            <AccordionContent>
-              {authedSession?.user ? (
-                <AuthForm createSession={createSession} />
-              ) : (
-                <GuestForm createSession={createSession} />
-              )}
-            </AccordionContent>
-          </AccordionItem>
-          {isPaymentFormEnable() && (
-            <AccordionItem value="Payment Info">
-              <AccordionTrigger> Payment Info</AccordionTrigger>
+          >
+            <AccordionItem
+              value="Shipping Information"
+              onClick={() =>
+                window <= 1023
+                  ? ref.current?.scrollIntoView({ behavior: "smooth" })
+                  : {}
+              }
+            >
+              <AccordionTrigger> Shipping Information</AccordionTrigger>
               <AccordionContent>
+                {authedSession?.user ? (
+                  <AuthForm createSession={createSession} />
+                ) : (
+                  <GuestForm createSession={createSession} />
+                )}
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem
+              value="Payment Info"
+              onClick={() =>
+                window <= 1023
+                  ? ref.current?.scrollIntoView({ behavior: "smooth" })
+                  : {}
+              }
+            >
+              <AccordionTrigger> Payment Info</AccordionTrigger>
+              <AccordionContent className="px-2">
                 <PaymentClientPage />
               </AccordionContent>
             </AccordionItem>
-          )}
-        </Accordion>
+          </Accordion>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

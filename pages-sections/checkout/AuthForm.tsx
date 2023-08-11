@@ -25,7 +25,7 @@ import EditAddressForm from "@/components/address/EditAddressForm";
 import { useSession } from "next-auth/react";
 
 const AuthForm: FC<{
-  createSession: () => Promise<void>;
+  createSession: (t?: boolean) => Promise<void>;
 }> = ({ createSession }) => {
   const [loading, setLoading] = useState(false);
   const { data: authedSession, status, update } = useSession();
@@ -53,7 +53,7 @@ const AuthForm: FC<{
         });
 
       setLoading(false);
-      await createSession();
+      await createSession(true);
     }
   };
 
@@ -90,7 +90,7 @@ const AuthForm: FC<{
 
   const handleProceedPayment = async () => {
     setLoading(true);
-    await createSession();
+    await createSession(true);
     setLoading(false);
   };
 
