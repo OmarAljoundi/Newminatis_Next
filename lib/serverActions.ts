@@ -34,7 +34,7 @@ export const searchProducts = async (
 
 export const getProductData = async (searchQuery: SearchQuery) => {
   const result = await fetch(
-    "https://api_v2.newminatis.com/api/Product/GetOne",
+    "https://api.newminatis.com/api/Product/GetOne",
     {
       method: "POST",
       body: JSON.stringify(searchQuery),
