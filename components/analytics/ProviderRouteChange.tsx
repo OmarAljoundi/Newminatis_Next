@@ -3,14 +3,13 @@ import { ViewContentEvent, grapUserData } from "@/helpers/FacebookEvent";
 import FacebookService from "@/service/FacebookService";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
-import { Router } from "next/router";
 import React, { useEffect } from "react";
 
 export default function ProviderRouteChange() {
   const pathname = usePathname();
   const { data: authedSession } = useSession();
   useEffect(() => {
-    if (process.env.NEXT_PUBLIC_ENABLE_PIXELS === "true") {
+    if (process.env.NEXT_PUBLIC_ENABLE_PIXELS == "false") {
       import("react-facebook-pixel")
         .then((x) => x.default)
         .then((ReactPixel) => {
@@ -48,12 +47,16 @@ export default function ProviderRouteChange() {
       import("react-ga4")
         .then((x) => x.default)
         .then((ReactGA) => {
+          console.log("SENT");
           ReactGA.initialize("G-0JQFPNSRS1");
           ReactGA._gaCommandSendPageview(location.pathname, {
             title: document.title,
             hostname: window.location.hostname,
             referrer: document.referrer,
           });
+        })
+        .catch((e) => {
+          console.log("Error while sending tracking", e);
         });
     }
   }, [pathname]);
