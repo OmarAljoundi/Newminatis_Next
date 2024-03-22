@@ -47,7 +47,6 @@ export default function ProviderRouteChange() {
       import("react-ga4")
         .then((x) => x.default)
         .then((ReactGA) => {
-          console.log("SENT");
           ReactGA.initialize("G-0JQFPNSRS1");
           ReactGA._gaCommandSendPageview(location.pathname, {
             title: document.title,

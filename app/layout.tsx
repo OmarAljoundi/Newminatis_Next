@@ -10,6 +10,7 @@ type RootLayoutProp = {
 
 import { Inter } from "next/font/google";
 import ShopLayout from "@/components/layouts/ShopLayout";
+import GoogleTag from "@/components/GoogleTag";
 
 const inter = Inter({
   display: "swap",
@@ -21,6 +22,9 @@ const inter = Inter({
 const RootLayout: FC<RootLayoutProp> = ({ children }) => {
   return (
     <html lang="en">
+      <head>
+        <GoogleTag />
+      </head>
       <body className={`${inter.className}`}>
         <div id="__next">
           <ShopLayout>{children}</ShopLayout>
