@@ -9,7 +9,7 @@ export default function ProviderRouteChange() {
   const pathname = usePathname();
   const { data: authedSession } = useSession();
   useEffect(() => {
-    if (process.env.NEXT_PUBLIC_ENABLE_PIXELS == "false") {
+    if (process.env.NEXT_PUBLIC_ENABLE_PIXELS == "true") {
       import("react-facebook-pixel")
         .then((x) => x.default)
         .then((ReactPixel) => {
