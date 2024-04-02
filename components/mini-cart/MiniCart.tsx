@@ -21,7 +21,7 @@ import { H5, Span } from "../Typography";
 import { useAppDispatch, useAppSelector } from "@/hooks/useRedux";
 import { updateCart } from "@/store/CartItem/ThunkAPI";
 import { AddItem, RemoveItem, UpdateItem } from "@/store/CartItem/Cart-action";
-import { StyledChip } from "../product-card/StyledComponents";
+import { StyledChip, StyledChipRight } from "../product-card/StyledComponents";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { ExpressCheckoutNoEmail } from "../stripe/ExpressCheckoutNoEmail";
 import { Elements } from "@stripe/react-stripe-js";
@@ -265,7 +265,7 @@ const MiniCart: FC<MiniCartProps> = ({ toggleSidenav, open }) => {
                                     position="relative"
                                   >
                                     {!!item.salePrice && (
-                                      <StyledChip
+                                      <StyledChipRight
                                         color="secondary"
                                         size="small"
                                         label={`${item.salePrice}% off`}

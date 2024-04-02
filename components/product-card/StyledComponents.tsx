@@ -61,8 +61,18 @@ export const ImageWrapper = styled(Box)(({ theme }) => ({
   display: "inline-block ",
 }));
 
+export const StyledChipRight = styled(Chip)(() => ({
+  zIndex: 2,
+  top: "10px",
+  right: "0px",
+  paddingLeft: 3,
+  paddingRight: 3,
+  fontSize: "16px",
+  position: "absolute",
+}));
+
 export const StyledChip = styled(Chip)(() => ({
-  zIndex: 1,
+  zIndex: 2,
   top: "10px",
   left: "10px",
   paddingLeft: 3,
